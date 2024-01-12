@@ -1,0 +1,122 @@
+Index: src/CLI/Application.php
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?php declare(strict_types=1);\n/*\n * This file is part of PHP Copy/Paste Detector (PHPCPD).\n *\n * (c) Sebastian Bergmann <sebastian@phpunit.de>\n *\n * For the full copyright and license information, please view the LICENSE\n * file that was distributed with this source code.\n */\nnamespace SebastianBergmann\\PHPCPD;\n\nuse const PHP_EOL;\nuse function count;\nuse function printf;\nuse SebastianBergmann\\FileIterator\\Facade;\nuse SebastianBergmann\\PHPCPD\\Detector\\Detector;\nuse SebastianBergmann\\PHPCPD\\Detector\\Strategy\\DefaultStrategy;\nuse SebastianBergmann\\PHPCPD\\Log\\PMD;\nuse SebastianBergmann\\PHPCPD\\Log\\Text;\nuse SebastianBergmann\\Timer\\ResourceUsageFormatter;\nuse SebastianBergmann\\Timer\\Timer;\nuse SebastianBergmann\\Version;\n\nfinal class Application\n{\n    private const VERSION = '6.0.3';\n\n    public function run(array $argv): int\n    {\n        $this->printVersion();\n\n        try {\n            $arguments = (new ArgumentsBuilder)->build($argv);\n        } catch (Exception $e) {\n            print PHP_EOL . $e->getMessage() . PHP_EOL;\n\n            return 1;\n        }\n\n        if ($arguments->version()) {\n            return 0;\n        }\n\n        print PHP_EOL;\n\n        if ($arguments->help()) {\n            $this->help();\n\n            return 0;\n        }\n\n        $files = (new Facade)->getFilesAsArray(\n            $arguments->directories(),\n            $arguments->suffixes(),\n            '',\n            $arguments->exclude()\n        );\n\n        if (empty($files)) {\n            print 'No files found to scan' . PHP_EOL;\n\n            return 1;\n        }\n\n        $strategy = new DefaultStrategy;\n\n        $timer = new Timer;\n        $timer->start();\n\n        $clones = (new Detector($strategy))->copyPasteDetection(\n            $files,\n            $arguments->linesThreshold(),\n            $arguments->tokensThreshold(),\n            $arguments->fuzzy()\n        );\n\n        (new Text)->printResult($clones, $arguments->verbose());\n\n        if ($arguments->pmdCpdXmlLogfile()) {\n            (new PMD($arguments->pmdCpdXmlLogfile()))->processClones($clones);\n        }\n\n        print (new ResourceUsageFormatter)->resourceUsage($timer->stop()) . PHP_EOL;\n\n        return count($clones) > 0 ? 1 : 0;\n    }\n\n    private function printVersion(): void\n    {\n        printf(\n            'phpcpd %s by Sebastian Bergmann.' . PHP_EOL,\n            (new Version(self::VERSION, dirname(__DIR__)))->getVersion()\n        );\n    }\n\n    private function help(): void\n    {\n        print <<<'EOT'\nUsage:\n  phpcpd [options] <directory>\n\nOptions for selecting files:\n\n  --suffix <suffix> Include files with names ending in <suffix> in the analysis\n                    (default: .php; can be given multiple times)\n  --exclude <path>  Exclude files with <path> in their path from the analysis\n                    (can be given multiple times)\n\nOptions for analysing files:\n\n  --fuzzy           Fuzz variable names\n  --min-lines <N>   Minimum number of identical lines (default: 5)\n  --min-tokens <N>  Minimum number of identical tokens (default: 70)\n\nOptions for report generation:\n\n  --log-pmd <file>  Write log in PMD-CPD XML format to <file>\n\nEOT;\n    }\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/CLI/Application.php b/src/CLI/Application.php
+--- a/src/CLI/Application.php	(revision f3683aa0db2e8e09287c2bb33a595b2873ea9176)
++++ b/src/CLI/Application.php	(date 1704887958142)
+@@ -23,7 +23,7 @@
+ 
+ final class Application
+ {
+-    private const VERSION = '6.0.3';
++    private const VERSION = '6.0.4';
+ 
+     public function run(array $argv): int
+     {
+Index: build.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project name=\"phpcpd\" default=\"setup\">\n    <target name=\"setup\" depends=\"clean,install-dependencies\"/>\n\n    <target name=\"clean\" description=\"Cleanup build artifacts\">\n        <delete dir=\"${basedir}/vendor\"/>\n        <delete file=\"${basedir}/composer.lock\"/>\n        <delete>\n            <fileset dir=\"${basedir}/build\">\n                <include name=\"**/phpcpd*.phar\"/>\n                <include name=\"**/phpcpd*.phar.asc\"/>\n            </fileset>\n        </delete>\n    </target>\n\n    <target name=\"install-dependencies\" unless=\"dependencies-installed\" depends=\"-dependencies-installed\" description=\"Install dependencies with Composer\">\n        <exec executable=\"${basedir}/tools/composer\" taskname=\"composer\">\n            <arg value=\"update\"/>\n            <arg value=\"--no-interaction\"/>\n            <arg value=\"--no-progress\"/>\n            <arg value=\"--no-ansi\"/>\n            <arg value=\"--no-suggest\"/>\n        </exec>\n    </target>\n\n    <target name=\"update-tools\">\n        <exec executable=\"phive\">\n            <arg value=\"--no-progress\"/>\n            <arg value=\"update\"/>\n        </exec>\n    </target>\n\n    <target name=\"signed-phar\" description=\"Create signed PHAR archive of PHPCPD and all its dependencies (release)\" depends=\"phar\">\n        <exec executable=\"bash\" outputproperty=\"version\">\n            <arg value=\"-c\" />\n            <arg value=\"${basedir}/phpcpd --version | awk 'BEGIN { ORS = &quot;&quot;; } {print $2}'\" />\n        </exec>\n\n        <exec executable=\"gpg\" failonerror=\"true\">\n            <arg value=\"--armor\" />\n            <arg value=\"--detach-sign\" />\n            <arg path=\"${basedir}/build/phpcpd-${version}.phar\" />\n        </exec>\n    </target>\n\n    <target name=\"phar\" description=\"Create PHAR archive of phpcpd and all its dependencies\" depends=\"setup,phar-build\">\n    </target>\n\n    <target name=\"phar-build\">\n        <exec executable=\"bash\" outputproperty=\"version\">\n            <arg value=\"-c\" />\n            <arg value=\"${basedir}/phpcpd --version | awk 'BEGIN { ORS = &quot;&quot;; } {print $2}'\" />\n        </exec>\n\n        <copy todir=\"${basedir}/build/phar/src\">\n            <fileset dir=\"${basedir}/src\">\n                <include name=\"**/*.php\" />\n            </fileset>\n        </copy>\n\n        <copy file=\"${basedir}/vendor/sebastian/cli-parser/LICENSE\" tofile=\"${basedir}/build/phar/sebastian-cli-parser/LICENSE\"/>\n        <copy todir=\"${basedir}/build/phar/sebastian-cli-parser\">\n            <fileset dir=\"${basedir}/vendor/sebastian/cli-parser/src\">\n                <include name=\"**/*.php\" />\n            </fileset>\n        </copy>\n\n        <copy file=\"${basedir}/vendor/sebastian/version/LICENSE\" tofile=\"${basedir}/build/phar/sebastian-version/LICENSE\"/>\n        <copy todir=\"${basedir}/build/phar/sebastian-version\">\n            <fileset dir=\"${basedir}/vendor/sebastian/version/src\">\n                <include name=\"**/*.php\" />\n            </fileset>\n        </copy>\n\n        <copy file=\"${basedir}/vendor/phpunit/php-file-iterator/LICENSE\" tofile=\"${basedir}/build/phar/phpunit-php-file-iterator/LICENSE\"/>\n        <copy todir=\"${basedir}/build/phar/phpunit-php-file-iterator\">\n            <fileset dir=\"${basedir}/vendor/phpunit/php-file-iterator/src\">\n                <include name=\"**/*.php\" />\n            </fileset>\n        </copy>\n\n        <copy file=\"${basedir}/vendor/phpunit/php-timer/LICENSE\" tofile=\"${basedir}/build/phar/phpunit-php-timer/LICENSE\"/>\n        <copy todir=\"${basedir}/build/phar/phpunit-php-timer\">\n            <fileset dir=\"${basedir}/vendor/phpunit/php-timer/src\">\n                <include name=\"**/*.php\" />\n            </fileset>\n        </copy>\n\n        <exec executable=\"${basedir}/build/phar-manifest.php\" output=\"${basedir}/build/phar/manifest.txt\"/>\n\n        <exec executable=\"${basedir}/tools/phpab\">\n            <arg value=\"--all\" />\n            <arg value=\"--phar\" />\n            <arg value=\"--output\" />\n            <arg path=\"${basedir}/build/phpcpd-${version}.phar\" />\n            <arg value=\"--template\" />\n            <arg path=\"${basedir}/build/phar-autoload.php.in\" />\n            <arg value=\"--indent\" />\n            <arg value=\"            \" />\n            <arg path=\"${basedir}/build/phar\" />\n        </exec>\n\n        <chmod file=\"${basedir}/build/phpcpd-${version}.phar\" perm=\"ugo+rx\"/>\n\n        <delete dir=\"${basedir}/build/phar\"/>\n    </target>\n\n    <target name=\"-dependencies-installed\">\n        <available file=\"${basedir}/vendor\" property=\"dependencies-installed\" type=\"dir\"/>\n    </target>\n</project>\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/build.xml b/build.xml
+--- a/build.xml	(revision f3683aa0db2e8e09287c2bb33a595b2873ea9176)
++++ b/build.xml	(date 1704888037032)
+@@ -1,5 +1,7 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+ <project name="phpcpd" default="setup">
++    <property name="basedir" value="." override="false"/>
++    <property name="version" value="6.0.4" override="false"/>
+     <target name="setup" depends="clean,install-dependencies"/>
+ 
+     <target name="clean" description="Cleanup build artifacts">
+@@ -33,10 +35,10 @@
+     <target name="signed-phar" description="Create signed PHAR archive of PHPCPD and all its dependencies (release)" depends="phar">
+         <exec executable="bash" outputproperty="version">
+             <arg value="-c" />
+-            <arg value="${basedir}/phpcpd --version | awk 'BEGIN { ORS = &quot;&quot;; } {print $2}'" />
++            <arg value="${basedir}/phpcpd --version" />
+         </exec>
+ 
+-        <exec executable="gpg" failonerror="true">
++        <exec executable="gpg">
+             <arg value="--armor" />
+             <arg value="--detach-sign" />
+             <arg path="${basedir}/build/phpcpd-${version}.phar" />
+@@ -49,7 +51,7 @@
+     <target name="phar-build">
+         <exec executable="bash" outputproperty="version">
+             <arg value="-c" />
+-            <arg value="${basedir}/phpcpd --version | awk 'BEGIN { ORS = &quot;&quot;; } {print $2}'" />
++            <arg value="${basedir}/phpcpd --version" />
+         </exec>
+ 
+         <copy todir="${basedir}/build/phar/src">
+@@ -100,7 +102,7 @@
+             <arg path="${basedir}/build/phar" />
+         </exec>
+ 
+-        <chmod file="${basedir}/build/phpcpd-${version}.phar" perm="ugo+rx"/>
++        <chmod file="${basedir}/build/phpcpd-${version}.phar" mode="755"/>
+ 
+         <delete dir="${basedir}/build/phar"/>
+     </target>
+Index: src/Detector/Strategy/AbstractStrategy.php
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?php declare(strict_types=1);\n/*\n * This file is part of PHP Copy/Paste Detector (PHPCPD).\n *\n * (c) Sebastian Bergmann <sebastian@phpunit.de>\n *\n * For the full copyright and license information, please view the LICENSE\n * file that was distributed with this source code.\n */\nnamespace SebastianBergmann\\PHPCPD\\Detector\\Strategy;\n\nuse const T_CLOSE_TAG;\nuse const T_COMMENT;\nuse const T_DOC_COMMENT;\nuse const T_INLINE_HTML;\nuse const T_NS_SEPARATOR;\nuse const T_OPEN_TAG;\nuse const T_OPEN_TAG_WITH_ECHO;\nuse const T_USE;\nuse const T_WHITESPACE;\nuse SebastianBergmann\\PHPCPD\\CodeCloneMap;\n\nabstract class AbstractStrategy\n{\n    /**\n     * @psalm-var array<int,true>\n     */\n    protected $tokensIgnoreList = [\n        T_INLINE_HTML        => true,\n        T_COMMENT            => true,\n        T_DOC_COMMENT        => true,\n        T_OPEN_TAG           => true,\n        T_OPEN_TAG_WITH_ECHO => true,\n        T_CLOSE_TAG          => true,\n        T_WHITESPACE         => true,\n        T_USE                => true,\n        T_NS_SEPARATOR       => true,\n    ];\n\n    /**\n     * @psalm-var array<string,array{0: string, 1: int}>\n     */\n    protected $hashes = [];\n\n    abstract public function processFile(string $file, int $minLines, int $minTokens, CodeCloneMap $result, bool $fuzzy = false): void;\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/Detector/Strategy/AbstractStrategy.php b/src/Detector/Strategy/AbstractStrategy.php
+--- a/src/Detector/Strategy/AbstractStrategy.php	(revision f3683aa0db2e8e09287c2bb33a595b2873ea9176)
++++ b/src/Detector/Strategy/AbstractStrategy.php	(date 1704886131409)
+@@ -18,6 +18,7 @@
+ use const T_OPEN_TAG_WITH_ECHO;
+ use const T_USE;
+ use const T_WHITESPACE;
++use const T_ATTRIBUTE;
+ use SebastianBergmann\PHPCPD\CodeCloneMap;
+ 
+ abstract class AbstractStrategy
+@@ -35,6 +36,7 @@
+         T_WHITESPACE         => true,
+         T_USE                => true,
+         T_NS_SEPARATOR       => true,
++        T_ATTRIBUTE          => true,
+     ];
+ 
+     /**
+Index: composer.json
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>{\n    \"name\": \"sebastian/phpcpd\",\n    \"description\": \"Copy/Paste Detector (CPD) for PHP code.\",\n    \"homepage\": \"https://github.com/sebastianbergmann/phpcpd\",\n    \"license\": \"BSD-3-Clause\",\n    \"authors\": [\n        {\n            \"name\": \"Sebastian Bergmann\",\n            \"email\": \"sebastian@phpunit.de\",\n            \"role\": \"lead\"\n        }\n    ],\n    \"support\": {\n        \"issues\": \"https://github.com/sebastianbergmann/phpcpd/issues\"\n    },\n    \"config\": {\n        \"platform\": {\n            \"php\": \"7.3.0\"\n        },\n        \"optimize-autoloader\": true,\n        \"sort-packages\": true\n    },\n    \"minimum-stability\": \"dev\",\n    \"prefer-stable\": true,\n    \"require\": {\n        \"php\": \">=7.3\",\n        \"ext-dom\": \"*\",\n        \"sebastian/cli-parser\": \"^1.0\",\n        \"sebastian/version\": \"^3.0\",\n        \"phpunit/php-file-iterator\": \"^3.0\",\n        \"phpunit/php-timer\": \"^5.0\"\n    },\n    \"autoload\": {\n        \"classmap\": [\n            \"src/\"\n        ]\n    },\n    \"bin\": [\n        \"phpcpd\"\n    ],\n    \"extra\": {\n        \"branch-alias\": {\n            \"dev-master\": \"6.0-dev\"\n        }\n    }\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/composer.json b/composer.json
+--- a/composer.json	(revision f3683aa0db2e8e09287c2bb33a595b2873ea9176)
++++ b/composer.json	(date 1704886604035)
+@@ -15,7 +15,7 @@
+     },
+     "config": {
+         "platform": {
+-            "php": "7.3.0"
++            "php": "8.3.0"
+         },
+         "optimize-autoloader": true,
+         "sort-packages": true
+@@ -23,7 +23,7 @@
+     "minimum-stability": "dev",
+     "prefer-stable": true,
+     "require": {
+-        "php": ">=7.3",
++        "php": ">=8.1",
+         "ext-dom": "*",
+         "sebastian/cli-parser": "^1.0",
+         "sebastian/version": "^3.0",

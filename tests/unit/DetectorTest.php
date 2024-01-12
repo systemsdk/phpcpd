@@ -48,12 +48,12 @@ final class DetectorTest extends TestCase
         $file   = current($files);
 
         $this->assertSame(__DIR__ . '/../fixture/Math.php', $file->name());
-        $this->assertSame(75, $file->startLine());
+        $this->assertSame(113, $file->startLine());
 
         $file = next($files);
 
         $this->assertSame(__DIR__ . '/../fixture/Math.php', $file->name());
-        $this->assertSame(139, $file->startLine());
+        $this->assertSame(214, $file->startLine());
         $this->assertSame(59, $clones[0]->numberOfLines());
         $this->assertSame(136, $clones[0]->numberOfTokens());
 

@@ -18,6 +18,7 @@ use const T_OPEN_TAG;
 use const T_OPEN_TAG_WITH_ECHO;
 use const T_USE;
 use const T_WHITESPACE;
+use const T_ATTRIBUTE;
 use SebastianBergmann\PHPCPD\CodeCloneMap;
 
 abstract class AbstractStrategy
@@ -35,6 +36,7 @@ abstract class AbstractStrategy
         T_WHITESPACE         => true,
         T_USE                => true,
         T_NS_SEPARATOR       => true,
+        T_ATTRIBUTE          => true,
     ];
 
     protected StrategyConfiguration $config;

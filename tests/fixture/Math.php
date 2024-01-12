@@ -71,7 +71,45 @@ class PhpUnderControl_Example_Math
 
     /**
      * Not tested method that should be visible with low coverage.
+     * Note: Added check for skipping php attributes.
      */
+    #[ORM\Entity]
+    #[ORM\Table(name: 'api_key')]
+    #[Groups([
+        'ApiKey',
+        'ApiKey.id',
+        'LogRequest.apiKey',
+    ])]
+    #[OA\Response(
+        response: 401,
+        description: 'Invalid token (not found or expired)',
+        content: new JsonContent(
+            properties: [
+                new Property(property: 'code', description: 'Error code', type: 'integer'),
+                new Property(property: 'message', description: 'Error description', type: 'string'),
+            ],
+            type: 'object',
+            example: [
+                'code' => 401,
+                'message' => 'JWT Token not found',
+            ],
+        ),
+    )]
+    #[OA\Response(
+        response: 403,
+        description: 'Access denied',
+        content: new JsonContent(
+            properties: [
+                new Property(property: 'code', description: 'Error code', type: 'integer'),
+                new Property(property: 'message', description: 'Error description', type: 'string'),
+            ],
+            type: 'object',
+            example: [
+                'code' => 403,
+                'message' => 'Access denied',
+            ],
+        ),
+    )]
     public function div($v1, $v2)
     {
         $v3 = $v1 / ($v2 + $v1);
@@ -136,6 +174,43 @@ class PhpUnderControl_Example_Math
     /**
      * Simple copy for cpd detection.
      */
+    #[ORM\Entity]
+    #[ORM\Table(name: 'api_key')]
+    #[Groups([
+        'ApiKey',
+        'ApiKey.id',
+        'LogRequest.apiKey',
+    ])]
+    #[OA\Response(
+        response: 401,
+        description: 'Invalid token (not found or expired)',
+        content: new JsonContent(
+            properties: [
+                new Property(property: 'code', description: 'Error code', type: 'integer'),
+                new Property(property: 'message', description: 'Error description', type: 'string'),
+            ],
+            type: 'object',
+            example: [
+                'code' => 401,
+                'message' => 'JWT Token not found',
+            ],
+        ),
+    )]
+    #[OA\Response(
+        response: 403,
+        description: 'Access denied',
+        content: new JsonContent(
+            properties: [
+                new Property(property: 'code', description: 'Error code', type: 'integer'),
+                new Property(property: 'message', description: 'Error description', type: 'string'),
+            ],
+            type: 'object',
+            example: [
+                'code' => 403,
+                'message' => 'Access denied',
+            ],
+        ),
+    )]
     public function complex($v1, $v2)
     {
         $v3 = $v1 / ($v2 + $v1);

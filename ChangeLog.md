@@ -2,6 +2,12 @@
 
 All notable changes in PHPCPD are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## [7.0.1] - 2024-01-12
+
+### Added
+
+* Skip php attributes from analysis (including multilines attributes, see example inside tests/fixture/Math.php)
+
 ## [7.0.0] - 2022-MM-DD
 
 ### Added
@@ -95,6 +101,7 @@ All notable changes in PHPCPD are documented in this file using the [Keep a CHAN
 
 * Removed support for PHP versions older than PHP 5.6
 
+[7.0.1]: https://github.com/systemsdk/phpcpd
 [7.0.0]: https://github.com/sebastianbergmann/phpcpd/compare/6.0.3...master
 [6.0.3]: https://github.com/sebastianbergmann/phpcpd/compare/6.0.2...6.0.3
 [6.0.2]: https://github.com/sebastianbergmann/phpcpd/compare/6.0.1...6.0.2

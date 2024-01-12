@@ -26,7 +26,7 @@ use SebastianBergmann\Version;
 
 final class Application
 {
-    private const VERSION = '7.0';
+    private const VERSION = '7.0.1';
 
     public function run(array $argv): int
     {
@@ -94,8 +94,8 @@ final class Application
     private function printVersion(): void
     {
         printf(
-            'phpcpd %s by Sebastian Bergmann.' . PHP_EOL,
-            (new Version(self::VERSION, dirname(__DIR__)))->getVersion()
+            '%s',
+            (new Version(self::VERSION, dirname(__DIR__)))->asString()
         );
     }
 
@@ -129,14 +129,17 @@ Options for analysing files:
   --fuzzy             Fuzz variable names
   --min-lines <N>     Minimum number of identical lines (default: 5)
   --min-tokens <N>    Minimum number of identical tokens (default: 70)
-  --algorithm <name>  Select which algorithm to use ('rabin-karp' (default) or 'suffixtree')
-  --edit-distance <N> Distance in number of edits between two clones (only for suffixtree; default: 5)
-  --head-equality <N> Minimum equality at start of clone (only for suffixtree; default 10)
 
 Options for report generation:
 
   --log-pmd <file>  Write log in PMD-CPD XML format to <file>
 
 EOT;
+        /**
+         * TODO: check it
+         * --algorithm <name>  Select which algorithm to use ('rabin-karp' (default) or 'suffixtree')
+         * --edit-distance <N> Distance in number of edits between two clones (only for suffixtree; default: 5)
+         * --head-equality <N> Minimum equality at start of clone (only for suffixtree; default 10)
+         */
     }
 }

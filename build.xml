@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="phpcpd" default="setup">
+    <property name="basedir" value="." override="false"/>
+    <property name="version" value="7.0.1" override="false"/>
     <target name="setup" depends="clean,install-dependencies"/>
 
     <target name="clean" description="Cleanup build artifacts">
@@ -32,10 +34,10 @@
     <target name="signed-phar" description="Create signed PHAR archive of PHPCPD and all its dependencies (release)" depends="phar">
         <exec executable="bash" outputproperty="version">
             <arg value="-c" />
-            <arg value="${basedir}/phpcpd --version | awk 'BEGIN { ORS = &quot;&quot;; } {print $2}'" />
+            <arg value="${basedir}/phpcpd --version" />
         </exec>
 
-        <exec executable="gpg" failonerror="true">
+        <exec executable="gpg">
             <arg value="--armor" />
             <arg value="--detach-sign" />
             <arg path="${basedir}/build/phpcpd-${version}.phar" />
@@ -48,7 +50,7 @@
     <target name="phar-build">
         <exec executable="bash" outputproperty="version">
             <arg value="-c" />
-            <arg value="${basedir}/phpcpd --version | awk 'BEGIN { ORS = &quot;&quot;; } {print $2}'" />
+            <arg value="${basedir}/phpcpd --version" />
         </exec>
 
         <copy todir="${basedir}/build/phar/src">
@@ -101,7 +103,7 @@
             <arg path="${basedir}/build/phar" />
         </exec>
 
-        <chmod file="${basedir}/build/phpcpd-${version}.phar" perm="ugo+rx"/>
+        <chmod file="${basedir}/build/phpcpd-${version}.phar" mode="755"/>
 
         <delete dir="${basedir}/build/phar"/>
     </target>

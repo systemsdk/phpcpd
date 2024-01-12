@@ -1,8 +1,9 @@
 /build/phar
 /build/*.phar*
-/.idea
 /vendor
 /.php-cs-fixer.php
 /.php-cs-fixer.cache
 /.phpunit.cache
 /composer.lock
+reports/*
+!reports/.gitkeep

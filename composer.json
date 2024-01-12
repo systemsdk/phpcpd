@@ -1,27 +1,21 @@
 {
-    "name": "sebastian/phpcpd",
+    "name": "systemsdk/phpcpd",
     "description": "Copy/Paste Detector (CPD) for PHP code.",
-    "homepage": "https://github.com/sebastianbergmann/phpcpd",
+    "homepage": "https://github.com/systemsdk/phpcpd",
     "license": "BSD-3-Clause",
     "authors": [
         {
             "name": "Sebastian Bergmann",
             "email": "sebastian@phpunit.de",
             "role": "lead"
+        },
+        {
+            "name": "Dmitriy Kravtsov",
+            "email": "dmitriy.kravtsov@systemsdk.com",
+            "homepage": "https://github.com/dimadeush",
+            "role": "Developer"
         }
     ],
-    "support": {
-        "issues": "https://github.com/sebastianbergmann/phpcpd/issues"
-    },
-    "config": {
-        "platform": {
-            "php": "8.1.0"
-        },
-        "optimize-autoloader": true,
-        "sort-packages": true
-    },
-    "minimum-stability": "dev",
-    "prefer-stable": true,
     "require": {
         "php": ">=8.1",
         "ext-dom": "*",
@@ -31,6 +25,13 @@
         "phpunit/php-timer": "^6.0",
         "ext-mbstring": "*"
     },
+    "config": {
+        "platform": {
+            "php": "8.3.0"
+        },
+        "optimize-autoloader": true,
+        "sort-packages": true
+    },
     "autoload": {
         "classmap": [
             "src/"
@@ -39,9 +40,9 @@
     "bin": [
         "phpcpd"
     ],
-    "extra": {
-        "branch-alias": {
-            "dev-main": "7.0-dev"
-        }
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "support": {
+        "issues": "https://github.com/systemsdk/phpcpd/issues"
     }
 }

@@ -10,6 +10,7 @@
 namespace SebastianBergmann\PHPCPD\Detector\Strategy;
 
 use const T_VARIABLE;
+use const T_ATTRIBUTE;
 use function array_keys;
 use function chr;
 use function count;
@@ -57,12 +58,14 @@ final class DefaultStrategy extends AbstractStrategy
         $result->addToNumberOfLines(substr_count($buffer, "\n"));
 
         unset($buffer);
+        $attributeStarted = false;
+        $attributeStartedLine = 0;
 
         foreach (array_keys($tokens) as $key) {
             $token = $tokens[$key];
 
             if (is_array($token)) {
-                if (!isset($this->tokensIgnoreList[$token[0]])) {
+                if ($attributeStarted === false && !isset($this->tokensIgnoreList[$token[0]])) {
                     if ($tokenNr === 0) {
                         $currentTokenPositions[$tokenNr] = $token[2] - $lastTokenLine;
                     } else {
@@ -80,7 +83,20 @@ final class DefaultStrategy extends AbstractStrategy
                                          pack('N*', crc32($token[1]));
                 }
 
+                if($token[0] === T_ATTRIBUTE) {
+                    $attributeStarted = true;
+                    $attributeStartedLine = $token[2];
+                }
+
                 $lastTokenLine = $token[2];
+            } elseif ($attributeStarted === true && $token === ']'
+                    && (
+                        $attributeStartedLine === $lastTokenLine
+                        || (array_key_exists($key-1, $tokens) && $tokens[$key-1] === ')')
+                    )
+            ) {
+                $attributeStarted = false;
+                $attributeStartedLine = 0;
             }
         }
 
