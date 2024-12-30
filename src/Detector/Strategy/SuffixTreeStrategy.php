@@ -1,26 +1,22 @@
-<?php declare(strict_types=1);
-/*
- * This file is part of PHP Copy/Paste Detector (PHPCPD).
- *
- * (c) Sebastian Bergmann <sebastian@phpunit.de>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-namespace SebastianBergmann\PHPCPD\Detector\Strategy;
+<?php
+
+declare(strict_types=1);
+
+namespace Systemsdk\PhpCPD\Detector\Strategy;
+
+use Systemsdk\PhpCPD\CodeClone;
+use Systemsdk\PhpCPD\CodeCloneFile;
+use Systemsdk\PhpCPD\CodeCloneMap;
+use Systemsdk\PhpCPD\Detector\Strategy\SuffixTree\AbstractToken;
+use Systemsdk\PhpCPD\Detector\Strategy\SuffixTree\ApproximateCloneDetectingSuffixTree;
+use Systemsdk\PhpCPD\Detector\Strategy\SuffixTree\Sentinel;
+use Systemsdk\PhpCPD\Detector\Strategy\SuffixTree\Token;
+use Systemsdk\PhpCPD\Exceptions\MissingResultException;
 
 use function array_keys;
 use function file_get_contents;
 use function is_array;
 use function token_get_all;
-use SebastianBergmann\PHPCPD\CodeClone;
-use SebastianBergmann\PHPCPD\CodeCloneFile;
-use SebastianBergmann\PHPCPD\CodeCloneMap;
-use SebastianBergmann\PHPCPD\Detector\Strategy\SuffixTree\AbstractToken;
-use SebastianBergmann\PHPCPD\Detector\Strategy\SuffixTree\ApproximateCloneDetectingSuffixTree;
-use SebastianBergmann\PHPCPD\Detector\Strategy\SuffixTree\Sentinel;
-use SebastianBergmann\PHPCPD\Detector\Strategy\SuffixTree\Token;
-use SebastianBergmann\PHPCPD\MissingResultException;
 
 /**
  * The suffix tree strategy was implemented in PHP for PHPCPD by Olle Härstedt.
@@ -44,8 +40,8 @@ final class SuffixTreeStrategy extends AbstractStrategy
 
     public function processFile(string $file, CodeCloneMap $result): void
     {
-        $content = file_get_contents($file);
-        $tokens  = token_get_all($content);
+        $content = (string)file_get_contents($file);
+        $tokens = token_get_all($content);
 
         foreach (array_keys($tokens) as $key) {
             $token = $tokens[$key];
@@ -74,7 +70,7 @@ final class SuffixTreeStrategy extends AbstractStrategy
         }
 
         // Sentinel = End of word
-        $this->word[] = new Sentinel;
+        $this->word[] = new Sentinel();
 
         $cloneInfos = (new ApproximateCloneDetectingSuffixTree($this->word))->findClones(
             $this->config->minTokens(),
@@ -86,10 +82,10 @@ final class SuffixTreeStrategy extends AbstractStrategy
             /** @var int[] */
             $others = $cloneInfo->otherClones->extractFirstList();
 
-            for ($j = 0; $j < count($others); $j++) {
+            for ($j = 0, $count = count($others); $j < $count; $j++) {
                 $otherStart = $others[$j];
-                $t          = $this->word[$otherStart];
-                $lastToken  = $this->word[$cloneInfo->position + $cloneInfo->length];
+                $t = $this->word[$otherStart];
+                $lastToken = $this->word[$cloneInfo->position + $cloneInfo->length];
                 // If we stumbled upon the Sentinel, rewind one step.
                 if ($lastToken instanceof Sentinel) {
                     $lastToken = $this->word[$cloneInfo->position + $cloneInfo->length - 2];

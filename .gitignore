@@ -1,9 +1,21 @@
+reports/*
+!reports/.gitkeep
+
+/.env.local
 /build/phar
 /build/*.phar*
 /vendor
-/.php-cs-fixer.php
-/.php-cs-fixer.cache
-/.phpunit.cache
-/composer.lock
-reports/*
-!reports/.gitkeep
+/tools/**/vendor
+
+###> phpunit ###
+.phpunit
+.phpunit.result.cache
+/phpunit.xml
+.phpunit.cache
+###< phpunit ###
+
+###> friendsofphp/php-cs-fixer ###
+.php-cs-fixer.cache
+.php_cs
+.php_cs.cache
+###< friendsofphp/php-cs-fixer ###

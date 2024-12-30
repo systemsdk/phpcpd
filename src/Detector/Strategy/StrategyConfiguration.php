@@ -1,17 +1,12 @@
-<?php declare(strict_types=1);
-/*
- * This file is part of PHP Copy/Paste Detector (PHPCPD).
- *
- * (c) Sebastian Bergmann <sebastian@phpunit.de>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-namespace SebastianBergmann\PHPCPD\Detector\Strategy;
+<?php
 
-use SebastianBergmann\PHPCPD\Arguments;
+declare(strict_types=1);
 
-final class StrategyConfiguration
+namespace Systemsdk\PhpCPD\Detector\Strategy;
+
+use Systemsdk\PhpCPD\Cli\Arguments;
+
+final readonly class StrategyConfiguration
 {
     private int $minLines;
 
@@ -25,11 +20,11 @@ final class StrategyConfiguration
 
     public function __construct(Arguments $arguments)
     {
-        $this->minLines     = $arguments->linesThreshold();
-        $this->minTokens    = $arguments->tokensThreshold();
-        $this->fuzzy        = $arguments->fuzzy();
+        $this->minLines = $arguments->linesThreshold();
+        $this->minTokens = $arguments->tokensThreshold();
         $this->editDistance = $arguments->editDistance();
         $this->headEquality = $arguments->headEquality();
+        $this->fuzzy = $arguments->fuzzy();
     }
 
     public function minLines(): int
@@ -42,9 +37,9 @@ final class StrategyConfiguration
         return $this->minTokens;
     }
 
-    public function fuzzy(): bool
+    public function editDistance(): int
     {
-        return $this->fuzzy;
+        return $this->editDistance;
     }
 
     public function headEquality(): int
@@ -52,8 +47,8 @@ final class StrategyConfiguration
         return $this->headEquality;
     }
 
-    public function editDistance(): int
+    public function fuzzy(): bool
     {
-        return $this->editDistance;
+        return $this->fuzzy;
     }
 }

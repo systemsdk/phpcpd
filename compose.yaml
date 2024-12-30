@@ -1,0 +1,22 @@
+services:
+
+    php:
+        image: ${COMPOSE_PROJECT_NAME}-php:latest
+        build:
+            context: .
+            args:
+                BUILD_ARGUMENT_ENV: dev
+                HOST_UID: ${HOST_UID}
+                HOST_GID: ${HOST_GID}
+                XDEBUG_CONFIG: ${XDEBUG_CONFIG}
+                XDEBUG_VERSION: ${XDEBUG_VERSION}
+            dockerfile: ./Dockerfile
+        container_name: ${COMPOSE_PROJECT_NAME}-php
+        volumes:
+            - ./:/var/www/html:cached
+        networks:
+            - phpcpd
+
+networks:
+    phpcpd:
+        name: phpcpd

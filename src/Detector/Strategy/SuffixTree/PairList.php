@@ -1,15 +1,10 @@
-<?php declare(strict_types=1);
-/*
- * This file is part of PHP Copy/Paste Detector (PHPCPD).
- *
- * (c) Sebastian Bergmann <sebastian@phpunit.de>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-namespace SebastianBergmann\PHPCPD\Detector\Strategy\SuffixTree;
+<?php
 
-use SebastianBergmann\PHPCPD\OutOfBoundsException;
+declare(strict_types=1);
+
+namespace Systemsdk\PhpCPD\Detector\Strategy\SuffixTree;
+
+use Systemsdk\PhpCPD\Exceptions\OutOfBoundsException;
 
 /**
  * A list for storing pairs in a specific order.
@@ -42,37 +37,42 @@ class PairList
     /**
      * The array used for storing the S.
      *
-     * @var S[]
+     * @var array<int, mixed>
      */
     private $firstElements;
 
     /**
      * The array used for storing the T.
      *
-     * @var T[]
+     * @var array<int, mixed>
      */
     private $secondElements;
 
-    /**
-     * @param S $firstType
-     * @param T $secondType
-     */
-    public function __construct(int $initialCapacity, $firstType, $secondType)
+    public function __construct(int $initialCapacity) // , $firstType, $secondType
     {
         if ($initialCapacity < 1) {
             $initialCapacity = 1;
         }
-        $this->firstElements  = array_fill(0, $initialCapacity, null);
+        $this->firstElements = array_fill(0, $initialCapacity, null);
         $this->secondElements = array_fill(0, $initialCapacity, null);
     }
 
-    /** Returns whether the list is empty. */
+    public function serialVersion(): int
+    {
+        return $this->serialVersionUID;
+    }
+
+    /**
+     * Returns whether the list is empty.
+     */
     public function isEmpty(): bool
     {
         return $this->size == 0;
     }
 
-    /** Returns the size of the list. */
+    /**
+     * Returns the size of the list.
+     */
     public function size(): int
     {
         return $this->size;
@@ -86,12 +86,14 @@ class PairList
      */
     public function add($first, $second): void
     {
-        $this->firstElements[$this->size]  = $first;
+        $this->firstElements[$this->size] = $first;
         $this->secondElements[$this->size] = $second;
         $this->size++;
     }
 
-    /** Adds all pairs from another list. */
+    /**
+     * Adds all pairs from another list.
+     */
     public function addAll(self $other): void
     {
         // we have to store this in a local var, as other.$this->size may change if
@@ -99,7 +101,7 @@ class PairList
         $otherSize = $other->size;
 
         for ($i = 0; $i < $otherSize; $i++) {
-            $this->firstElements[$this->size]  = $other->firstElements[$i];
+            $this->firstElements[$this->size] = $other->firstElements[$i];
             $this->secondElements[$this->size] = $other->secondElements[$i];
             $this->size++;
         }
@@ -183,7 +185,9 @@ class PairList
         return $result;
     }
 
-    /** Swaps the entries located at indexes $i and $j. */
+    /**
+     * Swaps the entries located at indexes $i and $j.
+     */
     public function swapEntries(int $i, int $j): void
     {
         $tmp1 = $this->getFirst($i);
@@ -194,13 +198,17 @@ class PairList
         $this->setSecond($j, $tmp2);
     }
 
-    /** Clears this list. */
+    /**
+     * Clears this list.
+     */
     public function clear(): void
     {
         $this->size = 0;
     }
 
-    /** Removes the last element of the list. */
+    /**
+     * Removes the last element of the list.
+     */
     public function removeLast(): void
     {
         $this->size--;
@@ -209,8 +217,8 @@ class PairList
     public function hashCode(): int
     {
         $prime = 31;
-        $hash  = $this->size;
-        $hash  = $prime * $hash + crc32(serialize($this->firstElements));
+        $hash = $this->size;
+        $hash = $prime * $hash + crc32(serialize($this->firstElements));
 
         return $prime * $hash + crc32(serialize($this->secondElements));
     }

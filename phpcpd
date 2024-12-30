@@ -1,19 +1,13 @@
 #!/usr/bin/env php
 <?php
-/*
- * This file is part of PHP Copy/Paste Detector (PHPCPD).
- *
- * (c) Sebastian Bergmann <sebastian@phpunit.de>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
 
-if (version_compare('8.1.0', PHP_VERSION, '>')) {
+declare(strict_types=1);
+
+if (version_compare('8.3.0', PHP_VERSION, '>')) {
     fwrite(
         STDERR,
         sprintf(
-            'This version of PHPCPD requires PHP 8.1 (or later).' . PHP_EOL .
+            'This version of PHPCPD requires PHP 8.3 (or later).' . PHP_EOL .
             'You are using PHP %s%s.' . PHP_EOL,
             PHP_VERSION,
             defined('PHP_BINARY') ? ' (' . PHP_BINARY . ')' : ''
@@ -25,7 +19,7 @@ if (version_compare('8.1.0', PHP_VERSION, '>')) {
 
 $loaded = false;
 
-foreach (array(__DIR__ . '/../../autoload.php', __DIR__ . '/vendor/autoload.php') as $file) {
+foreach ([__DIR__ . '/../../autoload.php', __DIR__ . '/vendor/autoload.php'] as $file) {
     if (file_exists($file)) {
         require $file;
         $loaded = true;
@@ -41,4 +35,4 @@ if (!$loaded) {
     );
 }
 
-exit((new \SebastianBergmann\PHPCPD\Application)->run($_SERVER['argv']));
+exit((new \Systemsdk\PhpCPD\Cli\Application())->run($_SERVER['argv']));

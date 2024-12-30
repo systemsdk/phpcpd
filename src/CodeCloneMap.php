@@ -1,29 +1,25 @@
-<?php declare(strict_types=1);
-/*
- * This file is part of PHP Copy/Paste Detector (PHPCPD).
- *
- * (c) Sebastian Bergmann <sebastian@phpunit.de>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-namespace SebastianBergmann\PHPCPD;
+<?php
+
+declare(strict_types=1);
+
+namespace Systemsdk\PhpCPD;
+
+use Countable;
+use IteratorAggregate;
 
 use function count;
 use function max;
 use function sprintf;
-use Countable;
-use IteratorAggregate;
 
 final class CodeCloneMap implements Countable, IteratorAggregate
 {
     /**
-     * @var CodeClone[]
+     * @var array<int, CodeClone>
      */
     private array $clones = [];
 
     /**
-     * @var CodeClone[]
+     * @var array<string, CodeClone>
      */
     private array $clonesById = [];
 
@@ -33,6 +29,9 @@ final class CodeCloneMap implements Countable, IteratorAggregate
 
     private int $largestCloneSize = 0;
 
+    /**
+     * @var array<string, bool>
+     */
     private array $filesWithClones = [];
 
     public function add(CodeClone $clone): void
@@ -40,7 +39,7 @@ final class CodeCloneMap implements Countable, IteratorAggregate
         $id = $clone->id();
 
         if (!isset($this->clonesById[$id])) {
-            $this->clones[]        = $clone;
+            $this->clones[] = $clone;
             $this->clonesById[$id] = $clone;
         } else {
             $existClone = $this->clonesById[$id];
@@ -62,7 +61,7 @@ final class CodeCloneMap implements Countable, IteratorAggregate
     }
 
     /**
-     * @return CodeClone[]
+     * @return array<int, CodeClone>
      */
     public function clones(): array
     {

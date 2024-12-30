@@ -2,6 +2,12 @@
 
 All notable changes in PHPCPD are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## [8.0.0] - 2024-12-30
+
+### Updated
+
+* Made codebase refactoring. Updated requirements php 8.3, updated composer dependencies, updated tests to the PHPUnit 11. Updated dev environment to the php 8.4, Phing 3.0, added code quality tools: ecs, phpstan.
+
 ## [7.0.1] - 2024-01-12
 
 ### Added

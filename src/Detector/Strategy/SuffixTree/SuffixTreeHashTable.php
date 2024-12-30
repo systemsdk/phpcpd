@@ -1,13 +1,8 @@
-<?php declare(strict_types=1);
-/*
- * This file is part of PHP Copy/Paste Detector (PHPCPD).
- *
- * (c) Sebastian Bergmann <sebastian@phpunit.de>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-namespace SebastianBergmann\PHPCPD\Detector\Strategy\SuffixTree;
+<?php
+
+declare(strict_types=1);
+
+namespace Systemsdk\PhpCPD\Detector\Strategy\SuffixTree;
 
 /**
  * The hash table used for the {@link SuffixTree} class. It is specifically
@@ -71,21 +66,21 @@ class SuffixTreeHashTable
      *
      * @var int
      */
-    private $_numStoredNodes = 0;
+    private $numStoredNodes = 0;
 
     /**
      * Debug info: number of calls to find so far.
      *
      * @var int
      */
-    private $_numFind = 0;
+    private $numFind = 0;
 
     /**
      * Debug info: number of collisions (i.e. wrong finds) during find so far.
      *
      * @var int
      */
-    private $_numColl = 0;
+    private $numColl = 0;
 
     /**
      * Creates a new hash table for the given number of nodes. Trying to add
@@ -94,7 +89,7 @@ class SuffixTreeHashTable
      */
     public function __construct(int $numNodes)
     {
-        $minSize   = (int) ceil(1.5 * $numNodes);
+        $minSize = (int)ceil(1.5 * $numNodes);
         $sizeIndex = 0;
 
         while ($this->allowedSizes[$sizeIndex] < $minSize) {
@@ -102,8 +97,8 @@ class SuffixTreeHashTable
         }
         $this->tableSize = $this->allowedSizes[$sizeIndex];
 
-        $this->keyNodes    = array_fill(0, $this->tableSize, 0);
-        $this->keyChars    = array_fill(0, $this->tableSize, null);
+        $this->keyNodes = array_fill(0, $this->tableSize, 0);
+        $this->keyChars = array_fill(0, $this->tableSize, null);
         $this->resultNodes = array_fill(0, $this->tableSize, 0);
     }
 
@@ -130,7 +125,7 @@ class SuffixTreeHashTable
         $pos = $this->hashFind($keyNode, $keyChar);
 
         if ($this->keyChars[$pos] == null) {
-            $this->_numStoredNodes++;
+            $this->numStoredNodes++;
             $this->keyChars[$pos] = $keyChar;
             $this->keyNodes[$pos] = $keyNode;
         }
@@ -165,8 +160,8 @@ class SuffixTreeHashTable
         for ($i = 0; $i < $this->tableSize; $i++) {
             if ($this->keyChars[$i] !== null) {
                 // insert $this->keyNodes[$i] -> $this->resultNodes[$i]
-                $nodeChild[$free]                    = $this->resultNodes[$i];
-                $nodeNextIndex[$free]                = $nodeFirstIndex[$this->keyNodes[$i]];
+                $nodeChild[$free] = $this->resultNodes[$i];
+                $nodeNextIndex[$free] = $nodeFirstIndex[$this->keyNodes[$i]];
                 $nodeFirstIndex[$this->keyNodes[$i]] = $free++;
             }
         }
@@ -178,16 +173,16 @@ class SuffixTreeHashTable
      */
     private function hashFind(int $keyNode, AbstractToken $keyChar): int
     {
-        $this->_numFind++;
-        $hash      = $keyChar->hashCode();
-        $pos       = $this->posMod($this->primaryHash($keyNode, $hash));
+        $this->numFind++;
+        $hash = $keyChar->hashCode();
+        $pos = $this->posMod($this->primaryHash($keyNode, $hash));
         $secondary = $this->secondaryHash($keyNode, $hash);
 
         while ($this->keyChars[$pos] !== null) {
             if ($this->keyNodes[$pos] === $keyNode && $keyChar->equals($this->keyChars[$pos])) {
                 break;
             }
-            $this->_numColl++;
+            $this->numColl++;
             $pos = ($pos + $secondary) % $this->tableSize;
         }
 

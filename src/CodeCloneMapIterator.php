@@ -1,23 +1,19 @@
-<?php declare(strict_types=1);
-/*
- * This file is part of PHP Copy/Paste Detector (PHPCPD).
- *
- * (c) Sebastian Bergmann <sebastian@phpunit.de>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-namespace SebastianBergmann\PHPCPD;
+<?php
+
+declare(strict_types=1);
+
+namespace Systemsdk\PhpCPD;
+
+use Iterator;
 
 use function array_reverse;
 use function count;
 use function usort;
-use Iterator;
 
 final class CodeCloneMapIterator implements Iterator
 {
     /**
-     * @var CodeClone[]
+     * @var array<int, CodeClone>
      */
     private array $clones;
 

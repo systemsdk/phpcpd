@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="phpcpd" default="setup">
     <property name="basedir" value="." override="false"/>
-    <property name="version" value="7.0.1" override="false"/>
+    <property name="version" value="8.0.0" override="false"/>
     <target name="setup" depends="clean,install-dependencies"/>
 
     <target name="clean" description="Cleanup build artifacts">
         <delete dir="${basedir}/vendor"/>
-        <delete file="${basedir}/composer.lock"/>
         <delete>
             <fileset dir="${basedir}/build">
                 <include name="**/phpcpd*.phar"/>
@@ -16,8 +15,9 @@
     </target>
 
     <target name="install-dependencies" unless="dependencies-installed" depends="-dependencies-installed" description="Install dependencies with Composer">
-        <exec executable="${basedir}/tools/composer" taskname="composer">
-            <arg value="update"/>
+        <exec executable="composer" taskname="composer">
+            <arg value="install"/>
+            <arg value="--optimize-autoloader"/>
             <arg value="--no-interaction"/>
             <arg value="--no-progress"/>
             <arg value="--no-ansi"/>
@@ -25,7 +25,7 @@
     </target>
 
     <target name="update-tools">
-        <exec executable="phive">
+        <exec executable="phive" passthru="yes">
             <arg value="--no-progress"/>
             <arg value="update"/>
         </exec>
@@ -37,7 +37,11 @@
             <arg value="${basedir}/phpcpd --version" />
         </exec>
 
-        <exec executable="gpg">
+        <exec executable="gpg" passthru="yes">
+            <arg value="--generate-key" />
+        </exec>
+
+        <exec executable="gpg" passthru="yes">
             <arg value="--armor" />
             <arg value="--detach-sign" />
             <arg path="${basedir}/build/phpcpd-${version}.phar" />
@@ -48,6 +52,9 @@
     </target>
 
     <target name="phar-build">
+        <mkdir dir="${basedir}/build/phar" />
+        <mkdir dir="${basedir}/build/phar/src" />
+
         <exec executable="bash" outputproperty="version">
             <arg value="-c" />
             <arg value="${basedir}/phpcpd --version" />
@@ -87,7 +94,9 @@
             </fileset>
         </copy>
 
-        <exec executable="${basedir}/build/phar-manifest.php" output="${basedir}/build/phar/manifest.txt"/>
+        <exec executable="${basedir}/build/phar-manifest.php" output="${basedir}/build/phar/manifest.txt">
+            <env key="VERSION" value="${version}"/>
+        </exec>
 
         <exec executable="${basedir}/tools/phpab">
             <arg value="--all" />
@@ -106,6 +115,9 @@
         <chmod file="${basedir}/build/phpcpd-${version}.phar" mode="755"/>
 
         <delete dir="${basedir}/build/phar"/>
+
+        <copy file="${basedir}/build/phpcpd-${version}.phar" tofile="${basedir}/releases/phpcpd-${version}.phar"/>
+        <copy file="${basedir}/build/phpcpd-${version}.phar" tofile="${basedir}/releases/phpcpd-latest.phar"/>
     </target>
 
     <target name="-dependencies-installed">

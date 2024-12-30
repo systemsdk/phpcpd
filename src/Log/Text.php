@@ -1,27 +1,26 @@
-<?php declare(strict_types=1);
-/*
- * This file is part of PHP Copy/Paste Detector (PHPCPD).
- *
- * (c) Sebastian Bergmann <sebastian@phpunit.de>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-namespace SebastianBergmann\PHPCPD\Log;
+<?php
 
-use const PHP_EOL;
+declare(strict_types=1);
+
+namespace Systemsdk\PhpCPD\Log;
+
+use Systemsdk\PhpCPD\CodeCloneMap;
+
 use function count;
 use function printf;
-use SebastianBergmann\PHPCPD\CodeCloneMap;
+
+use const PHP_EOL;
 
 final class Text
 {
     public function printResult(CodeCloneMap $clones, bool $verbose): void
     {
-        if (count($clones) > 0) {
+        $countClones = count($clones);
+
+        if ($countClones > 0) {
             printf(
                 'Found %d code clones with %d duplicated lines in %d files:' . PHP_EOL . PHP_EOL,
-                count($clones),
+                $countClones,
                 $clones->numberOfDuplicatedLines(),
                 $clones->numberOfFilesWithClones()
             );

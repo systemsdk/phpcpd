@@ -1,16 +1,15 @@
-<?php declare(strict_types=1);
-/*
- * This file is part of PHP Copy/Paste Detector (PHPCPD).
- *
- * (c) Sebastian Bergmann <sebastian@phpunit.de>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-namespace SebastianBergmann\PHPCPD\Detector\Strategy;
+<?php
 
+declare(strict_types=1);
+
+namespace Systemsdk\PhpCPD\Detector\Strategy;
+
+use Systemsdk\PhpCPD\CodeCloneMap;
+
+use const T_ATTRIBUTE;
 use const T_CLOSE_TAG;
 use const T_COMMENT;
+use const T_DECLARE;
 use const T_DOC_COMMENT;
 use const T_INLINE_HTML;
 use const T_NS_SEPARATOR;
@@ -18,32 +17,29 @@ use const T_OPEN_TAG;
 use const T_OPEN_TAG_WITH_ECHO;
 use const T_USE;
 use const T_WHITESPACE;
-use const T_ATTRIBUTE;
-use SebastianBergmann\PHPCPD\CodeCloneMap;
 
 abstract class AbstractStrategy
 {
     /**
-     * @psalm-var array<int,true>
+     * @var array<int, bool>
      */
     protected array $tokensIgnoreList = [
-        T_INLINE_HTML        => true,
-        T_COMMENT            => true,
-        T_DOC_COMMENT        => true,
-        T_OPEN_TAG           => true,
+        T_INLINE_HTML => true,
+        T_COMMENT => true,
+        T_DOC_COMMENT => true,
+        T_OPEN_TAG => true,
         T_OPEN_TAG_WITH_ECHO => true,
-        T_CLOSE_TAG          => true,
-        T_WHITESPACE         => true,
-        T_USE                => true,
-        T_NS_SEPARATOR       => true,
-        T_ATTRIBUTE          => true,
+        T_CLOSE_TAG => true,
+        T_DECLARE => true,
+        T_WHITESPACE => true,
+        T_USE => true,
+        T_NS_SEPARATOR => true,
+        T_ATTRIBUTE => true,
     ];
 
-    protected StrategyConfiguration $config;
-
-    public function __construct(StrategyConfiguration $config)
-    {
-        $this->config = $config;
+    public function __construct(
+        protected StrategyConfiguration $config
+    ) {
     }
 
     public function setConfig(StrategyConfiguration $config): void

@@ -1,10 +1,13 @@
 #!/usr/bin/env php
-<?php declare(strict_types=1);
-if (version_compare('8.1.0', PHP_VERSION, '>')) {
+<?php
+
+declare(strict_types=1);
+
+if (version_compare('8.3.0', PHP_VERSION, '>')) {
     fwrite(
         STDERR,
         sprintf(
-            'This version of PHPCPD requires PHP 8.1 (or later).' . PHP_EOL .
+            'This version of PHPCPD requires PHP 8.3 (or later).' . PHP_EOL .
             'You are using PHP %s%s.' . PHP_EOL,
             PHP_VERSION,
             defined('PHP_BINARY') ? ' (' . PHP_BINARY . ')' : ''
@@ -14,29 +17,30 @@ if (version_compare('8.1.0', PHP_VERSION, '>')) {
     die(1);
 }
 
-if ($_SERVER['SCRIPT_NAME'] != '-') {
-    $phar = realpath($_SERVER['SCRIPT_NAME']);
+if ($_SERVER['SCRIPT_NAME'] !== '-') {
+    $phar = (string)realpath($_SERVER['SCRIPT_NAME']);
 } else {
     $files = get_included_files();
     $phar = $files[0];
 }
 
 define('__PHPCPD_PHAR__', str_replace(DIRECTORY_SEPARATOR, '/', $phar));
-define('__PHPCPD_PHAR_ROOT__', 'phar://___PHAR___');
+const __PHPCPD_PHAR_ROOT__ = 'phar://___PHAR___';
 
 spl_autoload_register(
-  function ($class)
+  static function ($class)
   {
       static $classes = NULL;
 
       if ($classes === NULL) {
-          $classes = array(
-            ___CLASSLIST___
-          );
+          $classes = [
+            ___CLASSLIST___,
+          ];
       }
 
       $class = strtolower($class);
 
+      /** @var array<string, string> $classes */
       if (isset($classes[$class])) {
           require 'phar://___PHAR___' . $classes[$class];
       }
@@ -45,11 +49,11 @@ spl_autoload_register(
 
 Phar::mapPhar('___PHAR___');
 
-if (isset($_SERVER['argv'][1]) && $_SERVER['argv'][1] == '--manifest') {
+if (isset($_SERVER['argv'][1]) && $_SERVER['argv'][1] === '--manifest') {
     print file_get_contents(__PHPCPD_PHAR_ROOT__ . '/manifest.txt');
     exit;
 }
 
-exit((new \SebastianBergmann\PHPCPD\Application)->run($_SERVER['argv']));
+exit((new \Systemsdk\PhpCPD\Cli\Application())->run($_SERVER['argv']));
 
 __HALT_COMPILER();

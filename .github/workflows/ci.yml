@@ -3,11 +3,11 @@ name: PHP Copy/Paste Detector
 on:
   push:
     branches:
-      - main
+      - master
       - develop
   pull_request:
     branches:
-      - main
+      - master
       - develop
   release:
     types: [published]
@@ -18,16 +18,44 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Build the docker image
-        run: make build-dev
+        run: make build
       - name: Start the docker image
         run: make start
       - name: Check running container
         run: docker ps -a
       - name: Show php, composer, phing, phive versions
         run: make info
-      - name: Cleanup build artifacts and install dependencies with composer
+      - name: Cleanup build artifacts and install composer dependencies
         run: make setup
       - name: Run test suite
         run: make phpunit
+      - name: Report code coverage
+        env:
+          COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
+        run: make report-code-coverage
+      - name: Run coding standard
+        run: make ecs
+      - name: Run codeSniffer
+        run: make phpcs
+      - name: Run PHPStan
+        run: make phpstan
       - name: Stop and remove environment container, network
         run: make down
+
+  tests:
+    runs-on: ${{ matrix.operating-system }}
+    strategy:
+      matrix:
+        operating-system: [ 'ubuntu-latest' ]
+        php-versions: [ '8.3', '8.4' ]
+    steps:
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-versions }}
+          extensions: mbstring
+      - uses: actions/checkout@v4
+      - name: Check php version
+        run: php -v
+      - name: Test latest PHPCPD release
+        run: php ./releases/phpcpd-latest.phar src
