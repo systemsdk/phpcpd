@@ -17,7 +17,7 @@ use function current;
 use function next;
 use function sort;
 
-final class DetectorTest extends TestCase
+final class RabinKarpTest extends TestCase
 {
     #[DataProvider('strategyProvider')]
     public function testDetectingSimpleClonesWorks(AbstractStrategy $strategy): void

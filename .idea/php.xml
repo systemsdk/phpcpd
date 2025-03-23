@@ -43,80 +43,78 @@
   </component>
   <component name="PhpIncludePathManager">
     <include_path>
-      <path value="$PROJECT_DIR$/tools/03_ecs/vendor/friendsofphp/php-cs-fixer" />
-      <path value="$PROJECT_DIR$/tools/03_ecs/vendor/squizlabs/php_codesniffer" />
-      <path value="$PROJECT_DIR$/tools/03_ecs/vendor/symplify/easy-coding-standard" />
-      <path value="$PROJECT_DIR$/tools/03_ecs/vendor/sebastian/diff" />
-      <path value="$PROJECT_DIR$/tools/03_ecs/vendor/evenement/evenement" />
-      <path value="$PROJECT_DIR$/tools/03_ecs/vendor/psr/container" />
-      <path value="$PROJECT_DIR$/tools/03_ecs/vendor/psr/log" />
-      <path value="$PROJECT_DIR$/tools/03_ecs/vendor/psr/event-dispatcher" />
       <path value="$PROJECT_DIR$/tools/03_ecs/vendor/composer" />
+      <path value="$PROJECT_DIR$/tools/03_ecs/vendor/friendsofphp/php-cs-fixer" />
+      <path value="$PROJECT_DIR$/tools/03_ecs/vendor/react/socket" />
       <path value="$PROJECT_DIR$/tools/03_ecs/vendor/react/stream" />
       <path value="$PROJECT_DIR$/tools/03_ecs/vendor/react/cache" />
-      <path value="$PROJECT_DIR$/tools/03_ecs/vendor/react/dns" />
-      <path value="$PROJECT_DIR$/tools/03_ecs/vendor/react/event-loop" />
-      <path value="$PROJECT_DIR$/tools/03_ecs/vendor/fidry/cpu-core-counter" />
-      <path value="$PROJECT_DIR$/tools/03_ecs/vendor/clue/ndjson-react" />
-      <path value="$PROJECT_DIR$/tools/03_ecs/vendor/react/promise" />
-      <path value="$PROJECT_DIR$/tools/03_ecs/vendor/react/socket" />
-      <path value="$PROJECT_DIR$/tools/03_ecs/vendor/symfony/options-resolver" />
-      <path value="$PROJECT_DIR$/tools/03_ecs/vendor/symfony/string" />
-      <path value="$PROJECT_DIR$/tools/03_ecs/vendor/symfony/polyfill-php81" />
-      <path value="$PROJECT_DIR$/tools/03_ecs/vendor/symfony/stopwatch" />
-      <path value="$PROJECT_DIR$/tools/03_ecs/vendor/symfony/polyfill-mbstring" />
       <path value="$PROJECT_DIR$/tools/03_ecs/vendor/react/child-process" />
       <path value="$PROJECT_DIR$/tools/03_ecs/vendor/symfony/event-dispatcher-contracts" />
-      <path value="$PROJECT_DIR$/tools/03_ecs/vendor/symfony/polyfill-intl-normalizer" />
-      <path value="$PROJECT_DIR$/tools/03_ecs/vendor/symfony/finder" />
+      <path value="$PROJECT_DIR$/tools/03_ecs/vendor/symfony/polyfill-intl-grapheme" />
+      <path value="$PROJECT_DIR$/tools/03_ecs/vendor/symfony/polyfill-php80" />
+      <path value="$PROJECT_DIR$/tools/03_ecs/vendor/symfony/stopwatch" />
+      <path value="$PROJECT_DIR$/tools/03_ecs/vendor/psr/container" />
+      <path value="$PROJECT_DIR$/tools/03_ecs/vendor/psr/event-dispatcher" />
+      <path value="$PROJECT_DIR$/tools/03_ecs/vendor/psr/log" />
+      <path value="$PROJECT_DIR$/tools/03_ecs/vendor/clue/ndjson-react" />
+      <path value="$PROJECT_DIR$/tools/03_ecs/vendor/fidry/cpu-core-counter" />
+      <path value="$PROJECT_DIR$/tools/03_ecs/vendor/react/promise" />
+      <path value="$PROJECT_DIR$/tools/03_ecs/vendor/react/event-loop" />
+      <path value="$PROJECT_DIR$/tools/03_ecs/vendor/react/dns" />
+      <path value="$PROJECT_DIR$/tools/03_ecs/vendor/symfony/polyfill-ctype" />
+      <path value="$PROJECT_DIR$/tools/03_ecs/vendor/symfony/deprecation-contracts" />
+      <path value="$PROJECT_DIR$/tools/03_ecs/vendor/symfony/polyfill-php81" />
       <path value="$PROJECT_DIR$/tools/03_ecs/vendor/symfony/console" />
       <path value="$PROJECT_DIR$/tools/03_ecs/vendor/symfony/filesystem" />
-      <path value="$PROJECT_DIR$/tools/03_ecs/vendor/symfony/deprecation-contracts" />
-      <path value="$PROJECT_DIR$/tools/03_ecs/vendor/symfony/polyfill-intl-grapheme" />
+      <path value="$PROJECT_DIR$/tools/03_ecs/vendor/symfony/string" />
+      <path value="$PROJECT_DIR$/tools/03_ecs/vendor/symfony/polyfill-mbstring" />
+      <path value="$PROJECT_DIR$/tools/03_ecs/vendor/symfony/polyfill-intl-normalizer" />
       <path value="$PROJECT_DIR$/tools/03_ecs/vendor/symfony/process" />
       <path value="$PROJECT_DIR$/tools/03_ecs/vendor/symfony/service-contracts" />
-      <path value="$PROJECT_DIR$/tools/03_ecs/vendor/symfony/polyfill-php80" />
       <path value="$PROJECT_DIR$/tools/03_ecs/vendor/symfony/event-dispatcher" />
-      <path value="$PROJECT_DIR$/tools/03_ecs/vendor/symfony/polyfill-ctype" />
-      <path value="$PROJECT_DIR$/tools/02_phpstan/vendor/phpstan/phpstan-phpunit" />
-      <path value="$PROJECT_DIR$/tools/02_phpstan/vendor/phpstan/phpstan-deprecation-rules" />
-      <path value="$PROJECT_DIR$/tools/02_phpstan/vendor/composer" />
-      <path value="$PROJECT_DIR$/tools/02_phpstan/vendor/phpstan/phpstan" />
-      <path value="$PROJECT_DIR$/tools/02_phpstan/vendor/phpstan/phpstan-symfony" />
-      <path value="$PROJECT_DIR$/tools/01_phpunit/vendor/sebastian/type" />
-      <path value="$PROJECT_DIR$/tools/01_phpunit/vendor/sebastian/recursion-context" />
-      <path value="$PROJECT_DIR$/tools/01_phpunit/vendor/sebastian/object-reflector" />
-      <path value="$PROJECT_DIR$/tools/01_phpunit/vendor/sebastian/version" />
-      <path value="$PROJECT_DIR$/tools/01_phpunit/vendor/sebastian/object-enumerator" />
-      <path value="$PROJECT_DIR$/tools/01_phpunit/vendor/sebastian/complexity" />
-      <path value="$PROJECT_DIR$/tools/01_phpunit/vendor/sebastian/cli-parser" />
-      <path value="$PROJECT_DIR$/tools/01_phpunit/vendor/sebastian/environment" />
-      <path value="$PROJECT_DIR$/tools/01_phpunit/vendor/sebastian/code-unit-reverse-lookup" />
-      <path value="$PROJECT_DIR$/tools/01_phpunit/vendor/sebastian/exporter" />
-      <path value="$PROJECT_DIR$/tools/01_phpunit/vendor/sebastian/comparator" />
-      <path value="$PROJECT_DIR$/tools/01_phpunit/vendor/sebastian/global-state" />
-      <path value="$PROJECT_DIR$/tools/01_phpunit/vendor/sebastian/lines-of-code" />
-      <path value="$PROJECT_DIR$/tools/01_phpunit/vendor/sebastian/code-unit" />
-      <path value="$PROJECT_DIR$/tools/01_phpunit/vendor/sebastian/diff" />
+      <path value="$PROJECT_DIR$/tools/03_ecs/vendor/symfony/options-resolver" />
+      <path value="$PROJECT_DIR$/tools/03_ecs/vendor/symfony/finder" />
+      <path value="$PROJECT_DIR$/tools/03_ecs/vendor/symplify/easy-coding-standard" />
+      <path value="$PROJECT_DIR$/tools/03_ecs/vendor/evenement/evenement" />
+      <path value="$PROJECT_DIR$/tools/03_ecs/vendor/sebastian/diff" />
+      <path value="$PROJECT_DIR$/tools/03_ecs/vendor/squizlabs/php_codesniffer" />
+      <path value="$PROJECT_DIR$/tools/01_phpunit/vendor/myclabs/deep-copy" />
       <path value="$PROJECT_DIR$/tools/01_phpunit/vendor/phar-io/version" />
       <path value="$PROJECT_DIR$/tools/01_phpunit/vendor/phar-io/manifest" />
-      <path value="$PROJECT_DIR$/tools/01_phpunit/vendor/staabm/side-effects-detector" />
-      <path value="$PROJECT_DIR$/tools/01_phpunit/vendor/myclabs/deep-copy" />
-      <path value="$PROJECT_DIR$/tools/01_phpunit/vendor/nikic/php-parser" />
-      <path value="$PROJECT_DIR$/tools/01_phpunit/vendor/composer" />
-      <path value="$PROJECT_DIR$/tools/01_phpunit/vendor/theseer/tokenizer" />
+      <path value="$PROJECT_DIR$/tools/01_phpunit/vendor/phpunit/php-file-iterator" />
       <path value="$PROJECT_DIR$/tools/01_phpunit/vendor/phpunit/php-invoker" />
       <path value="$PROJECT_DIR$/tools/01_phpunit/vendor/phpunit/php-text-template" />
       <path value="$PROJECT_DIR$/tools/01_phpunit/vendor/phpunit/phpunit" />
-      <path value="$PROJECT_DIR$/tools/01_phpunit/vendor/phpunit/php-timer" />
-      <path value="$PROJECT_DIR$/tools/01_phpunit/vendor/phpunit/php-file-iterator" />
       <path value="$PROJECT_DIR$/tools/01_phpunit/vendor/phpunit/php-code-coverage" />
-      <path value="$PROJECT_DIR$/vendor/phpunit/php-timer" />
-      <path value="$PROJECT_DIR$/vendor/phpunit/php-file-iterator" />
-      <path value="$PROJECT_DIR$/vendor/bamarni/composer-bin-plugin" />
-      <path value="$PROJECT_DIR$/vendor/composer" />
-      <path value="$PROJECT_DIR$/vendor/sebastian/cli-parser" />
+      <path value="$PROJECT_DIR$/tools/01_phpunit/vendor/composer" />
+      <path value="$PROJECT_DIR$/tools/01_phpunit/vendor/nikic/php-parser" />
+      <path value="$PROJECT_DIR$/tools/01_phpunit/vendor/staabm/side-effects-detector" />
+      <path value="$PROJECT_DIR$/tools/01_phpunit/vendor/sebastian/lines-of-code" />
+      <path value="$PROJECT_DIR$/tools/01_phpunit/vendor/sebastian/recursion-context" />
+      <path value="$PROJECT_DIR$/tools/01_phpunit/vendor/phpunit/php-timer" />
+      <path value="$PROJECT_DIR$/tools/01_phpunit/vendor/theseer/tokenizer" />
+      <path value="$PROJECT_DIR$/tools/01_phpunit/vendor/sebastian/exporter" />
+      <path value="$PROJECT_DIR$/tools/01_phpunit/vendor/sebastian/comparator" />
+      <path value="$PROJECT_DIR$/tools/01_phpunit/vendor/sebastian/cli-parser" />
+      <path value="$PROJECT_DIR$/tools/01_phpunit/vendor/sebastian/diff" />
+      <path value="$PROJECT_DIR$/tools/01_phpunit/vendor/sebastian/object-enumerator" />
+      <path value="$PROJECT_DIR$/tools/01_phpunit/vendor/sebastian/global-state" />
+      <path value="$PROJECT_DIR$/tools/01_phpunit/vendor/sebastian/version" />
+      <path value="$PROJECT_DIR$/tools/01_phpunit/vendor/sebastian/complexity" />
+      <path value="$PROJECT_DIR$/tools/01_phpunit/vendor/sebastian/type" />
+      <path value="$PROJECT_DIR$/tools/01_phpunit/vendor/sebastian/environment" />
+      <path value="$PROJECT_DIR$/tools/01_phpunit/vendor/sebastian/object-reflector" />
+      <path value="$PROJECT_DIR$/tools/02_phpstan/vendor/composer" />
+      <path value="$PROJECT_DIR$/tools/02_phpstan/vendor/phpstan/phpstan-phpunit" />
+      <path value="$PROJECT_DIR$/tools/02_phpstan/vendor/phpstan/phpstan" />
+      <path value="$PROJECT_DIR$/tools/02_phpstan/vendor/phpstan/phpstan-deprecation-rules" />
+      <path value="$PROJECT_DIR$/tools/02_phpstan/vendor/phpstan/phpstan-symfony" />
       <path value="$PROJECT_DIR$/vendor/sebastian/version" />
+      <path value="$PROJECT_DIR$/vendor/sebastian/cli-parser" />
+      <path value="$PROJECT_DIR$/vendor/bamarni/composer-bin-plugin" />
+      <path value="$PROJECT_DIR$/vendor/phpunit/php-file-iterator" />
+      <path value="$PROJECT_DIR$/vendor/phpunit/php-timer" />
+      <path value="$PROJECT_DIR$/vendor/composer" />
     </include_path>
   </component>
   <component name="PhpInterpreters">
@@ -129,14 +127,14 @@
   <component name="PhpInterpretersPhpInfoCache">
     <phpInfoCache>
       <interpreter name="phpcpd-php:latest">
-        <phpinfo binary_type="PHP" php_cli="/usr/local/bin/php" path_separator=":" version="8.4.1">
+        <phpinfo binary_type="PHP" php_cli="/usr/local/bin/php" path_separator=":" version="8.4.5">
           <additional_php_ini>/usr/local/etc/php/conf.d/docker-fpm.ini, /usr/local/etc/php/conf.d/docker-php-ext-intl.ini, /usr/local/etc/php/conf.d/docker-php-ext-opcache.ini, /usr/local/etc/php/conf.d/docker-php-ext-sockets.ini, /usr/local/etc/php/conf.d/docker-php-ext-sodium.ini, /usr/local/etc/php/conf.d/docker-php-ext-zip.ini, /usr/local/etc/php/conf.d/xdebug.ini</additional_php_ini>
           <configuration_file>/usr/local/etc/php/php.ini</configuration_file>
           <configuration_options>
             <configuration_option name="include_path" value=".:/usr/local/lib/php" />
           </configuration_options>
           <debuggers>
-            <debugger_info debugger="xdebug" debugger_version="3.4.0">
+            <debugger_info debugger="xdebug" debugger_version="3.4.2">
               <debug_extensions />
             </debugger_info>
           </debuggers>

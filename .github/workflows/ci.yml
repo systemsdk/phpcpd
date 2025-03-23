@@ -18,7 +18,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Build the docker image
-        run: make build
+        run: make build-dev
       - name: Start the docker image
         run: make start
       - name: Check running container

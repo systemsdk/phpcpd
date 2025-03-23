@@ -2,6 +2,16 @@
 
 All notable changes in PHPCPD are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## [8.1.0] - 2025-03-23
+
+### Added
+
+* Added Suffix Tree-based algorithm for code clone detection (experimental), added progress bar.
+
+### Updated
+
+* Made codebase refactoring. Updated packages: sebastian/cli-parser, sebastian/version, phpunit/php-file-iterator, phpunit/php-timer. Updated tests to the PHPUnit 12.
+
 ## [8.0.0] - 2024-12-30
 
 ### Updated

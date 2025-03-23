@@ -17,7 +17,7 @@ class Sentinel extends AbstractToken
     /**
      * @var int The hash value used.
      */
-    private $hash;
+    private int $hash;
 
     public function __construct()
     {

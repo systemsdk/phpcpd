@@ -28,7 +28,7 @@ use const PHP_EOL;
 
 final class Application
 {
-    public const string VERSION = '8.0.0';
+    public const string VERSION = '8.1.0';
 
     /**
      * @param array<int, string> $argv
@@ -88,7 +88,7 @@ final class Application
         $timer->start();
 
         try {
-            $clones = (new Detector($strategy))->copyPasteDetection($files);
+            $clones = (new Detector($strategy, true))->copyPasteDetection($files);
         } catch (ProcessingResultException $exception) {
             print 'Processing error: ' . $exception->getMessage() . PHP_EOL;
 
@@ -116,7 +116,7 @@ final class Application
     {
         /** @var non-empty-string $path */
         $path = dirname(__DIR__);
-        printf('%s', (new Version(self::VERSION, $path))->asString());
+        printf('%s %s', 'Copy/Paste Detector', (new Version(self::VERSION, $path))->asString());
     }
 
     /**
@@ -144,10 +144,13 @@ Options for selecting files:
 
 Options for analysing files:
 
-  --fuzzy           Fuzz variable names
-  --min-lines <N>   Minimum number of identical lines (default: 5)
-  --min-tokens <N>  Minimum number of identical tokens (default: 70)
-  --verbose         Print progress bar
+  --algorithm <name>  Select which algorithm to use ('rabin-karp' (default) or 'suffix-tree' (experimental))
+  --fuzzy             Fuzz variable names
+  --min-lines <N>     Minimum number of identical lines (default: 5)
+  --min-tokens <N>    Minimum number of identical tokens (default: 70)
+  --edit-distance <N> Distance in number of edits between two clones (only for suffix-tree; default: 0)
+  --head-equality <N> Minimum equality at start of clone (only for suffix-tree; default 10)
+  --verbose           Print results details
 
 Options for report generation:
 
@@ -159,11 +162,5 @@ General options:
   --help            Display help
 
 EOT;
-        /**
-         * TODO: check it
-         * --algorithm <name>  Select which algorithm to use ('rabin-karp' (default) or 'suffixtree')
-         * --edit-distance <N> Distance in number of edits between two clones (only for suffixtree; default: 5)
-         * --head-equality <N> Minimum equality at start of clone (only for suffixtree; default 10)
-         */
     }
 }

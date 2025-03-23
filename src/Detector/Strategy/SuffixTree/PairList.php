@@ -9,12 +9,6 @@ use Systemsdk\PhpCPD\Exceptions\OutOfBoundsException;
 /**
  * A list for storing pairs in a specific order.
  *
- * @author $Author: hummelb $
- *
- * @version $Rev: 51770 $
- *
- * @ConQAT.Rating GREEN Hash: 7459D6D0F59028B37DD23DD091BDCEEA
- *
  * @template T
  * @template S
  */
@@ -22,39 +16,37 @@ class PairList
 {
     /**
      * Version used for serialization.
-     *
-     * @var int
      */
-    private $serialVersionUID = 1;
+    private int $serialVersionUID = 1;
 
     /**
      * The current size.
-     *
-     * @var int
      */
-    private $size = 0;
+    private int $size = 0;
 
     /**
      * The array used for storing the S.
      *
      * @var array<int, mixed>
      */
-    private $firstElements;
+    private array $firstElements;
 
     /**
      * The array used for storing the T.
      *
      * @var array<int, mixed>
      */
-    private $secondElements;
+    private array $secondElements;
 
     public function __construct(int $initialCapacity) // , $firstType, $secondType
     {
         if ($initialCapacity < 1) {
             $initialCapacity = 1;
         }
-        $this->firstElements = array_fill(0, $initialCapacity, null);
-        $this->secondElements = array_fill(0, $initialCapacity, null);
+
+        $data = array_fill(0, $initialCapacity, null);
+        $this->firstElements = $data;
+        $this->secondElements = $data;
     }
 
     public function serialVersion(): int
@@ -67,7 +59,7 @@ class PairList
      */
     public function isEmpty(): bool
     {
-        return $this->size == 0;
+        return $this->size === 0;
     }
 
     /**

@@ -5,74 +5,56 @@ declare(strict_types=1);
 namespace Systemsdk\PhpCPD\Detector\Strategy\SuffixTree;
 
 /**
- * An extension of the suffix tree adding an algorithm for finding approximate
- * clones, i.e. substrings which are similar.
- *
- * @author $Author: hummelb $
- *
- * @version $Revision: 43151 $
- *
- * @ConQAT.Rating GREEN Hash: BB94CD690760BC239F04D32D5BCAC33E
+ * An extension of the suffix tree adding an algorithm for finding approximate clones, i.e. substrings which are similar
  */
 class ApproximateCloneDetectingSuffixTree extends SuffixTree
 {
     /**
-     * The minimal length of clones to return.
-     *
-     * @var int
+     * This is the distance between two entries in the {@link #cloneInfos} map.
      */
-    protected $minLength = 70;
+    private const int INDEX_SPREAD = 10;
+
+    /**
+     * The maximal length of a clone. This influences the size of the (quadratic) {@link #edBuffer}.
+     */
+    private const int MAX_LENGTH = 1024;
+
+    /**
+     * The minimal length of clones to return.
+     */
+    protected int $minLength = 70;
 
     /**
      * The number of leaves reachable from the given node (1 for leaves).
      *
      * @var int[]
      * */
-    private $leafCount = [];
-
-    /**
-     * This is the distance between two entries in the {@link #cloneInfos} map.
-     *
-     * @var int
-     */
-    private $INDEX_SPREAD = 10;
+    private array $leafCount;
 
     /**
      * This map stores for each position the relevant clone infos.
      *
      * @var array<CloneInfo[]>
      */
-    private $cloneInfos = [];
-
-    /**
-     * The maximal length of a clone. This influences the size of the
-     * (quadratic) {@link #edBuffer}.
-     *
-     * @var int
-     */
-    private $MAX_LENGTH = 1024;
+    private array $cloneInfos = [];
 
     /**
      * Buffer used for calculating edit distance.
      *
      * @var array<int[]>
      */
-    private $edBuffer = [];
+    private array $edBuffer;
 
     /**
      * Number of units that must be equal at the start of a clone.
-     *
-     * @var int
      */
-    private $headEquality = 10;
+    private int $headEquality = 10;
 
     /**
-     * Create a new suffix tree from a given word. The word given as parameter
-     * is used internally and should not be modified anymore, so copy it before
-     * if required.
+     * Create a new suffix tree from a given word. The word given as parameter is used internally and should
+     * not be modified anymore, so copy it before if required.
      * <p>
-     * This only word correctly if the given word is closed using a sentinel
-     * character.
+     * This only word correctly if the given word is closed using a sentinel character.
      *
      * @param AbstractToken[] $word List of tokens to analyze
      */
@@ -80,26 +62,21 @@ class ApproximateCloneDetectingSuffixTree extends SuffixTree
     {
         parent::__construct($word);
 
-        $arr = array_fill(0, $this->MAX_LENGTH, 0);
-        $this->edBuffer = array_fill(0, $this->MAX_LENGTH, $arr);
+        $arr = array_fill(0, self::MAX_LENGTH, 0);
+        $this->edBuffer = array_fill(0, self::MAX_LENGTH, $arr);
         $this->ensureChildLists();
         $this->leafCount = array_fill(0, $this->numNodes, 0);
         $this->initLeafCount(0);
     }
 
     /**
-     * @todo Add options:
-     *   --min-tokens
-     *   --min-lines
-     *   --edit-distance
-     * @todo Possibly add consumer from original code.
-     */
-
-    /**
      * Finds all clones in the string (List) used in the constructor.
      *
-     * @param int $minLength    the minimal length of a clone in tokens (not lines)
-     * @param int $maxErrors    the maximal number of errors/gaps allowed
+     * TODO: Add options: --min-lines
+     * TODO: Possibly add consumer from original code.
+     *
+     * @param int $minLength the minimal length of a clone in tokens (not lines)
+     * @param int $maxErrors the maximal number of errors/gaps allowed
      * @param int $headEquality the number of elements which have to be the same at the beginning of a clone
      *
      * @return CloneInfo[]
@@ -110,7 +87,7 @@ class ApproximateCloneDetectingSuffixTree extends SuffixTree
         $this->headEquality = $headEquality;
         $this->cloneInfos = [];
 
-        for ($i = 0; $i < count($this->word); $i++) {
+        for ($i = 0, $count = count($this->word); $i < $count; $i++) {
             // Do quick start, as first character has to match anyway.
             $node = $this->nextNode->get(0, $this->word[$i]);
 
@@ -129,21 +106,20 @@ class ApproximateCloneDetectingSuffixTree extends SuffixTree
                 }
             }
 
-            if ($length >= $this->minLength && $numReported != 1) {
+            if ($length >= $this->minLength && $numReported !== 1) {
                 $this->reportClone($i, $i + $length, $node, $length, $length);
             }
         }
 
         $map = [];
 
-        for ($index = 0; $index <= count($this->word); $index++) {
-            /** @var CloneInfo[] */
+        for ($index = 0, $count = count($this->word); $index <= $count; $index++) {
+            /** @var CloneInfo[] $existingClones */
             $existingClones = $this->cloneInfos[$index] ?? null;
 
             if (!empty($existingClones)) {
                 foreach ($existingClones as $ci) {
                     // length = number of tokens
-                    // TODO: min token length
                     if ($ci->length > $minLength) {
                         $previousCi = $map[$ci->token->line] ?? null;
 
@@ -157,7 +133,7 @@ class ApproximateCloneDetectingSuffixTree extends SuffixTree
             }
         }
 
-        /** @var CloneInfo[] */
+        /** @var CloneInfo[] $values */
         $values = array_values($map);
         usort($values, static function (CloneInfo $a, CloneInfo $b): int {
             return $b->length - $a->length;
@@ -167,8 +143,8 @@ class ApproximateCloneDetectingSuffixTree extends SuffixTree
     }
 
     /**
-     * This should return true, if the provided character is not allowed to
-     * match with anything else (e.g. is a sentinel).
+     * This should return true, if the provided character is not allowed to match with anything
+     * else (e.g. is a sentinel).
      */
     protected function mayNotMatch(AbstractToken $token): bool
     {
@@ -176,11 +152,9 @@ class ApproximateCloneDetectingSuffixTree extends SuffixTree
     }
 
     /**
-     * This method is called whenever the {@link #MAX_LENGTH} is to small and
-     * hence the {@link #edBuffer} was not large enough. This may cause that a
-     * really large clone is reported in multiple chunks of size
-     * {@link #MAX_LENGTH} and potentially minor parts of such a clone might be
-     * lost.
+     * This method is called whenever the {@link #MAX_LENGTH} is to small and hence the {@link #edBuffer} was not
+     * large enough. This may cause that a really large clone is reported in multiple chunks of size{@link #MAX_LENGTH}
+     * and potentially minor parts of such a clone might be lost.
      */
     protected function reportBufferShortage(int $leafStart, int $leafLength): void
     {
@@ -188,8 +162,8 @@ class ApproximateCloneDetectingSuffixTree extends SuffixTree
     }
 
     /**
-     * Initializes the {@link #leafCount} array which given for each node the
-     * number of leaves reachable from it (where leaves obtain a value of 1).
+     * Initializes the {@link #leafCount} array which given for each node the number of leaves reachable from it
+     * (where leaves obtain a value of 1).
      */
     private function initLeafCount(int $node): void
     {
@@ -200,7 +174,7 @@ class ApproximateCloneDetectingSuffixTree extends SuffixTree
             $this->leafCount[$node] += $this->leafCount[$this->nodeChildNode[$e]];
         }
 
-        if ($this->leafCount[$node] == 0) {
+        if ($this->leafCount[$node] === 0) {
             $this->leafCount[$node] = 1;
         }
     }
@@ -208,14 +182,12 @@ class ApproximateCloneDetectingSuffixTree extends SuffixTree
     /**
      * Performs the approximative matching between the input word and the tree.
      *
-     * @param int $wordStart      the start position of the currently matched word (position in
-     *                            the input word)
-     * @param int $wordPosition   the current position along the input word
-     * @param int $node           the node we are currently at (i.e. the edge leading to this
-     *                            node is relevant to us).
-     * @param int $nodeWordLength the length of the word found along the nodes (this may be
-     *                            different from the length along the input word due to gaps)
-     * @param int $maxErrors      the number of errors still allowed
+     * @param int $wordStart the start position of the currently matched word (position in the input word)
+     * @param int $wordPosition the current position along the input word
+     * @param int $node the node we are currently at (i.e. the edge leading to this node is relevant to us).
+     * @param int $nodeWordLength the length of the word found along the nodes (this may be different from the length
+     *                            along the input word due to gaps)
+     * @param int $maxErrors the number of errors still allowed
      *
      * @return bool whether some clone was reported
      */
@@ -226,11 +198,11 @@ class ApproximateCloneDetectingSuffixTree extends SuffixTree
         // sensible cost-benefit ratio. Suggestions are welcome!
 
         // self match?
-        if ($this->leafCount[$node] == 1 && $this->nodeWordBegin[$node] == $wordPosition) {
+        if ($this->leafCount[$node] === 1 && $this->nodeWordBegin[$node] === $wordPosition) {
             return false;
         }
 
-        $currentNodeWordLength = min($this->nodeWordEnd[$node] - $this->nodeWordBegin[$node], $this->MAX_LENGTH - 1);
+        $currentNodeWordLength = min($this->nodeWordEnd[$node] - $this->nodeWordBegin[$node], self::MAX_LENGTH - 1);
 
         // Do min edit distance
         $currentLength = $this->calculateMaxLength(
@@ -241,11 +213,11 @@ class ApproximateCloneDetectingSuffixTree extends SuffixTree
             $currentNodeWordLength
         );
 
-        if ($currentLength == 0) {
+        if ($currentLength === 0) {
             return false;
         }
 
-        if ($currentLength >= $this->MAX_LENGTH - 1) {
+        if ($currentLength >= self::MAX_LENGTH - 1) {
             $this->reportBufferShortage($this->nodeWordBegin[$node], $currentNodeWordLength);
         }
 
@@ -277,7 +249,7 @@ class ApproximateCloneDetectingSuffixTree extends SuffixTree
         while (
             $wordPosition + $iBest < count($this->word)
             && $jBest < $currentNodeWordLength
-            && $this->word[$wordPosition + $iBest] != $this->word[$this->nodeWordBegin[$node] + $jBest]
+            && $this->word[$wordPosition + $iBest] !== $this->word[$this->nodeWordBegin[$node] + $jBest]
             && $this->word[$wordPosition + $iBest]->equals($this->word[$this->nodeWordBegin[$node] + $jBest])
         ) {
             $iBest++;
@@ -286,7 +258,7 @@ class ApproximateCloneDetectingSuffixTree extends SuffixTree
 
         $numReported = 0;
 
-        if ($currentLength == $currentNodeWordLength) {
+        if ($currentLength === $currentNodeWordLength) {
             // we may proceed
             for ($e = $this->nodeChildFirst[$node]; $e >= 0; $e = $this->nodeChildNext[$e]) {
                 if (
@@ -303,9 +275,8 @@ class ApproximateCloneDetectingSuffixTree extends SuffixTree
             }
         }
 
-        // do not report locally if had reports in exactly one subtree (would be
-        // pure subclone)
-        if ($numReported == 1) {
+        // do not report locally if had reports in exactly one subtree (would be pure subclone)
+        if ($numReported === 1) {
             return true;
         }
 
@@ -346,17 +317,15 @@ class ApproximateCloneDetectingSuffixTree extends SuffixTree
     }
 
     /**
-     * Calculates the maximum length we may take along the word to the current
-     * $node (respecting the number of errors to make). *.
+     * Calculates the maximum length we may take along the word to the current $node
+     * (respecting the number of errors to make). *.
      *
-     * @param int $wordStart             the start position of the currently matched word (position in
-     *                                   the input word)
-     * @param int $wordPosition          the current position along the input word
-     * @param int $node                  the node we are currently at (i.e. the edge leading to this
-     *                                   node is relevant to us).
-     * @param int $maxErrors             the number of errors still allowed
-     * @param int $currentNodeWordLength the length of the word found along the nodes (this may be
-     *                                   different from the actual length due to buffer limits)
+     * @param int $wordStart the start position of the currently matched word (position in the input word)
+     * @param int $wordPosition the current position along the input word
+     * @param int $node the node we are currently at (i.e. the edge leading to this node is relevant to us).
+     * @param int $maxErrors the number of errors still allowed
+     * @param int $currentNodeWordLength the length of the word found along the nodes (this may be different from the
+     *                                   actual length due to buffer limits)
      *
      * @return int the maximal length that can be taken
      */
@@ -368,9 +337,8 @@ class ApproximateCloneDetectingSuffixTree extends SuffixTree
         int $currentNodeWordLength
     ): int {
         $this->edBuffer[0][0] = 0;
-        $currentLength = 1;
 
-        for (; $currentLength <= $currentNodeWordLength; $currentLength++) {
+        for ($currentLength = 1; $currentLength <= $currentNodeWordLength; $currentLength++) {
             /** @var int<1, max> $best */
             $best = $currentLength;
             $this->edBuffer[0][$currentLength] = $currentLength;
@@ -463,10 +431,10 @@ class ApproximateCloneDetectingSuffixTree extends SuffixTree
         $t = $this->word[$wordBegin];
         $newInfo = new CloneInfo($length, $wordBegin, $occurrences, $t, $otherClones);
 
-        for ($index = max(0, $wordBegin - $this->INDEX_SPREAD + 1); $index <= $wordBegin; $index++) {
+        for ($index = max(0, $wordBegin - self::INDEX_SPREAD + 1); $index <= $wordBegin; $index++) {
             $existingClones = $this->cloneInfos[$index] ?? null;
 
-            if ($existingClones != null) {
+            if ($existingClones !== null) {
                 //for (CloneInfo cloneInfo : $existingClones) {
                 foreach ($existingClones as $cloneInfo) {
                     if ($cloneInfo->dominates($newInfo, $wordBegin - $index)) {
@@ -478,7 +446,7 @@ class ApproximateCloneDetectingSuffixTree extends SuffixTree
         }
 
         // add clone to $otherClones to avoid getting more duplicates
-        for ($i = $wordBegin; $i < $wordEnd; $i += $this->INDEX_SPREAD) {
+        for ($i = $wordBegin; $i < $wordEnd; $i += self::INDEX_SPREAD) {
             $this->cloneInfos[$i][]
                 = new CloneInfo($length - ($i - $wordBegin), $wordBegin, $occurrences, $t, $otherClones);
         }
@@ -488,7 +456,7 @@ class ApproximateCloneDetectingSuffixTree extends SuffixTree
             $start = $otherClones->getFirst($clone);
             $otherLength = $otherClones->getSecond($clone);
 
-            for ($i = 0; $i < $otherLength; $i += $this->INDEX_SPREAD) {
+            for ($i = 0; $i < $otherLength; $i += self::INDEX_SPREAD) {
                 $this->cloneInfos[$start + $i][]
                     = new CloneInfo($otherLength - $i, $wordBegin, $occurrences, $t, $otherClones);
             }
@@ -498,8 +466,8 @@ class ApproximateCloneDetectingSuffixTree extends SuffixTree
     /**
      * Fills the edit distance buffer at position (i,j).
      *
-     * @param int $i       the first index of the buffer
-     * @param int $j       the second index of the buffer
+     * @param int $i the first index of the buffer
+     * @param int $j the second index of the buffer
      * @param int $iOffset the offset where the word described by $i starts
      * @param int $jOffset the offset where the word described by $j starts
      *
@@ -517,14 +485,13 @@ class ApproximateCloneDetectingSuffixTree extends SuffixTree
     }
 
     /**
-     * Fills a list of pairs giving the start positions and lengths of the
-     * remaining clones.
+     * Fills a list of pairs giving the start positions and lengths of the remaining clones.
      *
      * @param PairList $clonePositions the clone positions being filled (start position and length)
-     * @param int      $nodeWordLength the length of the word along the nodes
-     * @param int      $currentNode    the node we are currently at
-     * @param int      $distance       the distance along the word leading to the current node
-     * @param int      $wordStart      the start of the currently searched word
+     * @param int $nodeWordLength the length of the word along the nodes
+     * @param int $currentNode the node we are currently at
+     * @param int $distance  the distance along the word leading to the current node
+     * @param int $wordStart the start of the currently searched word
      */
     private function findRemainingClones(
         PairList $clonePositions,
@@ -546,7 +513,7 @@ class ApproximateCloneDetectingSuffixTree extends SuffixTree
         if ($this->nodeChildFirst[$currentNode] < 0) {
             $start = count($this->word) - $distance - $nodeWordLength;
 
-            if ($start != $wordStart) {
+            if ($start !== $wordStart) {
                 $clonePositions->add($start, $nodeWordLength);
             }
         }

@@ -18,7 +18,7 @@ Note: This tool is distributed as a [PHP Archive (PHAR)](https://php.net/phar).
 ## Usage example
 ```
 $ php phpcpd.phar --fuzzy --verbose src tests
-8.0.0
+8.1.0
 Found 1 code clones with 17 duplicated lines in 1 files:
 
   - /var/www/html/tests/Application/ApiKey/Transport/Controller/Api/v1/ApiKeyControllerTest.php:128-145 (17 lines)
@@ -49,8 +49,8 @@ Time: 00:00.100, Memory: 10.00 MB
 ```
 
 ## Requirements for support team
-* Docker Engine version 18.06 or later
-* Docker Compose version 1.22 or later
+* Docker Engine version 23.0 or later
+* Docker Compose version 2.0 or later
 * An editor or IDE
 
 Note: OS recommendation - Linux Ubuntu based.
@@ -77,7 +77,7 @@ Note 2: If you are using Docker Desktop for MacOS 12.2 or later - please enable 
 
 4.Build, start and install the docker images from your terminal:
 ```bash
-make build
+make build-dev
 make start
 make setup
 ```
@@ -93,7 +93,7 @@ Note: Please use `exit` command in order to return from container's shell to loc
 In case you edited Dockerfile or other environment configuration you'll need to build container again using next commands:
 ```bash
 make down
-make build
+make build-dev
 make start
 ```
 
@@ -112,7 +112,7 @@ make down
 
 ## Additional main command available for support team
 ```bash
-make build
+make build-dev
 
 make start
 

@@ -9,36 +9,25 @@ class CloneInfo
 {
     /**
      * Length of the clone in tokens.
-     *
-     * @var int
      */
-    public $length;
+    public int $length;
 
     /**
      * Position in word list.
-     *
-     * @var int
      */
-    public $position;
+    public int $position;
 
-    /**
-     * @var AbstractToken
-     */
-    public $token;
+    public AbstractToken $token;
 
     /**
      * Related clones.
-     *
-     * @var PairList
      */
-    public $otherClones;
+    public PairList $otherClones;
 
     /**
      * Number of occurrences of the clone.
-     *
-     * @var int
      */
-    private $occurrences;
+    private int $occurrences;
 
     public function __construct(
         int $length,
@@ -55,8 +44,8 @@ class CloneInfo
     }
 
     /**
-     * Returns whether this clone info dominates the given one, i.e. whether
-     * both {@link #length} and {@link #occurrences} s not smaller.
+     * Returns whether this clone info dominates the given one, i.e. whether both {@link #length} and
+     * {@link #occurrences} s not smaller.
      *
      * @param int $later the amount the given clone starts later than the "this" clone
      */

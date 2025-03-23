@@ -27,10 +27,10 @@
 		"php": ">=8.3",
 		"ext-dom": "*",
 		"ext-mbstring": "*",
-		"sebastian/cli-parser": "^3.0",
-		"sebastian/version": "^5.0",
-		"phpunit/php-file-iterator": "^5.1",
-		"phpunit/php-timer": "^7.0"
+		"sebastian/cli-parser": "^4.0",
+		"sebastian/version": "^6.0",
+		"phpunit/php-file-iterator": "^6.0",
+		"phpunit/php-timer": "^8.0"
 	},
 	"require-dev": {
 		"bamarni/composer-bin-plugin": "^1.8",

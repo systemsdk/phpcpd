@@ -46,12 +46,12 @@ final class ArgumentsBuilder
                     self::OPTION_FUZZY_NAME,
                     self::OPTION_MIN_LINES_NAME . '=',
                     self::OPTION_MIN_TOKENS_NAME . '=',
-                    //self::OPTION_HEAD_EQUALITY_NAME . '=',
-                    //self::OPTION_EDIT_DISTANCE_NAME . '=',
+                    self::OPTION_HEAD_EQUALITY_NAME . '=',
+                    self::OPTION_EDIT_DISTANCE_NAME . '=',
                     self::OPTION_VERBOSE_NAME,
                     self::OPTION_HELP_NAME,
                     self::OPTION_VERSION_NAME,
-                    //self::OPTION_ALGORITHM_NAME . '=',
+                    self::OPTION_ALGORITHM_NAME . '=',
                 ]
             );
         } catch (CliParserException $e) {
@@ -68,7 +68,7 @@ final class ArgumentsBuilder
         $linesThreshold = 5;
         $tokensThreshold = 70;
         $headEquality = 10;
-        $editDistance = 5;
+        $editDistance = 0;
         $verbose = false;
         $help = false;
         $version = false;
@@ -101,14 +101,14 @@ final class ArgumentsBuilder
                     $tokensThreshold = (int)$option[1];
 
                     break;
-                    //case '--' . self::OPTION_HEAD_EQUALITY_NAME:
-                    //    $headEquality = (int)$option[1];
-                    //
-                    //    break;
-                    //case '--' . self::OPTION_EDIT_DISTANCE_NAME:
-                    //    $editDistance = (int)$option[1];
-                    //
-                    //    break;
+                case '--' . self::OPTION_HEAD_EQUALITY_NAME:
+                    $headEquality = (int)$option[1];
+
+                    break;
+                case '--' . self::OPTION_EDIT_DISTANCE_NAME:
+                    $editDistance = (int)$option[1];
+
+                    break;
                 case '--' . self::OPTION_VERBOSE_NAME:
                     $verbose = true;
 
@@ -123,10 +123,10 @@ final class ArgumentsBuilder
                     $version = true;
 
                     break;
-                    //case '--' . self::OPTION_ALGORITHM_NAME :
-                    //    $algorithm = (string)$option[1];
-                    //
-                    //    break;
+                case '--' . self::OPTION_ALGORITHM_NAME:
+                    $algorithm = (string)$option[1];
+
+                    break;
             }
         }
 
