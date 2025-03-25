@@ -1,6 +1,8 @@
 # PHP Copy/Paste Detector
 `phpcpd` is a Copy/Paste Detector (CPD) for PHP code.
 
+This is modified version of [sebastianbergmann/phpcpd](https://github.com/sebastianbergmann/phpcpd) due to `sebastianbergmann/phpcpd` is abandoned and no longer maintained.
+
 [![PHP Copy/Paste Detector](https://github.com/systemsdk/phpcpd/actions/workflows/ci.yml/badge.svg)](https://github.com/systemsdk/phpcpd/actions/workflows/ci.yml)
 [![Coverage Status](https://coveralls.io/repos/github/systemsdk/phpcpd/badge.svg)](https://coveralls.io/github/systemsdk/phpcpd)
 [![MIT licensed](https://img.shields.io/badge/license-BSD-blue.svg)](LICENSE)
@@ -18,7 +20,7 @@ Note: This tool is distributed as a [PHP Archive (PHAR)](https://php.net/phar).
 ## Usage example
 ```
 $ php phpcpd.phar --fuzzy --verbose src tests
-8.1.0
+Copy/Paste Detector 8.1.0
 Found 1 code clones with 17 duplicated lines in 1 files:
 
   - /var/www/html/tests/Application/ApiKey/Transport/Controller/Api/v1/ApiKeyControllerTest.php:128-145 (17 lines)
