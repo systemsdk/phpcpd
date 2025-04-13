@@ -1,11 +1,11 @@
 {
 	"name": "systemsdk/phpcpd",
-	"type": "project",
+	"type": "library",
 	"description": "Copy/Paste Detector for PHP code",
 	"keywords": [
 		"Php",
 		"Phpcpd",
-		"Copy/past detector",
+		"Copy paste detector",
 		"Php code quality tool"
 	],
 	"homepage": "https://github.com/systemsdk/phpcpd",
