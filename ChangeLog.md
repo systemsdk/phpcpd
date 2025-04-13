@@ -2,6 +2,12 @@
 
 All notable changes in PHPCPD are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## [8.1.1] - 2025-04-13
+
+### Added
+
+* Tool can be installed using composer, updated composer dependencies.
+
 ## [8.1.0] - 2025-03-23
 
 ### Added

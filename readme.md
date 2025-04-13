@@ -13,14 +13,23 @@ This is modified version of [sebastianbergmann/phpcpd](https://github.com/sebast
 * PHP version 8.3 or later
 
 ## Installation
+### Using composer
+If you have installed composer you can use next cmd command:
+```bash
+composer require systemsdk/phpcpd --dev
+```
+
+### Manual installation
+If you are not using composer you have possibility to download this tool.
+
 Download the latest version [here](releases/) and put phar archive into your project.
 
 Note: This tool is distributed as a [PHP Archive (PHAR)](https://php.net/phar).
 
 ## Usage example
 ```
-$ php phpcpd.phar --fuzzy --verbose src tests
-Copy/Paste Detector 8.1.0
+$ php ./vendor/bin/phpcpd --fuzzy --verbose src tests
+Copy/Paste Detector 8.1.1
 Found 1 code clones with 17 duplicated lines in 1 files:
 
   - /var/www/html/tests/Application/ApiKey/Transport/Controller/Api/v1/ApiKeyControllerTest.php:128-145 (17 lines)
@@ -48,6 +57,11 @@ Found 1 code clones with 17 duplicated lines in 1 files:
 Average code clone size is 17 lines, the largest code clone has 17 lines
 
 Time: 00:00.100, Memory: 10.00 MB
+```
+
+Note: If you are not using composer and have manual installation, you can use:
+```
+php phpcpd.phar --fuzzy --verbose src tests
 ```
 
 ## Requirements for support team
