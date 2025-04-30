@@ -39,6 +39,7 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y \
       wget \
       gpg \
       debsecan \
+      xalan \
     && docker-php-ext-configure intl \
     && docker-php-ext-install \
       sockets \

@@ -2,6 +2,16 @@
 
 All notable changes in PHPCPD are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## [8.2.0] - 2025-05-01
+
+### Added
+
+* Added possibility to use [xalan](https://xalan.apache.org) cli tool for generating html report with datatable and possibility to export into csv, excel, pdf formats or print it.
+
+### Updated
+
+* Changed and extended xml report format.
+
 ## [8.1.1] - 2025-04-13
 
 ### Added

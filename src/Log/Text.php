@@ -30,13 +30,12 @@ final class Text
             $firstOccurrence = true;
 
             foreach ($clone->files() as $file) {
-                $endLine = $file->endLine();
                 printf(
                     '  %s%s:%d-%d%s' . PHP_EOL,
                     $firstOccurrence ? '- ' : '  ',
                     $file->name(),
                     $file->startLine(),
-                    $endLine ? $endLine + 1 : ($file->startLine() + $clone->numberOfLines()),
+                    $file->endLine(),
                     $firstOccurrence ? ' (' . $clone->numberOfLines() . ' lines)' : ''
                 );
 

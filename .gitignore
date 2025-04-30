@@ -1,5 +1,6 @@
 reports/*
 !reports/.gitkeep
+!reports/phpcpd/.gitkeep
 
 /.env.local
 /build/phar

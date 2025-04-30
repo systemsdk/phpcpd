@@ -93,6 +93,7 @@ info: ## Shows php, composer, phing, phive versions
 	@make exec cmd="composer --version"
 	@make exec cmd="php phing.phar -v"
 	@make exec cmd="phive --version"
+	@make exec cmd="xalan -v"
 
 logs: ## Shows logs from the php container. Use ctrl+c in order to exit
 ifeq ($(INSIDE_DOCKER_CONTAINER), 0)
@@ -119,6 +120,12 @@ signed-phar: ## Create signed PHAR archive of PHPCPD and all its dependencies (r
 
 phpunit: ## Runs PhpUnit tests and create coverage report inside reports/coverage folder
 	@make exec-bash cmd="./vendor/bin/phpunit -c phpunit.xml.dist --coverage-html reports/coverage --coverage-clover reports/clover.xml --log-junit reports/junit.xml"
+
+phpcpd-run: ## Runs phpcpd
+	@make exec-bash cmd="php phpcpd --fuzzy --log-pmd=reports/phpcpd/phpcpd-report-v1.xml tests/Fixture"
+
+phpcpd-html-report: ## Generate html report (should be run after phpcpd-run)
+	@make exec-bash cmd="xalan -in reports/phpcpd/phpcpd-report-v1.xml -xsl https://systemsdk.github.io/phpcpd/report/phpcpd-html-v1_0_0.xslt -out reports/phpcpd/phpcpd-report-v1.html"
 
 report-code-coverage: ## Updates code coverage on coveralls.io. Note: COVERALLS_REPO_TOKEN should be set on CI side.
 	@make exec-bash cmd="export COVERALLS_REPO_TOKEN=${COVERALLS_REPO_TOKEN} && php ./vendor/bin/php-coveralls -v --coverage_clover reports/clover.xml --json_path reports/coverals.json"

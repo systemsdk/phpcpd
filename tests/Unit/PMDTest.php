@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Systemsdk\PhpCPD\Tests\Unit;
 
+use DateTime;
+use DateTimeInterface;
 use PHPUnit\Framework\TestCase;
 use Systemsdk\PhpCPD\CodeClone;
 use Systemsdk\PhpCPD\CodeCloneFile;
@@ -43,6 +45,7 @@ final class PMDTest extends TestCase
         $expectedPmdLogContents = strtr(
             $expectedPmdLogTemplate,
             [
+                '%datetime%' => (new DateTime())->format(DateTimeInterface::ATOM),
                 '%file1%' => $this->testFile1,
                 '%file2%' => $this->testFile2,
             ]
@@ -69,8 +72,8 @@ final class PMDTest extends TestCase
 
     public function testSubstitutesDisallowedCharacters(): void
     {
-        $file1 = new CodeCloneFile($this->testFile1, 8);
-        $file2 = new CodeCloneFile($this->testFile2, 8);
+        $file1 = new CodeCloneFile($this->testFile1, 8, 8 + 4);
+        $file2 = new CodeCloneFile($this->testFile2, 8, 8 + 4);
         $clone = new CodeClone($file1, $file2, 4, 4);
         $cloneMap = new CodeCloneMap();
         $cloneMap->add($clone);

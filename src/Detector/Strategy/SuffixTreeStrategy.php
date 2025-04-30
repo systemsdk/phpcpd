@@ -128,8 +128,12 @@ final class SuffixTreeStrategy extends AbstractStrategy
 
                     $this->result->add(
                         new CodeClone(
-                            new CodeCloneFile($cloneInfo->token->file, $cloneInfo->token->line),
-                            new CodeCloneFile($otherToken->file, $otherToken->line, $otherLastToken->line),
+                            new CodeCloneFile(
+                                $cloneInfo->token->file,
+                                $cloneInfo->token->line,
+                                $cloneInfo->token->line + $lines
+                            ),
+                            new CodeCloneFile($otherToken->file, $otherToken->line, $otherLastToken->line + 1),
                             $lines,
                             $cloneLength
                         )

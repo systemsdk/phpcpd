@@ -191,8 +191,8 @@ final class DefaultStrategy extends AbstractStrategy
         if (($fileA !== $file || $firstLineA !== $firstRealLine) && $numLines >= $this->config->minLines()) {
             $result->add(
                 new CodeClone(
-                    new CodeCloneFile($fileA, $firstLineA),
-                    new CodeCloneFile($file, $firstRealLine),
+                    new CodeCloneFile($fileA, $firstLineA, $firstLineA + $realNumLines),
+                    new CodeCloneFile($file, $firstRealLine, $firstRealLine + $realNumLines),
                     $realNumLines,
                     $lastToken + 1 - $firstToken
                 )

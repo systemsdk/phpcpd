@@ -28,7 +28,7 @@ use const PHP_EOL;
 
 final class Application
 {
-    public const string VERSION = '8.1.1';
+    public const string VERSION = '8.2.0';
 
     /**
      * @param array<int, string> $argv
@@ -144,7 +144,7 @@ Options for selecting files:
 
 Options for analysing files:
 
-  --algorithm <name>  Select which algorithm to use ('rabin-karp' (default) or 'suffix-tree' (experimental))
+  --algorithm <name>  Select which algorithm to use ('rabin-karp' (default) or 'suffix-tree')
   --fuzzy             Fuzz variable names
   --min-lines <N>     Minimum number of identical lines (default: 5)
   --min-tokens <N>    Minimum number of identical tokens (default: 70)

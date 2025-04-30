@@ -121,7 +121,7 @@ final class SuffixTreeTest extends TestCase
         $file2 = $files[__DIR__ . '/../Fixture/Math.php:217'];
         self::assertEquals(__DIR__ . '/../Fixture/Math.php', $file2->name());
         self::assertEquals(217, $file2->startLine());
-        self::assertEquals(275, $file2->endLine());
+        self::assertEquals(276, $file2->endLine());
     }
 
     public function testNoEditDistanceWithSuffixtreeReturns2Clones(): void
@@ -159,7 +159,7 @@ final class SuffixTreeTest extends TestCase
         $file2 = $files[__DIR__ . '/../Fixture/editdistance2.php:14'];
         self::assertEquals(__DIR__ . '/../Fixture/editdistance2.php', $file2->name());
         self::assertEquals(14, $file2->startLine());
-        self::assertEquals(23, $file2->endLine());
+        self::assertEquals(24, $file2->endLine());
 
         // let's check second clone
         $secondClone = $clones[1];
@@ -175,6 +175,6 @@ final class SuffixTreeTest extends TestCase
         $file2 = $files[__DIR__ . '/../Fixture/editdistance2.php:3'];
         self::assertEquals(__DIR__ . '/../Fixture/editdistance2.php', $file2->name());
         self::assertEquals(3, $file2->startLine());
-        self::assertEquals(13, $file2->endLine());
+        self::assertEquals(14, $file2->endLine());
     }
 }

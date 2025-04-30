@@ -9,9 +9,9 @@ final readonly class CodeCloneFile
     private string $id;
     private string $name;
     private int $startLine;
-    private ?int $endLine;
+    private int $endLine;
 
-    public function __construct(string $name, int $startLine, ?int $endLine = null)
+    public function __construct(string $name, int $startLine, int $endLine)
     {
         $this->id = $name . ':' . $startLine;
         $this->name = $name;
@@ -34,7 +34,7 @@ final readonly class CodeCloneFile
         return $this->startLine;
     }
 
-    public function endLine(): ?int
+    public function endLine(): int
     {
         return $this->endLine;
     }
