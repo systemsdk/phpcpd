@@ -29,7 +29,7 @@ Note: This tool is distributed as a [PHP Archive (PHAR)](https://php.net/phar).
 ## Usage example
 ```
 $ php ./vendor/bin/phpcpd --fuzzy --verbose src tests
-Copy/Paste Detector 8.2.0
+Copy/Paste Detector 8.2.1
 14/14 [==============================>] 100%
 Found 1 code clones with 17 duplicated lines in 1 files:
 

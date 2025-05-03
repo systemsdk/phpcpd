@@ -7,6 +7,7 @@ namespace Systemsdk\PhpCPD\Tests\Unit;
 use DateTime;
 use DateTimeInterface;
 use PHPUnit\Framework\TestCase;
+use Systemsdk\PhpCPD\Cli\Application;
 use Systemsdk\PhpCPD\CodeClone;
 use Systemsdk\PhpCPD\CodeCloneFile;
 use Systemsdk\PhpCPD\CodeCloneMap;
@@ -45,6 +46,7 @@ final class PMDTest extends TestCase
         $expectedPmdLogContents = strtr(
             $expectedPmdLogTemplate,
             [
+                '%version%' => Application::VERSION,
                 '%datetime%' => (new DateTime())->format(DateTimeInterface::ATOM),
                 '%file1%' => $this->testFile1,
                 '%file2%' => $this->testFile2,

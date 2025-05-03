@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="phpcpd" default="setup">
     <property name="basedir" value="." override="false"/>
-    <property name="version" value="8.2.0" override="false"/>
+    <property name="version" value="8.2.1" override="false"/>
     <target name="setup" depends="clean,install-dependencies"/>
 
     <target name="clean" description="Cleanup build artifacts">

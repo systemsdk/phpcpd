@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<pmd-cpd xmlns="https://systemsdk.github.io/phpcpd/report" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" phpcpdVersion="8.2.0" timestamp="%datetime%" version="1.0.0" xsi:schemaLocation="https://systemsdk.github.io/phpcpd/report https://systemsdk.github.io/phpcpd/report/phpcpd-report-v1_0_0.xsd">
+<pmd-cpd xmlns="https://systemsdk.github.io/phpcpd/report" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" phpcpdVersion="%version%" timestamp="%datetime%" version="1.0.0" xsi:schemaLocation="https://systemsdk.github.io/phpcpd/report https://systemsdk.github.io/phpcpd/report/phpcpd-report-v1_0_0.xsd">
     <duplication lines="4" tokens="4">
         <file line="8" endline="12" path="%file1%"/>
         <file line="8" endline="12" path="%file2%"/>
-        <codefragment>function getAsciiEscapeChar(): string
+        <codefragment><![CDATA[function getAsciiEscapeChar(): string
 {
     return '�';
 }
-</codefragment>
+]]></codefragment>
     </duplication>
 </pmd-cpd>

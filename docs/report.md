@@ -36,29 +36,29 @@ This format uses `xml` to output the duplications in a more structured format. T
 Report file example:
 ```
 <?xml version="1.0" encoding="UTF-8"?>
-<pmd-cpd xmlns="https://systemsdk.github.io/phpcpd/report" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" phpcpdVersion="8.2.0" timestamp="2025-04-29T17:39:52+00:00" version="1.0.0" xsi:schemaLocation="https://systemsdk.github.io/phpcpd/report https://systemsdk.github.io/phpcpd/report/phpcpd-report-v1_0_0.xsd">
+<pmd-cpd xmlns="https://systemsdk.github.io/phpcpd/report" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" phpcpdVersion="8.2.1" timestamp="2025-04-29T17:39:52+00:00" version="1.0.0" xsi:schemaLocation="https://systemsdk.github.io/phpcpd/report https://systemsdk.github.io/phpcpd/report/phpcpd-report-v1_0_0.xsd">
   <duplication lines="59" tokens="136">
     <file line="116" endline="175" path="/var/www/html/tests/Fixture/Math.php"/>
     <file line="217" endline="276" path="/var/www/html/tests/Fixture/Math.php"/>
     <codefragment><![CDATA[    public function div($v1, $v2)
     {
         $v3 = $v1 / ($v2 + $v1);
-        if ($v3 &gt; 14)
+        if ($v3 > 14)
         {
             $v4 = 0;
-            for ($i = 0; $i &lt; $v3; $i++)
+            for ($i = 0; $i < $v3; $i++)
             {
                 $v4 += ($v2 * $i);
             }
         }
-        $v5 = ($v4 &lt; $v3 ? ($v3 - $v4) : ($v4 - $v3));
+        $v5 = ($v4 < $v3 ? ($v3 - $v4) : ($v4 - $v3));
 
         $v6 = ($v1 * $v2 * $v3 * $v4 * $v5);
 
         $d = array($v1, $v2, $v3, $v4, $v5, $v6);
 
         $v7 = 1;
-        for ($i = 0; $i &lt; $v6; $i++)
+        for ($i = 0; $i < $v6; $i++)
         {
             shuffle( $d );
             $v7 = $v7 + $i * end($d);
@@ -71,22 +71,22 @@ Report file example:
         }
 
         $v3 = $v1 / ($v2 + $v1);
-        if ($v3 &gt; 14)
+        if ($v3 > 14)
         {
             $v4 = 0;
-            for ($i = 0; $i &lt; $v3; $i++)
+            for ($i = 0; $i < $v3; $i++)
             {
                 $v4 += ($v2 * $i);
             }
         }
-        $v5 = ($v4 &lt; $v3 ? ($v3 - $v4) : ($v4 - $v3));
+        $v5 = ($v4 < $v3 ? ($v3 - $v4) : ($v4 - $v3));
 
         $v6 = ($v1 * $v2 * $v3 * $v4 * $v5);
 
         $d = array($v1, $v2, $v3, $v4, $v5, $v6);
 
         $v7 = 1;
-        for ($i = 0; $i &lt; $v6; $i++)
+        for ($i = 0; $i < $v6; $i++)
         {
             shuffle( $d );
             $v7 = $v7 + $i * end($d);

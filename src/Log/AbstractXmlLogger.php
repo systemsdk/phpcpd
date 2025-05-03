@@ -9,13 +9,10 @@ use Systemsdk\PhpCPD\CodeCloneMap;
 use Systemsdk\PhpCPD\Exceptions\LoggerException;
 
 use function file_put_contents;
-use function htmlspecialchars;
 use function mb_convert_encoding;
 use function ord;
 use function preg_replace;
 use function strlen;
-
-use const ENT_COMPAT;
 
 abstract class AbstractXmlLogger
 {
@@ -98,12 +95,11 @@ abstract class AbstractXmlLogger
     protected function escapeForXml(string $string): string
     {
         $string = $this->convertToUtf8($string);
-        $string = (string)preg_replace(
+
+        return (string)preg_replace(
             '/[^\x09\x0A\x0D\x{0020}-\x{D7FF}\x{E000}-\x{FFFD}]/u',
             "\xEF\xBF\xBD",
             $string
         );
-
-        return htmlspecialchars($string, ENT_COMPAT);
     }
 }
