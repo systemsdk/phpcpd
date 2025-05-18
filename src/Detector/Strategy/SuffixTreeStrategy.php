@@ -11,6 +11,7 @@ use Systemsdk\PhpCPD\Detector\Strategy\SuffixTree\AbstractToken;
 use Systemsdk\PhpCPD\Detector\Strategy\SuffixTree\ApproximateCloneDetectingSuffixTree;
 use Systemsdk\PhpCPD\Detector\Strategy\SuffixTree\Sentinel;
 use Systemsdk\PhpCPD\Detector\Strategy\SuffixTree\Token;
+use Systemsdk\PhpCPD\Detector\Traits\ProgressBarTrait;
 use Systemsdk\PhpCPD\Exceptions\MissingResultException;
 
 use function array_key_exists;
@@ -33,6 +34,12 @@ use const T_ATTRIBUTE;
  */
 final class SuffixTreeStrategy extends AbstractStrategy
 {
+    use ProgressBarTrait;
+
+    private const string PROGRESS_BAR_SEARCH_CLONES_TITLE = 'Search for clones';
+    private const string PROGRESS_BAR_PROCESS_CLONES_TITLE = 'Clones processing';
+    private const string PROGRESS_BAR_POST_PROCESS_DONE_TITLE = 'Post process done';
+
     /**
      * @var array<int, AbstractToken>
      */
@@ -98,10 +105,16 @@ final class SuffixTreeStrategy extends AbstractStrategy
     /**
      * @throws MissingResultException
      */
-    public function postProcess(): void
+    public function postProcess(bool $useProgressBar): void
     {
         if (empty($this->result)) {
             throw new MissingResultException('Missing result');
+        }
+
+        $totalSteps = 2;
+
+        if ($useProgressBar) {
+            $this->progressBar(0, $totalSteps, self::PROGRESS_BAR_SEARCH_CLONES_TITLE);
         }
 
         // Sentinel = End of word
@@ -112,6 +125,10 @@ final class SuffixTreeStrategy extends AbstractStrategy
             $this->config->editDistance(),
             $this->config->headEquality()
         );
+
+        if ($useProgressBar) {
+            $this->progressBar(1, $totalSteps, self::PROGRESS_BAR_PROCESS_CLONES_TITLE);
+        }
 
         foreach ($cloneInfos as $cloneInfo) {
             /** @var int[] $others */
@@ -126,6 +143,7 @@ final class SuffixTreeStrategy extends AbstractStrategy
                     $otherCloneLength = $this->processCloneLength($cloneLength, $otherToken->file);
                     $otherLastToken = $this->getLastToken($others[$j], $otherCloneLength);
 
+                    /** @phpstan-ignore method.nonObject */
                     $this->result->add(
                         new CodeClone(
                             new CodeCloneFile(
@@ -140,6 +158,10 @@ final class SuffixTreeStrategy extends AbstractStrategy
                     );
                 }
             }
+        }
+
+        if ($useProgressBar) {
+            $this->progressBar(2, $totalSteps, self::PROGRESS_BAR_POST_PROCESS_DONE_TITLE);
         }
     }
 

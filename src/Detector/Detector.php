@@ -6,12 +6,18 @@ namespace Systemsdk\PhpCPD\Detector;
 
 use Systemsdk\PhpCPD\CodeCloneMap;
 use Systemsdk\PhpCPD\Detector\Strategy\AbstractStrategy;
+use Systemsdk\PhpCPD\Detector\Strategy\SuffixTreeStrategy;
+use Systemsdk\PhpCPD\Detector\Traits\ProgressBarTrait;
 use Systemsdk\PhpCPD\Exceptions\ProcessingResultException;
-
-use function sprintf;
 
 final class Detector
 {
+    use ProgressBarTrait;
+
+    private const int PROGRESS_BAR_BOUNDARY = 20;
+    private const string PROGRESS_BAR_RABIN_KARP_TITLE = 'Loading & Processing';
+    private const string PROGRESS_BAR_SUFFIX_TREE_TITLE = 'Loading';
+
     public function __construct(
         private readonly AbstractStrategy $strategy,
         private readonly bool $useProgressBar = false
@@ -28,44 +34,27 @@ final class Detector
         $result = new CodeCloneMap();
         $totalItems = count($files);
         $processedFiles = 0;
+        $boundary = self::PROGRESS_BAR_BOUNDARY;
         foreach ($files as $file) {
             $processedFiles++;
 
-            if (empty($file)) {
-                $this->progressBar($processedFiles, $totalItems);
-
-                continue;
+            if (!empty($file)) {
+                $this->strategy->processFile($file, $result);
             }
 
-            $this->strategy->processFile($file, $result);
-            $this->progressBar($processedFiles, $totalItems);
+            if ($this->useProgressBar && $this->countProgressBarPercent($processedFiles, $totalItems) >= $boundary) {
+                $this->progressBar(
+                    $processedFiles,
+                    $totalItems,
+                    $this->strategy instanceof SuffixTreeStrategy
+                        ? self::PROGRESS_BAR_SUFFIX_TREE_TITLE
+                        : self::PROGRESS_BAR_RABIN_KARP_TITLE
+                );
+                $boundary += self::PROGRESS_BAR_BOUNDARY;
+            }
         }
-        $this->strategy->postProcess();
+        $this->strategy->postProcess($this->useProgressBar);
 
         return $result;
-    }
-
-    private function progressBar(int $done, int $total, string $title = '', int $width = 30): void
-    {
-        if ($this->useProgressBar === false) {
-            return;
-        }
-
-        $perc = (int)floor(($done * 100) / $total);
-        $bar = (int)floor(($width * $perc) / 100);
-
-        print sprintf(
-            " %s/%s [%s>%s] %s%% %s\r",
-            $done,
-            $total,
-            str_repeat('=', $bar),
-            str_repeat(' ', $width - $bar),
-            $perc,
-            $title
-        );
-
-        if ($done >= $total) {
-            print PHP_EOL;
-        }
     }
 }

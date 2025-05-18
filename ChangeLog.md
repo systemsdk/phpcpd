@@ -2,6 +2,12 @@
 
 All notable changes in PHPCPD are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## [8.2.2] - 2025-05-18
+
+### Updated
+
+* Improved progress bar.
+
 ## [8.2.1] - 2025-05-03
 
 ### Updated

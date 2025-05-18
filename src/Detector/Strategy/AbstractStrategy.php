@@ -49,7 +49,7 @@ abstract class AbstractStrategy
 
     abstract public function processFile(string $file, CodeCloneMap $result): void;
 
-    public function postProcess(): void
+    public function postProcess(bool $useProgressBar): void
     {
     }
 }

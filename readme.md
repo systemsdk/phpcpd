@@ -29,8 +29,8 @@ Note: This tool is distributed as a [PHP Archive (PHAR)](https://php.net/phar).
 ## Usage example
 ```
 $ php ./vendor/bin/phpcpd --fuzzy --verbose src tests
-Copy/Paste Detector 8.2.1
-14/14 [==============================>] 100%
+Copy/Paste Detector 8.2.2
+14/14 [==============================>] 100% Loading & Processing
 Found 1 code clones with 17 duplicated lines in 1 files:
 
   - /var/www/html/tests/Application/ApiKey/Transport/Controller/Api/v1/ApiKeyControllerTest.php:128-145 (17 lines)
