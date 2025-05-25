@@ -8,25 +8,23 @@
 
   <!-- Dependencies:
   https://getbootstrap.com/docs/5.3/getting-started/download/
-  https://datatables.net/download/ (Styling Bootstrap5 + DataTables + Buttons + Column Visibility + HTML5 Export + JSZip + pdfmake + Print view
-  https://releases.jquery.com/
+  https://datatables.net/download/ (Styling Bootstrap5 + jQuery + DataTables + Buttons + Column Visibility + HTML5 Export + JSZip + pdfmake + Print view
   -->
 
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous"/>
-  <script src="https://code.jquery.com/jquery-3.7.0.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"/>
-  <link href="https://cdn.datatables.net/v/bs5/jszip-2.5.0/dt-1.13.4/b-2.3.6/b-html5-2.3.6/b-print-2.3.6/datatables.min.css" rel="stylesheet"/>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"/>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"/>
-  <script src="https://cdn.datatables.net/v/bs5/jszip-2.5.0/dt-1.13.4/b-2.3.6/b-html5-2.3.6/b-print-2.3.6/datatables.min.js"/>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous"/>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js" integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" crossorigin="anonymous"/>
+  <link href="https://cdn.datatables.net/v/bs5/jq-3.7.0/jszip-3.10.1/dt-2.3.1/b-3.2.3/b-colvis-3.2.3/b-html5-3.2.3/b-print-3.2.3/datatables.min.css" rel="stylesheet" integrity="sha384-ffA5YILdZwUQB7+HlHwFucF4hce41j8Tt6mvi1e0CLeZ0d9LqFUQJDx5vtwqZKah" crossorigin="anonymous"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js" integrity="sha384-VFQrHzqBh5qiJIU0uGU5CIW3+OWpdGGJM9LBnGbuIH2mkICcFZ7lPd/AAtI7SNf7" crossorigin="anonymous"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js" integrity="sha384-/RlQG9uf0M2vcTw3CX7fbqgbj/h8wKxw7C3zu9/GxcBPRKOEcESxaxufwRXqzq6n" crossorigin="anonymous"/>
+  <script src="https://cdn.datatables.net/v/bs5/jq-3.7.0/jszip-3.10.1/dt-2.3.1/b-3.2.3/b-colvis-3.2.3/b-html5-3.2.3/b-print-3.2.3/datatables.min.js" integrity="sha384-C5Q/xdoW8seeaT5jRMV9lAiJQNoGaRaJkyJ/A7lEdXF4pYx8lQjdNBXQ/KlbQA83" crossorigin="anonymous"/>
   <title>PHPCPD Report</title>
   <link rel="icon" href="https://systemsdk.github.io/images/favicon.ico" sizes="32x32" />
 
 </head>
-<body style="padding-top: 3.5rem;">
+<body style="padding-top: 4.5rem;">
   <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark">
-      <a class="navbar-brand" href="#"></a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <a class="navbar-brand" href="#"><img alt="Logo" src="https://systemsdk.github.io/images/logo-white-small.png"/></a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
@@ -45,7 +43,6 @@
           </li>
         </ul>
       </div>
-      <img alt="Logo" src="https://systemsdk.github.io/images/logo-white-small.png" style="border-right: 20px solid;"/>
   </nav>
 
     <div class="container">
@@ -105,20 +102,57 @@
     $("#nav_enable_datatable").hide();
     $(document).ready( function () {
         $('#data_table').DataTable({
-          dom: "&lt;'row'&lt;'col-sm-12 col-md-4'B>&lt;'col-sm-12 col-md-4'l>&lt;'col-sm-12 col-md-4'f>>" +
-               "&lt;'row'&lt;'col-sm-12'tr>>" +
-               "&lt;'row'&lt;'col-sm-12 col-md-5'i>&lt;'col-sm-12 col-md-7'p>>",
+          layout: {
+              topStart: ['buttons', 'pageLength']
+          },
           buttons: [
-              'copy', 'csv', 'excel', 'pdf', 'print'
+              {
+                  extend: 'copy',
+                  text: ' Copy',
+                  exportOptions: {
+                      trim: false,
+                      stripNewlines: false
+                  }
+              },
+              {
+                  extend: 'csv',
+                  text: ' CSV',
+                  exportOptions: {
+                      trim: false,
+                      stripNewlines: false
+                  }
+              },
+              {
+                  extend: 'excel',
+                  text: ' Excel',
+                  exportOptions: {
+                      trim: false,
+                      stripNewlines: false
+                  }
+              },
+              {
+                  extend: 'pdf',
+                  text: ' PDF',
+                  exportOptions: {
+                      trim: false,
+                      stripNewlines: false
+                  }
+              },
+              {
+                  extend: 'print',
+                  text: 'Print',
+                  exportOptions: {
+                      stripHtml: false,
+                      stripNewlines: false
+                  }
+              }
           ]
-        }
-        );
-    } );
+        });
+    });
   } else {
     $("#nav_disable_datatable").hide();
     $("#nav_enable_datatable").show();
   }
-
 </script>
 
 </body>

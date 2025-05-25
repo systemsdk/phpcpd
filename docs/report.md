@@ -36,7 +36,7 @@ This format uses `xml` to output the duplications in a more structured format. T
 Report file example:
 ```
 <?xml version="1.0" encoding="UTF-8"?>
-<pmd-cpd xmlns="https://systemsdk.github.io/phpcpd/report" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" phpcpdVersion="8.2.1" timestamp="2025-04-29T17:39:52+00:00" version="1.0.0" xsi:schemaLocation="https://systemsdk.github.io/phpcpd/report https://systemsdk.github.io/phpcpd/report/phpcpd-report-v1_0_0.xsd">
+<pmd-cpd xmlns="https://systemsdk.github.io/phpcpd/report" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" phpcpdVersion="8.2.3" timestamp="2025-05-25T16:09:03+00:00" version="1.0.0" xsi:schemaLocation="https://systemsdk.github.io/phpcpd/report https://systemsdk.github.io/phpcpd/report/phpcpd-report-v1_0_0.xsd">
   <duplication lines="59" tokens="136">
     <file line="116" endline="175" path="/var/www/html/tests/Fixture/Math.php"/>
     <file line="217" endline="276" path="/var/www/html/tests/Fixture/Math.php"/>

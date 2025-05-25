@@ -2,6 +2,12 @@
 
 All notable changes in PHPCPD are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## [8.2.3] - 2025-05-25
+
+### Updated
+
+* Improved html report and DataTables buttons, updated bootstrap and DataTables to the latest version.
+
 ## [8.2.2] - 2025-05-18
 
 ### Updated
