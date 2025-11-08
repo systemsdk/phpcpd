@@ -12,7 +12,7 @@ ARG INSIDE_DOCKER_CONTAINER=1
 ENV INSIDE_DOCKER_CONTAINER=$INSIDE_DOCKER_CONTAINER
 ARG XDEBUG_CONFIG=main
 ENV XDEBUG_CONFIG=$XDEBUG_CONFIG
-ARG XDEBUG_VERSION=3.4.3
+ARG XDEBUG_VERSION=3.4.7
 ENV XDEBUG_VERSION=$XDEBUG_VERSION
 ENV PHP_CS_FIXER_IGNORE_ENV=1
 
@@ -78,8 +78,8 @@ ENV COMPOSER_ALLOW_SUPERUSER 1
 RUN composer completion bash > /etc/bash_completion.d/composer
 
 # install phive
-RUN wget -O phive.phar https://phar.io/releases/phive.phar && \
-    wget -O phive.phar.asc https://phar.io/releases/phive.phar.asc && \
+RUN wget -O phive.phar https://github.com/phar-io/phive/releases/download/0.16.0/phive-0.16.0.phar && \
+    wget -O phive.phar.asc https://github.com/phar-io/phive/releases/download/0.16.0/phive-0.16.0.phar.asc && \
     gpg --keyserver hkps://keys.openpgp.org --recv-keys 0x6AF725270AB81E04D79442549D8A98B29B2D5D79 && \
     gpg --verify phive.phar.asc phive.phar && \
     rm phive.phar.asc && \

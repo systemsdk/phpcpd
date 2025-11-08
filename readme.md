@@ -29,7 +29,7 @@ Note: This tool is distributed as a [PHP Archive (PHAR)](https://php.net/phar).
 ## Usage example
 ```
 $ php ./vendor/bin/phpcpd --fuzzy --verbose src tests
-Copy/Paste Detector 8.2.3
+Copy/Paste Detector 8.2.4
 14/14 [==============================>] 100% Loading & Processing
 Found 1 code clones with 17 duplicated lines in 1 files:
 
@@ -80,8 +80,8 @@ Note: OS recommendation - Linux Ubuntu based.
 ## Components for the support team
 1. PHP 8.4 fpm
 2. Composer 2
-3. Phive 0.15
-4. Phing 3.0
+3. Phive 0.16
+4. Phing 3.1
 5. Xalan 1.12
 
 ## Setting up Docker and docker compose for the support team

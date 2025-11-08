@@ -28,7 +28,7 @@ use const PHP_EOL;
 
 final class Application
 {
-    public const string VERSION = '8.2.3';
+    public const string VERSION = '8.2.4';
 
     /**
      * @param array<int, string> $argv

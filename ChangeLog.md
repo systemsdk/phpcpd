@@ -2,6 +2,12 @@
 
 All notable changes in PHPCPD are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## [8.2.4] - 2025-11-08
+
+### Updated
+
+* Updated sebastian/cli-parser. Dev environment: Updated XDebug, Phive, Phing, dev composer dependencies.
+
 ## [8.2.3] - 2025-05-25
 
 ### Updated
