@@ -26,6 +26,7 @@ final class ArgumentsBuilder
     public const string OPTION_ALGORITHM_NAME = 'algorithm';
     public const string ALGORITHM_RABIN_KARP_NAME = 'rabin-karp';
     public const string ALGORITHM_SUFFIX_TREE_NAME = 'suffix-tree';
+    public const string OPTION_IGNORE_NO_FILES = 'ignore-no-files';
 
     /**
      * @param array<int, string> $argv
@@ -52,6 +53,7 @@ final class ArgumentsBuilder
                     self::OPTION_HELP_NAME,
                     self::OPTION_VERSION_NAME,
                     self::OPTION_ALGORITHM_NAME . '=',
+                    self::OPTION_IGNORE_NO_FILES,
                 ]
             );
         } catch (CliParserException $e) {
@@ -72,6 +74,7 @@ final class ArgumentsBuilder
         $verbose = false;
         $help = false;
         $version = false;
+        $ignoreNoFiles = false;
 
         $algorithm = self::ALGORITHM_RABIN_KARP_NAME;
 
@@ -127,6 +130,10 @@ final class ArgumentsBuilder
                     $algorithm = (string)$option[1];
 
                     break;
+                case '--' . self::OPTION_IGNORE_NO_FILES:
+                    $ignoreNoFiles = true;
+
+                    break;
             }
         }
 
@@ -147,7 +154,8 @@ final class ArgumentsBuilder
             $version,
             $algorithm,
             $editDistance,
-            $headEquality
+            $headEquality,
+            $ignoreNoFiles
         );
     }
 }

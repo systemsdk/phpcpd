@@ -131,19 +131,19 @@ report-code-coverage: ## Updates code coverage on coveralls.io. Note: COVERALLS_
 	@make exec-bash cmd="export COVERALLS_REPO_TOKEN=${COVERALLS_REPO_TOKEN} && php ./vendor/bin/php-coveralls -v --coverage_clover reports/clover.xml --json_path reports/coverals.json"
 
 phpcs: ## Runs PHP CodeSniffer
-	@make exec-bash cmd="./vendor/bin/phpcs --version && ./vendor/bin/phpcs --standard=PSR12 --colors -p src tests/Unit"
+	@make exec-bash cmd="./vendor/bin/phpcs --version && ./vendor/bin/phpcs --standard=PSR12 --colors -p src tests/Integration"
 
 ecs: ## Runs Easy Coding Standard tool
-	@make exec-bash cmd="./vendor/bin/ecs --version && ./vendor/bin/ecs --clear-cache check src tests/Unit"
+	@make exec-bash cmd="./vendor/bin/ecs --version && ./vendor/bin/ecs --clear-cache check src tests/Integration"
 
 ecs-fix: ## Runs Easy Coding Standard tool to fix issues
-	@make exec-bash cmd="./vendor/bin/ecs --version && ./vendor/bin/ecs --clear-cache --fix check src tests/Unit"
+	@make exec-bash cmd="./vendor/bin/ecs --version && ./vendor/bin/ecs --clear-cache --fix check src tests/Integration"
 
 phpstan: ## Runs PhpStan static analysis tool
 ifeq ($(INSIDE_DOCKER_CONTAINER), 1)
 	@echo "\033[32mRunning PHPStan - PHP Static Analysis Tool\033[39m"
 	@./vendor/bin/phpstan --version
-	@./vendor/bin/phpstan analyze src tests/Unit
+	@./vendor/bin/phpstan analyze src tests/Integration
 else
 	@make exec cmd="make phpstan"
 endif

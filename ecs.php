@@ -31,7 +31,7 @@ use Symplify\EasyCodingStandard\ValueObject\Set\SetList;
 return static function (ECSConfig $ecsConfig): void {
     $ecsConfig->paths([
         __DIR__ . '/src',
-        __DIR__ . '/tests/Unit',
+        __DIR__ . '/tests/Integration',
     ]);
 
     $ecsConfig->sets([SetList::PSR_12, SetList::CLEAN_CODE, SetList::COMMON]);

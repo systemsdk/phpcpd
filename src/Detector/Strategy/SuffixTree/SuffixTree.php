@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Systemsdk\PhpCPD\Detector\Strategy\SuffixTree;
 
+use function count;
+
 /**
  * Efficient linear time constructible suffix tree using Ukkonen's online construction algorithm
  * (E. Ukkonen: "On-line construction of suffix trees").

@@ -13,6 +13,7 @@ use Systemsdk\PhpCPD\Detector\Strategy\AbstractStrategy;
 use Systemsdk\PhpCPD\Detector\Strategy\DefaultStrategy;
 use Systemsdk\PhpCPD\Detector\Strategy\StrategyConfiguration;
 use Systemsdk\PhpCPD\Detector\Strategy\SuffixTreeStrategy;
+use Systemsdk\PhpCPD\Detector\SuppressionGuard;
 use Systemsdk\PhpCPD\Exceptions\Exception;
 use Systemsdk\PhpCPD\Exceptions\InvalidStrategyException;
 use Systemsdk\PhpCPD\Exceptions\LoggerException;
@@ -28,7 +29,7 @@ use const PHP_EOL;
 
 final class Application
 {
-    public const string VERSION = '8.2.4';
+    public const string VERSION = '8.3.0';
 
     /**
      * @param array<int, string> $argv
@@ -73,11 +74,19 @@ final class Application
         if (empty($files)) {
             print 'No files found to scan' . PHP_EOL;
 
+            if ($arguments->ignoreNoFiles()) {
+                return 0;
+            }
+
             return 1;
         }
 
         try {
-            $strategy = $this->pickStrategy($arguments->algorithm(), new StrategyConfiguration($arguments));
+            $strategy = $this->pickStrategy(
+                $arguments->algorithm(),
+                new StrategyConfiguration($arguments),
+                new SuppressionGuard()
+            );
         } catch (InvalidStrategyException $exception) {
             print $exception->getMessage() . PHP_EOL;
 
@@ -122,11 +131,14 @@ final class Application
     /**
      * @throws InvalidStrategyException
      */
-    private function pickStrategy(string $algorithm, StrategyConfiguration $config): AbstractStrategy
-    {
+    private function pickStrategy(
+        string $algorithm,
+        StrategyConfiguration $config,
+        SuppressionGuard $guard
+    ): AbstractStrategy {
         return match ($algorithm) {
-            ArgumentsBuilder::ALGORITHM_RABIN_KARP_NAME => new DefaultStrategy($config),
-            ArgumentsBuilder::ALGORITHM_SUFFIX_TREE_NAME => new SuffixTreeStrategy($config),
+            ArgumentsBuilder::ALGORITHM_RABIN_KARP_NAME => new DefaultStrategy($config, $guard),
+            ArgumentsBuilder::ALGORITHM_SUFFIX_TREE_NAME => new SuffixTreeStrategy($config, $guard),
             default => throw new InvalidStrategyException('Unsupported algorithm: ' . $algorithm),
         };
     }
@@ -151,6 +163,7 @@ Options for analysing files:
   --edit-distance <N> Distance in number of edits between two clones (only for suffix-tree; default: 0)
   --head-equality <N> Minimum equality at start of clone (only for suffix-tree; default 10)
   --verbose           Print results details
+  --ignore-no-files   To return a success exit code if no files were found
 
 Options for report generation:
 

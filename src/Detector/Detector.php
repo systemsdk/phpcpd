@@ -10,6 +10,8 @@ use Systemsdk\PhpCPD\Detector\Strategy\SuffixTreeStrategy;
 use Systemsdk\PhpCPD\Detector\Traits\ProgressBarTrait;
 use Systemsdk\PhpCPD\Exceptions\ProcessingResultException;
 
+use function count;
+
 final class Detector
 {
     use ProgressBarTrait;

@@ -21,6 +21,7 @@ use function pack;
 use function substr;
 use function substr_count;
 use function token_get_all;
+use function uniqid;
 
 use const T_ATTRIBUTE;
 use const T_VARIABLE;
@@ -60,6 +61,7 @@ final class DefaultStrategy extends AbstractStrategy
         $attributeStartedLine = 0;
         $firstHash = '';
         $firstToken = 0;
+        $wasSuppressed = false;
 
         $result->addToNumberOfLines(substr_count($buffer, "\n"));
 
@@ -70,15 +72,44 @@ final class DefaultStrategy extends AbstractStrategy
             $token = $tokens[$key];
 
             if (is_array($token)) {
+                $tokenLine = (int)$token[2];
+
+                // If the current line is protected by #[SuppressCpd]
+                if ($this->guard->isLineSuppressed($file, $tokenLine)) {
+                    // If we JUST entered the suppressed zone, place a Barrier Wall
+                    if (!$wasSuppressed) {
+                        if ($tokenNr === 0) {
+                            $currentTokenPositions[$tokenNr] = 0;
+                        } else {
+                            $currentTokenPositions[$tokenNr] = $currentTokenPositions[$tokenNr - 1];
+                        }
+
+                        $currentTokenRealPositions[$tokenNr] = $tokenLine;
+
+                        // Create a globally unique token (Barrier) to poison any sliding window
+                        // that tries to cross this area. This prevents wormhole bugs.
+                        $currentSignature .= chr(255) . pack('N*', crc32(uniqid('barrier', true)));
+                        $tokenNr++;
+                        $wasSuppressed = true;
+                    }
+
+                    $lastTokenLine = $tokenLine;
+
+                    continue; // Skip the actual token, keeping it out of the engine
+                }
+
+                // We are in normal code, reset the flag
+                $wasSuppressed = false;
+
                 if ($attributeStarted === false && !isset($this->tokensIgnoreList[$token[0]])) {
                     if ($tokenNr === 0) {
-                        $currentTokenPositions[$tokenNr] = $token[2] - $lastTokenLine;
+                        $currentTokenPositions[$tokenNr] = $tokenLine - $lastTokenLine;
                     } else {
-                        $currentTokenPositions[$tokenNr] = $currentTokenPositions[$tokenNr - 1] + $token[2]
+                        $currentTokenPositions[$tokenNr] = $currentTokenPositions[$tokenNr - 1] + $tokenLine
                             - $lastTokenLine;
                     }
 
-                    $currentTokenRealPositions[$tokenNr++] = (int)$token[2];
+                    $currentTokenRealPositions[$tokenNr++] = $tokenLine;
 
                     if ($token[0] === T_VARIABLE && $this->config->fuzzy()) {
                         $token[1] = 'variable';
@@ -89,10 +120,10 @@ final class DefaultStrategy extends AbstractStrategy
 
                 if ($token[0] === T_ATTRIBUTE) {
                     $attributeStarted = true;
-                    $attributeStartedLine = $token[2];
+                    $attributeStartedLine = $tokenLine;
                 }
 
-                $lastTokenLine = $token[2];
+                $lastTokenLine = $tokenLine;
             } elseif (
                 $attributeStarted === true && $token === ']'
                 && (

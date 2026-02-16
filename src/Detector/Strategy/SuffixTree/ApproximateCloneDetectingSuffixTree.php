@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Systemsdk\PhpCPD\Detector\Strategy\SuffixTree;
 
+use function count;
+
 /**
  * An extension of the suffix tree adding an algorithm for finding approximate clones, i.e. substrings which are similar
  */

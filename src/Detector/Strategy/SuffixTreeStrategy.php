@@ -16,9 +16,11 @@ use Systemsdk\PhpCPD\Exceptions\MissingResultException;
 
 use function array_key_exists;
 use function array_keys;
+use function count;
 use function file_get_contents;
 use function is_array;
 use function token_get_all;
+use function uniqid;
 
 use const T_ATTRIBUTE;
 
@@ -48,7 +50,7 @@ final class SuffixTreeStrategy extends AbstractStrategy
     /**
      * @var array<string, int>
      */
-    private array $fileTokens = [];
+    private array $fileEndPositions = [];
 
     private ?CodeCloneMap $result = null;
 
@@ -59,7 +61,7 @@ final class SuffixTreeStrategy extends AbstractStrategy
         $lastTokenLine = 0;
         $attributeStarted = false;
         $attributeStartedLine = 0;
-        $this->fileTokens[$file] = 0;
+        $wasSuppressed = false;
 
         $result->addToNumberOfLines(substr_count($content, "\n"));
 
@@ -70,23 +72,46 @@ final class SuffixTreeStrategy extends AbstractStrategy
             $token = $tokens[$key];
 
             if (is_array($token)) {
+                $tokenLine = (int)$token[2];
+
+                if ($this->guard->isLineSuppressed($file, $tokenLine)) {
+                    if (!$wasSuppressed) {
+                        // Insert a unique fake barrier token.
+                        // It has ID -1 and an absolutely unique value, so the Suffix Tree
+                        // will never find a match for it and will stop the clone search at this point.
+                        $this->word[] = new Token(
+                            -1,
+                            'T_SUPPRESSED_BARRIER',
+                            $tokenLine,
+                            $file,
+                            uniqid('barrier_', true)
+                        );
+                        $wasSuppressed = true;
+                    }
+                    $lastTokenLine = $tokenLine;
+
+                    continue; // Skip the actual token, keeping it out of the engine
+                }
+
+                // Exited the suppressed zone
+                $wasSuppressed = false;
+
                 if ($attributeStarted === false && !isset($this->tokensIgnoreList[$token[0]])) {
                     $this->word[] = new Token(
                         $token[0],
                         token_name($token[0]),
-                        $token[2],
+                        $tokenLine,
                         $file,
                         $token[1]
                     );
-                    $this->fileTokens[$file]++;
                 }
 
                 if ($token[0] === T_ATTRIBUTE) {
                     $attributeStarted = true;
-                    $attributeStartedLine = $token[2];
+                    $attributeStartedLine = $tokenLine;
                 }
 
-                $lastTokenLine = $token[2];
+                $lastTokenLine = $tokenLine;
             } elseif (
                 $attributeStarted === true && $token === ']'
                 && (
@@ -97,6 +122,12 @@ final class SuffixTreeStrategy extends AbstractStrategy
                 $attributeStarted = false;
                 $attributeStartedLine = 0;
             }
+        }
+
+        $lastIndex = count($this->word) - 1;
+
+        if ($lastIndex >= 0 && $this->word[$lastIndex]->file === $file) {
+            $this->fileEndPositions[$file] = $lastIndex;
         }
 
         $this->result = $result;
@@ -133,15 +164,22 @@ final class SuffixTreeStrategy extends AbstractStrategy
         foreach ($cloneInfos as $cloneInfo) {
             /** @var int[] $others */
             $others = $cloneInfo->otherClones->extractFirstList();
-            $cloneLength = $this->processCloneLength($cloneInfo->length, $cloneInfo->token->file);
-            $cloneInfoLastToken = $this->getLastToken($cloneInfo->position, $cloneLength);
-            $lines = $cloneInfoLastToken->line + 1 - $cloneInfo->token->line;
 
-            if ($lines >= $this->config->minLines()) {
+            // Get the exact boundaries of the Original (Head) with O(1) protection against out-of-bounds
+            $cloneLength = $this->processCloneLength($cloneInfo->position, $cloneInfo->length, $cloneInfo->token->file);
+            $headLastToken = $this->getLastToken($cloneInfo->position, $cloneLength);
+            $headLines = $headLastToken->line + 1 - $cloneInfo->token->line;
+
+            // If the clone size meets our limits
+            if ($headLines >= $this->config->minLines()) {
+                // Add all copies to the result
                 for ($j = 0, $count = count($others); $j < $count; $j++) {
                     $otherToken = $this->word[$others[$j]];
-                    $otherCloneLength = $this->processCloneLength($cloneLength, $otherToken->file);
+
+                    // Calculate exact boundaries for each copy
+                    $otherCloneLength = $this->processCloneLength($others[$j], $cloneLength, $otherToken->file);
                     $otherLastToken = $this->getLastToken($others[$j], $otherCloneLength);
+                    $otherLines = $otherLastToken->line + 1 - $otherToken->line;
 
                     /** @phpstan-ignore method.nonObject */
                     $this->result->add(
@@ -149,10 +187,10 @@ final class SuffixTreeStrategy extends AbstractStrategy
                             new CodeCloneFile(
                                 $cloneInfo->token->file,
                                 $cloneInfo->token->line,
-                                $cloneInfo->token->line + $lines
+                                $cloneInfo->token->line + $headLines
                             ),
-                            new CodeCloneFile($otherToken->file, $otherToken->line, $otherLastToken->line + 1),
-                            $lines,
+                            new CodeCloneFile($otherToken->file, $otherToken->line, $otherToken->line + $otherLines),
+                            $headLines,
                             $cloneLength
                         )
                     );
@@ -165,10 +203,16 @@ final class SuffixTreeStrategy extends AbstractStrategy
         }
     }
 
-    private function processCloneLength(int $cloneLength, string $file): int
+    private function processCloneLength(int $position, int $cloneLength, string $file): int
     {
-        if ($cloneLength > $this->fileTokens[$file]) {
-            $cloneLength = $this->fileTokens[$file];
+        if (!isset($this->fileEndPositions[$file])) {
+            return $cloneLength;
+        }
+
+        $maxAllowedLength = $this->fileEndPositions[$file] - $position + 1;
+
+        if ($cloneLength > $maxAllowedLength) {
+            return $maxAllowedLength;
         }
 
         return $cloneLength;

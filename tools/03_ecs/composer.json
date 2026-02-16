@@ -5,7 +5,7 @@
 		"php": ">=8.3"
 	},
 	"require-dev": {
-		"friendsofphp/php-cs-fixer": "3.89.*",
+		"friendsofphp/php-cs-fixer": "3.93.*",
 		"squizlabs/php_codesniffer": "4.0.*",
 		"symplify/easy-coding-standard": "13.0.*",
 		"roave/security-advisories": "dev-latest"
@@ -13,7 +13,7 @@
 	"config": {
 		"allow-plugins": true,
 		"platform": {
-			"php": "8.4.0"
+			"php": "8.5.0"
 		},
 		"preferred-install": {
 			"*": "dist"

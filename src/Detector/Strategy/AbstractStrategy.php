@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Systemsdk\PhpCPD\Detector\Strategy;
 
 use Systemsdk\PhpCPD\CodeCloneMap;
+use Systemsdk\PhpCPD\Detector\SuppressionGuard;
 
 use const T_ATTRIBUTE;
 use const T_CLOSE_TAG;
@@ -38,7 +39,8 @@ abstract class AbstractStrategy
     ];
 
     public function __construct(
-        protected StrategyConfiguration $config
+        protected StrategyConfiguration $config,
+        protected readonly SuppressionGuard $guard
     ) {
     }
 

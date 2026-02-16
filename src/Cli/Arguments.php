@@ -24,7 +24,8 @@ final readonly class Arguments
         private bool $version,
         private string $algorithm,
         private int $editDistance,
-        private int $headEquality
+        private int $headEquality,
+        private bool $ignoreNoFiles
     ) {
     }
 
@@ -100,5 +101,10 @@ final readonly class Arguments
     public function headEquality(): int
     {
         return $this->headEquality;
+    }
+
+    public function ignoreNoFiles(): bool
+    {
+        return $this->ignoreNoFiles;
     }
 }

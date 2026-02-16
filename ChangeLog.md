@@ -2,6 +2,18 @@
 
 All notable changes in PHPCPD are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## [8.3.0] - 2026-02-16
+
+### Added
+
+* Added `--ignore-no-files option` to return a success exit code if no files were found.
+* Added `#[SuppressCpd]` to ignore code clones inside a class or method (`use Systemsdk\PhpCPD\Attributes\SuppressCpd;`).
+
+### Updated
+
+* Improved Suffix Tree-based algorithm for code clone detection.
+* Updated Dev environment: Updated XDebug, Phing, dev composer dependencies.
+
 ## [8.2.4] - 2025-11-08
 
 ### Updated

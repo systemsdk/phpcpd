@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1.7-labs
-FROM php:8.4-fpm
+FROM php:8.5-fpm-bookworm
 
 # set main params
 ARG BUILD_ARGUMENT_ENV=dev
@@ -12,9 +12,8 @@ ARG INSIDE_DOCKER_CONTAINER=1
 ENV INSIDE_DOCKER_CONTAINER=$INSIDE_DOCKER_CONTAINER
 ARG XDEBUG_CONFIG=main
 ENV XDEBUG_CONFIG=$XDEBUG_CONFIG
-ARG XDEBUG_VERSION=3.4.7
+ARG XDEBUG_VERSION=3.5.0
 ENV XDEBUG_VERSION=$XDEBUG_VERSION
-ENV PHP_CS_FIXER_IGNORE_ENV=1
 
 # check environment
 RUN if [ "$BUILD_ARGUMENT_ENV" = "default" ]; then echo "Set BUILD_ARGUMENT_ENV in docker build-args like --build-arg BUILD_ARGUMENT_ENV=dev" && exit 2; \
@@ -44,7 +43,6 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y \
     && docker-php-ext-install \
       sockets \
       intl \
-      opcache \
       zip \
     && apt-get install --no-install-recommends -y \
         $(debsecan --suite bookworm --format packages --only-fixed) \
