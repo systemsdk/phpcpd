@@ -25,15 +25,10 @@ final class SuppressionGuard
 
     public function isLineSuppressed(string $file, int $line): bool
     {
-        $ranges = $this->getSuppressedRanges($file);
-
-        foreach ($ranges as $range) {
-            if ($line >= $range['start'] && $line <= $range['end']) {
-                return true;
-            }
-        }
-
-        return false;
+        return array_any(
+            $this->getSuppressedRanges($file),
+            static fn (array $range): bool => $line >= $range['start'] && $line <= $range['end']
+        );
     }
 
     /**

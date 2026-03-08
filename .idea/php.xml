@@ -69,12 +69,6 @@
       <path value="$PROJECT_DIR$/tools/01_phpunit/vendor/phpunit/phpunit" />
       <path value="$PROJECT_DIR$/tools/01_phpunit/vendor/phpunit/php-timer" />
       <path value="$PROJECT_DIR$/tools/01_phpunit/vendor/phpunit/php-file-iterator" />
-      <path value="$PROJECT_DIR$/vendor/phpunit/php-timer" />
-      <path value="$PROJECT_DIR$/vendor/sebastian/cli-parser" />
-      <path value="$PROJECT_DIR$/vendor/sebastian/version" />
-      <path value="$PROJECT_DIR$/vendor/phpunit/php-file-iterator" />
-      <path value="$PROJECT_DIR$/vendor/composer" />
-      <path value="$PROJECT_DIR$/vendor/bamarni/composer-bin-plugin" />
       <path value="$PROJECT_DIR$/tools/03_ecs/vendor/sebastian/diff" />
       <path value="$PROJECT_DIR$/tools/03_ecs/vendor/evenement/evenement" />
       <path value="$PROJECT_DIR$/tools/03_ecs/vendor/friendsofphp/php-cs-fixer" />
@@ -116,6 +110,12 @@
       <path value="$PROJECT_DIR$/tools/02_phpstan/vendor/phpstan/phpstan-deprecation-rules" />
       <path value="$PROJECT_DIR$/tools/02_phpstan/vendor/phpstan/phpstan-phpunit" />
       <path value="$PROJECT_DIR$/tools/02_phpstan/vendor/phpstan/phpstan" />
+      <path value="$PROJECT_DIR$/vendor/sebastian/cli-parser" />
+      <path value="$PROJECT_DIR$/vendor/composer" />
+      <path value="$PROJECT_DIR$/vendor/sebastian/version" />
+      <path value="$PROJECT_DIR$/vendor/bamarni/composer-bin-plugin" />
+      <path value="$PROJECT_DIR$/vendor/phpunit/php-file-iterator" />
+      <path value="$PROJECT_DIR$/vendor/phpunit/php-timer" />
     </include_path>
   </component>
   <component name="PhpInterpreters">
@@ -185,7 +185,7 @@
       </interpreter>
     </phpInfoCache>
   </component>
-  <component name="PhpProjectSharedConfiguration" php_language_level="8.3" />
+  <component name="PhpProjectSharedConfiguration" php_language_level="8.4" />
   <component name="PhpStan">
     <PhpStan_settings>
       <PhpStanConfiguration tool_path="$PROJECT_DIR$/vendor/bin/phpstan" />

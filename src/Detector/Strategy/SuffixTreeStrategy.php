@@ -13,8 +13,8 @@ use Systemsdk\PhpCPD\Detector\Strategy\SuffixTree\Sentinel;
 use Systemsdk\PhpCPD\Detector\Strategy\SuffixTree\Token;
 use Systemsdk\PhpCPD\Detector\Traits\ProgressBarTrait;
 use Systemsdk\PhpCPD\Exceptions\MissingResultException;
+use Systemsdk\PhpCPD\Exceptions\ProcessingResultException;
 
-use function array_key_exists;
 use function array_keys;
 use function count;
 use function file_get_contents;
@@ -116,7 +116,7 @@ final class SuffixTreeStrategy extends AbstractStrategy
                 $attributeStarted === true && $token === ']'
                 && (
                     $attributeStartedLine === $lastTokenLine
-                    || (array_key_exists($key - 1, $tokens) && $tokens[$key - 1] === ')')
+                    || (($tokens[$key - 1] ?? null) === ')')
                 )
             ) {
                 $attributeStarted = false;
@@ -135,6 +135,7 @@ final class SuffixTreeStrategy extends AbstractStrategy
 
     /**
      * @throws MissingResultException
+     * @throws ProcessingResultException
      */
     public function postProcess(bool $useProgressBar): void
     {
@@ -151,7 +152,7 @@ final class SuffixTreeStrategy extends AbstractStrategy
         // Sentinel = End of word
         $this->word[] = new Sentinel();
 
-        $cloneInfos = (new ApproximateCloneDetectingSuffixTree($this->word))->findClones(
+        $cloneInfos = new ApproximateCloneDetectingSuffixTree($this->word)->findClones(
             $this->config->minTokens(),
             $this->config->editDistance(),
             $this->config->headEquality()

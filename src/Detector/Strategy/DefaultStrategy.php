@@ -9,7 +9,6 @@ use Systemsdk\PhpCPD\CodeCloneFile;
 use Systemsdk\PhpCPD\CodeCloneMap;
 use Systemsdk\PhpCPD\Exceptions\ProcessingResultException;
 
-use function array_key_exists;
 use function array_keys;
 use function chr;
 use function count;
@@ -128,7 +127,7 @@ final class DefaultStrategy extends AbstractStrategy
                 $attributeStarted === true && $token === ']'
                 && (
                     $attributeStartedLine === $lastTokenLine
-                    || (array_key_exists($key - 1, $tokens) && $tokens[$key - 1] === ')')
+                    || (($tokens[$key - 1] ?? null) === ')')
                 )
             ) {
                 $attributeStarted = false;

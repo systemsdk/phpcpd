@@ -51,6 +51,9 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y \
     && rm -rf /var/lib/apt/lists/* \
     && apt-get clean
 
+# Pull the PHP extension installer from the official image
+COPY --from=mlocati/php-extension-installer:latest /usr/bin/install-php-extensions /usr/local/bin/
+
 # create document root, fix permissions for www-data user and change owner to www-data
 RUN mkdir -p $APP_HOME/public && \
     mkdir -p /home/$USERNAME && chown $USERNAME:$USERNAME /home/$USERNAME \
@@ -63,9 +66,13 @@ COPY ./docker/$BUILD_ARGUMENT_ENV/www.conf /usr/local/etc/php-fpm.d/www.conf
 COPY ./docker/$BUILD_ARGUMENT_ENV/php.ini /usr/local/etc/php/php.ini
 
 # install Xdebug in case dev environment
-COPY ./docker/general/do_we_need_xdebug.sh /tmp/
 COPY ./docker/dev/xdebug-${XDEBUG_CONFIG}.ini /tmp/xdebug.ini
-RUN chmod u+x /tmp/do_we_need_xdebug.sh && /tmp/do_we_need_xdebug.sh
+RUN if [ "$ENV" = "dev" ] || [ "$ENV" = "test" ]; then \
+        install-php-extensions xdebug-${XDEBUG_VERSION} && \
+        mv /tmp/xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini; \
+    else \
+        rm /tmp/xdebug.ini; \
+    fi
 
 # install composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer

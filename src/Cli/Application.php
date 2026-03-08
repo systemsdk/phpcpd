@@ -29,7 +29,7 @@ use const PHP_EOL;
 
 final class Application
 {
-    public const string VERSION = '8.3.0';
+    public const string VERSION = '9.0.0';
 
     /**
      * @param array<int, string> $argv
@@ -39,7 +39,7 @@ final class Application
         $this->printVersion();
 
         try {
-            $arguments = (new ArgumentsBuilder())->build($argv);
+            $arguments = new ArgumentsBuilder()->build($argv);
         } catch (Exception $exception) {
             print PHP_EOL . $exception->getMessage() . PHP_EOL;
 
@@ -64,7 +64,7 @@ final class Application
         $suffixes = $arguments->suffixes();
         /** @var list<non-empty-string> $exclude */
         $exclude = $arguments->exclude();
-        $files = (new Facade())->getFilesAsArray(
+        $files = new Facade()->getFilesAsArray(
             $paths,
             $suffixes,
             '',
@@ -97,18 +97,18 @@ final class Application
         $timer->start();
 
         try {
-            $clones = (new Detector($strategy, true))->copyPasteDetection($files);
+            $clones = new Detector($strategy, true)->copyPasteDetection($files);
         } catch (ProcessingResultException $exception) {
             print 'Processing error: ' . $exception->getMessage() . PHP_EOL;
 
             return 1;
         }
 
-        (new Text())->printResult($clones, $arguments->verbose());
+        new Text()->printResult($clones, $arguments->verbose());
 
         if ($arguments->pmdCpdXmlLogfile()) {
             try {
-                (new PMD($arguments->pmdCpdXmlLogfile()))->processClones($clones);
+                new PMD($arguments->pmdCpdXmlLogfile())->processClones($clones);
             } catch (LoggerException $exception) {
                 print 'Logger error: ' . $exception->getMessage() . PHP_EOL;
 
@@ -116,7 +116,7 @@ final class Application
             }
         }
 
-        print (new ResourceUsageFormatter())->resourceUsage($timer->stop()) . PHP_EOL;
+        print new ResourceUsageFormatter()->resourceUsage($timer->stop()) . PHP_EOL;
 
         return count($clones) > 0 ? 1 : 0;
     }
@@ -125,7 +125,7 @@ final class Application
     {
         /** @var non-empty-string $path */
         $path = dirname(__DIR__);
-        printf('%s %s', 'Copy/Paste Detector', (new Version(self::VERSION, $path))->asString());
+        printf('%s %s', 'Copy/Paste Detector', new Version(self::VERSION, $path)->asString());
     }
 
     /**

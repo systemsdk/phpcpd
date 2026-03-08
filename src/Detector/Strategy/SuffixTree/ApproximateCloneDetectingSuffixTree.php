@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace Systemsdk\PhpCPD\Detector\Strategy\SuffixTree;
 
+use Systemsdk\PhpCPD\Exceptions\ProcessingResultException;
+
 use function count;
+use function sprintf;
 
 /**
  * An extension of the suffix tree adding an algorithm for finding approximate clones, i.e. substrings which are similar
@@ -80,6 +83,8 @@ class ApproximateCloneDetectingSuffixTree extends SuffixTree
      * @param int $minLength the minimal length of a clone in tokens (not lines)
      * @param int $maxErrors the maximal number of errors/gaps allowed
      * @param int $headEquality the number of elements which have to be the same at the beginning of a clone
+     *
+     * @throws ProcessingResultException
      *
      * @return CloneInfo[]
      */
@@ -157,10 +162,12 @@ class ApproximateCloneDetectingSuffixTree extends SuffixTree
      * This method is called whenever the {@link #MAX_LENGTH} is to small and hence the {@link #edBuffer} was not
      * large enough. This may cause that a really large clone is reported in multiple chunks of size{@link #MAX_LENGTH}
      * and potentially minor parts of such a clone might be lost.
+     *
+     * @throws ProcessingResultException
      */
     protected function reportBufferShortage(int $leafStart, int $leafLength): void
     {
-        print 'Encountered buffer shortage: ' . $leafStart . ' ' . $leafLength . "\n";
+        throw new ProcessingResultException(sprintf('Encountered buffer shortage: %d %d', $leafStart, $leafLength));
     }
 
     /**
@@ -190,6 +197,8 @@ class ApproximateCloneDetectingSuffixTree extends SuffixTree
      * @param int $nodeWordLength the length of the word found along the nodes (this may be different from the length
      *                            along the input word due to gaps)
      * @param int $maxErrors the number of errors still allowed
+     *
+     * @throws ProcessingResultException
      *
      * @return bool whether some clone was reported
      */
@@ -417,8 +426,7 @@ class ApproximateCloneDetectingSuffixTree extends SuffixTree
             return;
         }
 
-        // NB: 0 and 0 are two indicate the template S and T for Psalm, in lack of generics.
-        $otherClones = new PairList(16); // , 0, 0
+        $otherClones = new PairList(16);
         $this->findRemainingClones(
             $otherClones,
             $nodeWordLength,
@@ -436,14 +444,15 @@ class ApproximateCloneDetectingSuffixTree extends SuffixTree
         for ($index = max(0, $wordBegin - self::INDEX_SPREAD + 1); $index <= $wordBegin; $index++) {
             $existingClones = $this->cloneInfos[$index] ?? null;
 
-            if ($existingClones !== null) {
-                //for (CloneInfo cloneInfo : $existingClones) {
-                foreach ($existingClones as $cloneInfo) {
-                    if ($cloneInfo->dominates($newInfo, $wordBegin - $index)) {
-                        // we already have a dominating clone, so ignore
-                        return;
-                    }
-                }
+            if (
+                $existingClones !== null
+                && array_any(
+                    $existingClones,
+                    static fn (CloneInfo $cloneInfo): bool => $cloneInfo->dominates($newInfo, $wordBegin - $index)
+                )
+            ) {
+                // we already have a dominating clone, so ignore
+                return;
             }
         }
 

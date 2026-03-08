@@ -6,6 +6,8 @@ namespace Systemsdk\PhpCPD\Detector\Strategy\SuffixTree;
 
 use Systemsdk\PhpCPD\Exceptions\OutOfBoundsException;
 
+use function array_slice;
+
 /**
  * A list for storing pairs in a specific order.
  *
@@ -14,11 +16,6 @@ use Systemsdk\PhpCPD\Exceptions\OutOfBoundsException;
  */
 class PairList
 {
-    /**
-     * Version used for serialization.
-     */
-    private int $serialVersionUID = 1;
-
     /**
      * The current size.
      */
@@ -49,19 +46,6 @@ class PairList
         $this->secondElements = $data;
     }
 
-    public function serialVersion(): int
-    {
-        return $this->serialVersionUID;
-    }
-
-    /**
-     * Returns whether the list is empty.
-     */
-    public function isEmpty(): bool
-    {
-        return $this->size === 0;
-    }
-
     /**
      * Returns the size of the list.
      */
@@ -84,22 +68,6 @@ class PairList
     }
 
     /**
-     * Adds all pairs from another list.
-     */
-    public function addAll(self $other): void
-    {
-        // we have to store this in a local var, as other.$this->size may change if
-        // other == this
-        $otherSize = $other->size;
-
-        for ($i = 0; $i < $otherSize; $i++) {
-            $this->firstElements[$this->size] = $other->firstElements[$i];
-            $this->secondElements[$this->size] = $other->secondElements[$i];
-            $this->size++;
-        }
-    }
-
-    /**
      * Returns the first element at given index.
      *
      * @return S
@@ -109,17 +77,6 @@ class PairList
         $this->checkWithinBounds($i);
 
         return $this->firstElements[$i];
-    }
-
-    /**
-     * Sets the first element at given index.
-     *
-     * @param S $value
-     */
-    public function setFirst(int $i, $value): void
-    {
-        $this->checkWithinBounds($i);
-        $this->firstElements[$i] = $value;
     }
 
     /**
@@ -135,84 +92,13 @@ class PairList
     }
 
     /**
-     * Sets the first element at given index.
-     *
-     * @param T $value
-     */
-    public function setSecond(int $i, $value): void
-    {
-        $this->checkWithinBounds($i);
-        $this->secondElements[$i] = $value;
-    }
-
-    /**
      * Creates a new list containing all first elements.
      *
      * @return S[]
      */
     public function extractFirstList(): array
     {
-        $result = [];
-
-        for ($i = 0; $i < $this->size; $i++) {
-            $result[] = $this->firstElements[$i];
-        }
-
-        return $result;
-    }
-
-    /**
-     * Creates a new list containing all second elements.
-     *
-     * @return T[]
-     */
-    public function extractSecondList(): array
-    {
-        $result = [];
-
-        for ($i = 0; $i < $this->size; $i++) {
-            $result[] = $this->secondElements[$i];
-        }
-
-        return $result;
-    }
-
-    /**
-     * Swaps the entries located at indexes $i and $j.
-     */
-    public function swapEntries(int $i, int $j): void
-    {
-        $tmp1 = $this->getFirst($i);
-        $tmp2 = $this->getSecond($i);
-        $this->setFirst($i, $this->getFirst($j));
-        $this->setSecond($i, $this->getSecond($j));
-        $this->setFirst($j, $tmp1);
-        $this->setSecond($j, $tmp2);
-    }
-
-    /**
-     * Clears this list.
-     */
-    public function clear(): void
-    {
-        $this->size = 0;
-    }
-
-    /**
-     * Removes the last element of the list.
-     */
-    public function removeLast(): void
-    {
-        $this->size--;
-    }
-
-    public function hashCode(): int
-    {
-        $prime = 31;
-        $hash = $this->size;
-        $hash = $prime * $hash + crc32(serialize($this->firstElements));
-
-        return $prime * $hash + crc32(serialize($this->secondElements));
+        return array_slice($this->firstElements, 0, $this->size);
     }
 
     /**

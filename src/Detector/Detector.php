@@ -8,6 +8,7 @@ use Systemsdk\PhpCPD\CodeCloneMap;
 use Systemsdk\PhpCPD\Detector\Strategy\AbstractStrategy;
 use Systemsdk\PhpCPD\Detector\Strategy\SuffixTreeStrategy;
 use Systemsdk\PhpCPD\Detector\Traits\ProgressBarTrait;
+use Systemsdk\PhpCPD\Exceptions\MissingResultException;
 use Systemsdk\PhpCPD\Exceptions\ProcessingResultException;
 
 use function count;
@@ -29,6 +30,7 @@ final class Detector
     /**
      * @param array<int, string> $files
      *
+     * @throws MissingResultException
      * @throws ProcessingResultException
      */
     public function copyPasteDetection(array $files): CodeCloneMap

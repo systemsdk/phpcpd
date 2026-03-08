@@ -2,6 +2,15 @@
 
 All notable changes in PHPCPD are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## [9.0.0] - 2026-03-08
+
+### Updated
+
+* Updated the minimum PHP requirement to version 8.4, meaning this tool is no longer supported on PHP 8.3.
+* Updated the Suffix Tree engine to use PHP native arrays, completely eliminating hash collisions, achieving zero memory bloat, and boosting performance by up to 17%.
+* Updated the PMD-CPD XML report generator to use the modern Dom\XMLDocument extension.
+* Updated Composer dependencies and improved the development environment for the support team.
+
 ## [8.3.0] - 2026-02-16
 
 ### Added

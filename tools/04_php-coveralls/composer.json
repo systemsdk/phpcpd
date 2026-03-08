@@ -2,7 +2,7 @@
 	"name": "systemsdk/phpcpd-tools",
 	"description": "",
 	"require": {
-		"php": ">=8.3"
+		"php": ">=8.4"
 	},
 	"require-dev": {
 		"php-coveralls/php-coveralls": "2.9.*",

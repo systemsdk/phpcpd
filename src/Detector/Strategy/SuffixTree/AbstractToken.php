@@ -6,15 +6,13 @@ namespace Systemsdk\PhpCPD\Detector\Strategy\SuffixTree;
 
 abstract class AbstractToken
 {
-    public int $tokenCode;
-    public int $line;
-    public string $file;
-    public string $tokenName;
-    public string $content;
+    public protected(set) int $tokenCode;
+    public protected(set) int $line;
+    public protected(set) string $file;
+    public protected(set) string $tokenName;
+    public protected(set) string $content;
 
     abstract public function __toString(): string;
-
-    abstract public function hashCode(): int;
 
     abstract public function equals(self $other): bool;
 }

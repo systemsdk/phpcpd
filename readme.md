@@ -10,7 +10,7 @@ This is modified version of [sebastianbergmann/phpcpd](https://github.com/sebast
 [Source code](https://github.com/systemsdk/phpcpd.git)
 
 ## Requirements
-* PHP version 8.3 or later
+* PHP version 8.4 or later
 
 ## Installation
 ### Using composer
@@ -29,7 +29,7 @@ Note: This tool is distributed as a [PHP Archive (PHAR)](https://php.net/phar).
 ## Usage example
 ```
 $ php ./vendor/bin/phpcpd --fuzzy --verbose src tests
-Copy/Paste Detector 8.3.0
+Copy/Paste Detector 9.0.0
 14/14 [==============================>] 100% Loading & Processing
 Found 1 code clones with 17 duplicated lines in 1 files:
 
@@ -69,6 +69,52 @@ php phpcpd.phar --fuzzy --verbose src tests
 You are able to generate html report, but you need to have installed [Xalan](https://xalan.apache.org) tool locally or inside your Docker container.
 
 Please find more details how to generate/use it [here](https://github.com/systemsdk/phpcpd/blob/master/docs/report.md).
+
+## Suppressing False Positives
+You can tell PHPCPD to ignore specific parts of your code using the `#[SuppressCpd]` attribute. This is particularly useful for generated code, large arrays, or boilerplate methods where duplication is intentional or unavoidable.
+
+To use it, simply add the `#[SuppressCpd]` attribute directly above the class, method, or function you want to exclude from the analysis.
+
+```php
+use Systemsdk\PhpCPD\Attributes\SuppressCpd;
+
+#[SuppressCpd]
+class LegacyDataFixtures
+{
+    // All methods and properties inside this class will be ignored
+    // ...
+}
+
+#[SuppressCpd]
+function globalHelperFunction() {
+    // ...
+}
+```
+
+## Command-Line Options
+You can customize the behavior of PHPCPD using the following command-line options.
+```bash
+Options for selecting files:
+--suffix <suffix>   Include files with names ending on <suffix> (default: .php; can be given multiple times)
+--exclude <path>    Exclude files with <path> in their path (can be given multiple times)
+
+Options for analysing files:
+--algorithm <name>  Select which algorithm to use ('rabin-karp' (default) or 'suffix-tree')
+--fuzzy             Fuzz variable names
+--min-lines <N>     Minimum number of identical lines (default: 5)
+--min-tokens <N>    Minimum number of identical tokens (default: 70)
+--edit-distance <N> Distance in number of edits between two clones (only for suffix-tree; default: 0)
+--head-equality <N> Minimum equality at start of clone (only for suffix-tree; default 10)
+--verbose           Print results details
+--ignore-no-files   To return a success exit code if no files were found
+
+Options for report generation:
+--log-pmd <file>    Write log in PMD-CPD XML format to <file>
+
+General options:
+--version           Display version
+--help              Display help
+```
 
 ## Requirements for the support team
 * Docker Engine version 23.0 or later

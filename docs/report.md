@@ -114,6 +114,6 @@ This stylesheet is available and using for html report generation mentioned abov
 It requires javascript enabled and uses [Bootstrap](https://getbootstrap.com/), [jQuery](https://jquery.com/), and [DataTables](https://datatables.net/).
 
 ## Schema versions
-PHP Copy/Past detector tool is building xml report that has schema `https://systemsdk.github.io/phpcpd/report/phpcpd-report-v1_0_0.xsd`.
+PHP Copy/Paste detector tool is building xml report that has schema `https://systemsdk.github.io/phpcpd/report/phpcpd-report-v1_0_0.xsd`.
 
 You can find xsd versions history [here](schema.md).

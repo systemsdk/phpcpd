@@ -30,16 +30,16 @@
 		}
 	],
 	"require": {
-		"php": ">=8.3",
+		"php": ">=8.4",
 		"ext-dom": "*",
 		"ext-mbstring": "*",
-		"sebastian/cli-parser": "^4.0",
-		"sebastian/version": "^6.0",
-		"phpunit/php-file-iterator": "^6.0",
-		"phpunit/php-timer": "^8.0"
+		"sebastian/cli-parser": "^5.0",
+		"sebastian/version": "^7.0",
+		"phpunit/php-file-iterator": "^7.0",
+		"phpunit/php-timer": "^9.0"
 	},
 	"require-dev": {
-		"bamarni/composer-bin-plugin": "^1.8",
+		"bamarni/composer-bin-plugin": "^1.9",
 		"roave/security-advisories": "dev-latest"
 	},
 	"config": {

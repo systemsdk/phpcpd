@@ -25,13 +25,16 @@ class Token extends AbstractToken
         return $this->tokenName;
     }
 
-    public function hashCode(): int
-    {
-        return crc32($this->content);
-    }
-
     public function equals(AbstractToken $other): bool
     {
-        return $other->hashCode() === $this->hashCode();
+        if ($other === $this) {
+            return true;
+        }
+
+        if (!$other instanceof self) {
+            return false;
+        }
+
+        return $this->tokenCode === $other->tokenCode && $this->content === $other->content;
     }
 }

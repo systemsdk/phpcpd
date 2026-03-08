@@ -4,25 +4,30 @@ declare(strict_types=1);
 
 namespace Systemsdk\PhpCPD\Detector\Strategy\SuffixTree;
 
-/** Stores information on a clone. */
+/**
+ * Stores information on a clone.
+ */
 class CloneInfo
 {
     /**
      * Length of the clone in tokens.
      */
-    public int $length;
+    public private(set) int $length;
 
     /**
-     * Position in word list.
+     * Position in the word list.
      */
-    public int $position;
+    public private(set) int $position;
 
-    public AbstractToken $token;
+    /**
+     * The token associated with this clone.
+     */
+    public private(set) AbstractToken $token;
 
     /**
      * Related clones.
      */
-    public PairList $otherClones;
+    public private(set) PairList $otherClones;
 
     /**
      * Number of occurrences of the clone.

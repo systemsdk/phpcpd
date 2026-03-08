@@ -137,7 +137,7 @@ class SuffixTree
         $this->nodeWordBegin = $data;
         $this->nodeWordEnd = $data;
         $this->suffixLink = $data;
-        $this->nextNode = new SuffixTreeHashTable($expectedNodes);
+        $this->nextNode = new SuffixTreeHashTable();
 
         $this->createRootNode();
 

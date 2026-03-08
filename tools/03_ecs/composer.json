@@ -2,10 +2,10 @@
 	"name": "systemsdk/phpcpd-tools",
 	"description": "",
 	"require": {
-		"php": ">=8.3"
+		"php": ">=8.4"
 	},
 	"require-dev": {
-		"friendsofphp/php-cs-fixer": "3.93.*",
+		"friendsofphp/php-cs-fixer": "3.94.*",
 		"squizlabs/php_codesniffer": "4.0.*",
 		"symplify/easy-coding-standard": "13.0.*",
 		"roave/security-advisories": "dev-latest"

@@ -3,11 +3,11 @@
 
 declare(strict_types=1);
 
-if (version_compare('8.3.0', PHP_VERSION, '>')) {
+if (version_compare('8.4.0', PHP_VERSION, '>')) {
     fwrite(
         STDERR,
         sprintf(
-            'This version of PHPCPD requires PHP 8.3 (or later).' . PHP_EOL .
+            'This version of PHPCPD requires PHP 8.4 (or later).' . PHP_EOL .
             'You are using PHP %s%s.' . PHP_EOL,
             PHP_VERSION,
             defined('PHP_BINARY') ? ' (' . PHP_BINARY . ')' : ''
@@ -35,4 +35,4 @@ if (!$loaded) {
     );
 }
 
-exit((new \Systemsdk\PhpCPD\Cli\Application())->run($_SERVER['argv']));
+exit(new \Systemsdk\PhpCPD\Cli\Application()->run($_SERVER['argv']));

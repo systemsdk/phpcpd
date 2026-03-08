@@ -4,24 +4,22 @@ declare(strict_types=1);
 
 namespace Systemsdk\PhpCPD\Log;
 
-use DOMDocument;
+use Dom\XMLDocument;
 use Systemsdk\PhpCPD\CodeCloneMap;
 use Systemsdk\PhpCPD\Exceptions\LoggerException;
 
 use function file_put_contents;
 use function mb_convert_encoding;
-use function ord;
 use function preg_replace;
-use function strlen;
 
 abstract class AbstractXmlLogger
 {
-    protected DOMDocument $document;
+    protected XMLDocument $document;
 
     public function __construct(
         private readonly string $filename
     ) {
-        $this->document = new DOMDocument('1.0', 'UTF-8');
+        $this->document = XMLDocument::createEmpty('1.0', 'UTF-8');
         $this->document->formatOutput = true;
     }
 
@@ -32,7 +30,7 @@ abstract class AbstractXmlLogger
      */
     protected function flush(): void
     {
-        $xml = $this->document->saveXML();
+        $xml = $this->document->saveXml();
 
         if ($xml === false) {
             throw new LoggerException('Can not dump the internal xml tree back into a string');
@@ -64,29 +62,7 @@ abstract class AbstractXmlLogger
 
     protected function isUtf8(string $string): bool
     {
-        $length = strlen($string);
-
-        for ($i = 0; $i < $length; $i++) {
-            if (ord($string[$i]) < 0x80) {
-                $n = 0;
-            } elseif ((ord($string[$i]) & 0xE0) === 0xC0) {
-                $n = 1;
-            } elseif ((ord($string[$i]) & 0xF0) === 0xE0) {
-                $n = 2;
-            } elseif ((ord($string[$i]) & 0xF0) === 0xF0) {
-                $n = 3;
-            } else {
-                return false;
-            }
-
-            for ($j = 0; $j < $n; $j++) {
-                if ((++$i === $length) || ((ord($string[$i]) & 0xC0) !== 0x80)) {
-                    return false;
-                }
-            }
-        }
-
-        return true;
+        return mb_check_encoding($string, 'UTF-8');
     }
 
     /**

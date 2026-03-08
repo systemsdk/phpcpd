@@ -37,7 +37,7 @@ final class ArgumentsBuilder
     {
         try {
             /** @var list<string> $argv */
-            $options = (new CliParser())->parse(
+            $options = new CliParser()->parse(
                 $argv,
                 self::OPTION_HELP_SHORT_NAME . self::OPTION_VERSION_SHORT_NAME,
                 [

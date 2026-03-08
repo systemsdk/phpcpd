@@ -2,10 +2,10 @@
 	"name": "systemsdk/phpcpd-tools",
 	"description": "",
 	"require": {
-		"php": ">=8.3"
+		"php": ">=8.4"
 	},
 	"require-dev": {
-		"phpunit/phpunit": "12.5.*",
+		"phpunit/phpunit": "13.0.*",
 		"roave/security-advisories": "dev-latest"
 	},
 	"config": {
