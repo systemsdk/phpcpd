@@ -7,7 +7,6 @@ use PhpCsFixer\Fixer\CastNotation\CastSpacesFixer;
 use PhpCsFixer\Fixer\ClassNotation\ClassAttributesSeparationFixer;
 use PhpCsFixer\Fixer\ClassNotation\ClassDefinitionFixer;
 use PhpCsFixer\Fixer\ControlStructure\YodaStyleFixer;
-use PhpCsFixer\Fixer\FunctionNotation\NativeFunctionInvocationFixer;
 use PhpCsFixer\Fixer\FunctionNotation\SingleLineThrowFixer;
 use PhpCsFixer\Fixer\Import\OrderedImportsFixer;
 use PhpCsFixer\Fixer\LanguageConstruct\DeclareEqualNormalizeFixer;
@@ -15,116 +14,123 @@ use PhpCsFixer\Fixer\Operator\BinaryOperatorSpacesFixer;
 use PhpCsFixer\Fixer\Operator\ConcatSpaceFixer;
 use PhpCsFixer\Fixer\Operator\IncrementStyleFixer;
 use PhpCsFixer\Fixer\Operator\NotOperatorWithSuccessorSpaceFixer;
+use PhpCsFixer\Fixer\Phpdoc\GeneralPhpdocAnnotationRemoveFixer;
 use PhpCsFixer\Fixer\Phpdoc\NoSuperfluousPhpdocTagsFixer;
-use PhpCsFixer\Fixer\Phpdoc\PhpdocAlignFixer;
 use PhpCsFixer\Fixer\Phpdoc\PhpdocNoPackageFixer;
-use PhpCsFixer\Fixer\Phpdoc\PhpdocSeparationFixer;
-use PhpCsFixer\Fixer\Phpdoc\PhpdocSummaryFixer;
-use PhpCsFixer\Fixer\Phpdoc\PhpdocToCommentFixer;
 use PhpCsFixer\Fixer\PhpTag\BlankLineAfterOpeningTagFixer;
 use PhpCsFixer\Fixer\Whitespace\BlankLineBeforeStatementFixer;
-use PhpCsFixer\Fixer\Whitespace\HeredocIndentationFixer;
+use PhpCsFixer\Fixer\Whitespace\MethodChainingIndentationFixer;
 use PhpCsFixer\Fixer\Whitespace\NoExtraBlankLinesFixer;
+use PhpCsFixer\Fixer\Whitespace\TypesSpacesFixer;
+use Symplify\CodingStandard\Fixer\Annotation\RemovePropertyVariableNameDescriptionFixer;
+use Symplify\CodingStandard\Fixer\Spacing\MethodChainingNewlineFixer;
 use Symplify\EasyCodingStandard\Config\ECSConfig;
-use Symplify\EasyCodingStandard\ValueObject\Set\SetList;
 
-return static function (ECSConfig $ecsConfig): void {
-    $ecsConfig->paths([
+return ECSConfig::configure()
+    ->withPaths([
         __DIR__ . '/src',
-        __DIR__ . '/tests/Integration',
-    ]);
-
-    $ecsConfig->sets([SetList::PSR_12, SetList::CLEAN_CODE, SetList::COMMON]);
-
-    $ruleConfigurations = [
+        __DIR__ . '/tests',
+    ])
+    ->withPreparedSets(psr12: true, common: true, cleanCode: true)
+    ->withConfiguredRule(
+        IncrementStyleFixer::class,
         [
-            IncrementStyleFixer::class,
-            ['style' => 'post'],
+            'style' => 'post',
         ],
+    )
+    ->withConfiguredRule(
+        YodaStyleFixer::class,
         [
-            YodaStyleFixer::class,
-            [
-                'equal' => false,
-                'identical' => false,
-                'less_and_greater' => false,
-            ],
+            'equal' => false,
+            'identical' => false,
+            'less_and_greater' => false,
         ],
+    )
+    ->withConfiguredRule(
+        ConcatSpaceFixer::class,
         [
-            ConcatSpaceFixer::class,
-            ['spacing' => 'one'],
+            'spacing' => 'one',
         ],
+    )
+    ->withConfiguredRule(
+        CastSpacesFixer::class,
         [
-            CastSpacesFixer::class,
-            ['space' => 'none'],
+            'space' => 'none',
         ],
+    )
+    ->withConfiguredRule(
+        OrderedImportsFixer::class,
         [
-            OrderedImportsFixer::class,
-            ['imports_order' => ['class', 'function', 'const']],
+            'imports_order' => ['class', 'function', 'const'],
         ],
+    )
+    ->withConfiguredRule(
+        NoSuperfluousPhpdocTagsFixer::class,
         [
-            NoSuperfluousPhpdocTagsFixer::class,
-            [
-                'remove_inheritdoc' => false,
-                'allow_mixed' => true,
-                'allow_unused_params' => false,
-            ],
+            'remove_inheritdoc' => false,
+            'allow_mixed' => true,
+            'allow_unused_params' => false,
         ],
+    )
+    ->withConfiguredRule(
+        DeclareEqualNormalizeFixer::class,
         [
-            DeclareEqualNormalizeFixer::class,
-            ['space' => 'none'],
+            'space' => 'none',
         ],
+    )
+    ->withConfiguredRule(
+        BlankLineBeforeStatementFixer::class,
         [
-            BlankLineBeforeStatementFixer::class,
-            ['statements' => ['continue', 'declare', 'return', 'throw', 'try']],
+            'statements' => ['continue', 'declare', 'return', 'throw', 'try'],
         ],
+    )
+    ->withConfiguredRule(
+        BinaryOperatorSpacesFixer::class,
         [
-            BinaryOperatorSpacesFixer::class,
-            ['operators' => ['&' => 'align']],
+            'operators' => ['&' => 'align'],
         ],
+    )
+    ->withConfiguredRule(
+        // https://github.com/nunomaduro/phpinsights/blob/master/docs/insights/style.md#no-extra-blank-lines---
+        NoExtraBlankLinesFixer::class,
         [
-            // https://github.com/nunomaduro/phpinsights/blob/master/docs/insights/style.md#no-extra-blank-lines---
-            NoExtraBlankLinesFixer::class,
-            [
-                'tokens' =>
-                 [
-                     'break',
-                     'case',
-                     'continue',
-                     'curly_brace_block',
-                     'default',
-                     'extra',
-                     'parenthesis_brace_block',
-                     'return',
-                     'square_brace_block',
-                     'switch',
-                     'throw',
-                     //'use',
-                     'use_trait',
-                 ],
-            ],
+            'tokens' =>
+                [
+                    'break',
+                    'case',
+                    'continue',
+                    'curly_brace_block',
+                    'default',
+                    'extra',
+                    'parenthesis_brace_block',
+                    'return',
+                    'square_brace_block',
+                    'switch',
+                    'throw',
+                    //'use',
+                    'use_trait',
+                ],
         ],
+    )
+    ->withConfiguredRule(
+        ClassDefinitionFixer::class,
         [
-            ClassDefinitionFixer::class,
-            [
-                'multi_line_extends_each_single_line' => true,
-            ],
+            'multi_line_extends_each_single_line' => true,
         ],
-    ];
-
-    array_map(static fn ($parameters) => $ecsConfig->ruleWithConfiguration(...$parameters), $ruleConfigurations);
-
-    $ecsConfig->skip([
-        NoMultilineWhitespaceAroundDoubleArrowFixer::class => null,
-        PhpdocNoPackageFixer::class => null,
-        PhpdocSummaryFixer::class => null,
-        PhpdocSeparationFixer::class => null,
+    )
+    ->withConfiguredRule(TypesSpacesFixer::class, [
+        'space' => 'none',
+        'space_multiple_catch' => 'single',
+    ])
+    ->withSkip([
         BlankLineAfterOpeningTagFixer::class => null,
         ClassAttributesSeparationFixer::class => null,
+        GeneralPhpdocAnnotationRemoveFixer::class => null,
+        MethodChainingIndentationFixer::class => null,
+        MethodChainingNewlineFixer::class => null,
+        NoMultilineWhitespaceAroundDoubleArrowFixer::class => null,
         NotOperatorWithSuccessorSpaceFixer::class => null,
+        PhpdocNoPackageFixer::class => null,
+        RemovePropertyVariableNameDescriptionFixer::class => null,
         SingleLineThrowFixer::class => null,
-        PhpdocAlignFixer::class => null,
-        HeredocIndentationFixer::class => null,
-        PhpdocToCommentFixer::class => null,
-        NativeFunctionInvocationFixer::class => null,
     ]);
-};

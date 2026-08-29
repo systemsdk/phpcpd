@@ -34,6 +34,7 @@
         </xs:sequence>
         <xs:attribute name="lines" type="xs:positiveInteger" use="required"/>
         <xs:attribute name="tokens" type="xs:positiveInteger" use="required"/>
+        <xs:attribute name="exact" type="xs:boolean" use="optional"/>
     </xs:complexType>
 
     <xs:complexType name="error">

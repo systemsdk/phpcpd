@@ -44,6 +44,10 @@ jobs:
 
   tests:
     runs-on: ${{ matrix.operating-system }}
+    permissions:
+      security-events: write
+      actions: read
+      contents: read
     strategy:
       matrix:
         operating-system: [ 'ubuntu-latest' ]
@@ -58,4 +62,10 @@ jobs:
       - name: Check php version
         run: php -v
       - name: Test latest PHPCPD release
-        run: php ./releases/phpcpd-latest.phar src
+        run: php ./releases/phpcpd-9.1.0.phar --log-sarif=reports/phpcpd/phpcpd-report.sarif src
+      - name: Upload SARIF report to GitHub
+        uses: github/codeql-action/upload-sarif@v4
+        if: always()
+        with:
+          sarif_file: reports/phpcpd/phpcpd-report.sarif
+          category: phpcpd-${{ matrix.php-versions }}

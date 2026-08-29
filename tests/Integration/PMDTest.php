@@ -47,7 +47,7 @@ final class PMDTest extends TestCase
             $expectedPmdLogTemplate,
             [
                 '%version%' => Application::VERSION,
-                '%datetime%' => (new DateTime())->format(DateTimeInterface::ATOM),
+                '%datetime%' => new DateTime()->format(DateTimeInterface::ATOM),
                 '%file1%' => $this->testFile1,
                 '%file2%' => $this->testFile2,
             ]

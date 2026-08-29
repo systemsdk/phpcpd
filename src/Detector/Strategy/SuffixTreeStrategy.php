@@ -23,6 +23,7 @@ use function token_get_all;
 use function uniqid;
 
 use const T_ATTRIBUTE;
+use const T_VARIABLE;
 
 /**
  * The suffix tree strategy was implemented in PHP for PHPCPD by Olle Härstedt.
@@ -58,9 +59,7 @@ final class SuffixTreeStrategy extends AbstractStrategy
     {
         $content = (string)file_get_contents($file);
         $tokens = token_get_all($content);
-        $lastTokenLine = 0;
-        $attributeStarted = false;
-        $attributeStartedLine = 0;
+        $attributeDepth = 0;
         $wasSuppressed = false;
 
         $result->addToNumberOfLines(substr_count($content, "\n"));
@@ -74,6 +73,7 @@ final class SuffixTreeStrategy extends AbstractStrategy
             if (is_array($token)) {
                 $tokenLine = (int)$token[2];
 
+                // 1. Check for #[SuppressCpd] and insert a barrier wall
                 if ($this->guard->isLineSuppressed($file, $tokenLine)) {
                     if (!$wasSuppressed) {
                         // Insert a unique fake barrier token.
@@ -88,7 +88,6 @@ final class SuffixTreeStrategy extends AbstractStrategy
                         );
                         $wasSuppressed = true;
                     }
-                    $lastTokenLine = $tokenLine;
 
                     continue; // Skip the actual token, keeping it out of the engine
                 }
@@ -96,31 +95,37 @@ final class SuffixTreeStrategy extends AbstractStrategy
                 // Exited the suppressed zone
                 $wasSuppressed = false;
 
-                if ($attributeStarted === false && !isset($this->tokensIgnoreList[$token[0]])) {
+                // 2. Handle PHP 8 Attributes entry
+                if ($token[0] === T_ATTRIBUTE) {
+                    $attributeDepth = 1; // Start depth counting
+
+                    continue; // Skip the T_ATTRIBUTE token itself
+                }
+
+                // 3. Record valid tokens (only if we are NOT inside an attribute)
+                if ($attributeDepth === 0 && !isset($this->tokensIgnoreList[$token[0]])) {
+                    $tokenValue = $token[1];
+
+                    if ($token[0] === T_VARIABLE && $this->config->fuzzy()) {
+                        $tokenValue = 'variable';
+                    }
+
                     $this->word[] = new Token(
                         $token[0],
                         token_name($token[0]),
                         $tokenLine,
                         $file,
-                        $token[1]
+                        $tokenValue
                     );
                 }
-
-                if ($token[0] === T_ATTRIBUTE) {
-                    $attributeStarted = true;
-                    $attributeStartedLine = $tokenLine;
+            } elseif ($attributeDepth > 0) {
+                // 4. Handle single-character string tokens (e.g., '[', ']', ';', '{')
+                // This safely calculates the nesting level of arrays inside attributes
+                if ($token === '[') {
+                    $attributeDepth++;
+                } elseif ($token === ']') {
+                    $attributeDepth--;
                 }
-
-                $lastTokenLine = $tokenLine;
-            } elseif (
-                $attributeStarted === true && $token === ']'
-                && (
-                    $attributeStartedLine === $lastTokenLine
-                    || (($tokens[$key - 1] ?? null) === ')')
-                )
-            ) {
-                $attributeStarted = false;
-                $attributeStartedLine = 0;
             }
         }
 

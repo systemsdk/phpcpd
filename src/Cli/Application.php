@@ -18,7 +18,9 @@ use Systemsdk\PhpCPD\Exceptions\Exception;
 use Systemsdk\PhpCPD\Exceptions\InvalidStrategyException;
 use Systemsdk\PhpCPD\Exceptions\LoggerException;
 use Systemsdk\PhpCPD\Exceptions\ProcessingResultException;
+use Systemsdk\PhpCPD\Log\Json;
 use Systemsdk\PhpCPD\Log\PMD;
+use Systemsdk\PhpCPD\Log\Sarif;
 use Systemsdk\PhpCPD\Log\Text;
 
 use function count;
@@ -29,7 +31,7 @@ use const PHP_EOL;
 
 final class Application
 {
-    public const string VERSION = '9.0.0';
+    public const string VERSION = '9.1.0';
 
     /**
      * @param array<int, string> $argv
@@ -64,10 +66,13 @@ final class Application
         $suffixes = $arguments->suffixes();
         /** @var list<non-empty-string> $exclude */
         $exclude = $arguments->exclude();
-        $files = new Facade()->getFilesAsArray(
-            $paths,
-            $suffixes,
-            '',
+        $files = $this->filterExcludedFiles(
+            new Facade()->getFilesAsArray(
+                $paths,
+                $suffixes,
+                '',
+                $exclude
+            ),
             $exclude
         );
 
@@ -116,6 +121,26 @@ final class Application
             }
         }
 
+        if ($arguments->jsonLogfile()) {
+            try {
+                new Json($arguments->jsonLogfile())->processClones($clones);
+            } catch (LoggerException $exception) {
+                print 'Logger error: ' . $exception->getMessage() . PHP_EOL;
+
+                return 1;
+            }
+        }
+
+        if ($arguments->sarifLogfile()) {
+            try {
+                new Sarif($arguments->sarifLogfile())->processClones($clones);
+            } catch (LoggerException $exception) {
+                print 'Logger error: ' . $exception->getMessage() . PHP_EOL;
+
+                return 1;
+            }
+        }
+
         print new ResourceUsageFormatter()->resourceUsage($timer->stop()) . PHP_EOL;
 
         return count($clones) > 0 ? 1 : 0;
@@ -143,6 +168,57 @@ final class Application
         };
     }
 
+    /**
+     * Filters out files that match any of the provided exclude paths.
+     *
+     * This method implements a cross-platform exact segment matching for exclusions.
+     * It serves as a reliable patch for the broken --exclude behavior inherited
+     * from upstream dependencies (phpunit/php-file-iterator 6.x).
+     *
+     * @see https://github.com/sebastianbergmann/phpcpd/issues/202
+     *
+     * @param array<int, string> $files List of file paths to filter
+     * @param array<int, string> $exclude List of substrings to exclude (e.g., ['TCA', 'vendor'])
+     *
+     * @return array<int, string> Filtered list of file paths
+     */
+    private function filterExcludedFiles(array $files, array $exclude): array
+    {
+        if (empty($exclude)) {
+            return $files;
+        }
+
+        // Pre-compile exclude patterns to optimize performance inside the filter loop
+        $excludePatterns = [];
+        foreach ($exclude as $excludeString) {
+            // Normalize user input (in case they provided paths with backslashes)
+            $normalizedExclude = str_replace('\\', '/', $excludeString);
+
+            // Remove trailing slashes (e.g. "tests/" becomes "tests") to prevent regex mismatch
+            $cleanExclude = rtrim($normalizedExclude, '/');
+
+            // Match exact path segments to prevent false positives (e.g. "Vendor" matching "Vendor2").
+            // (?:^|/) - segment must start at the beginning of the string or immediately after a slash
+            // (?:/|$) - segment must end with a slash or at the end of the string
+            $excludePatterns[] = '#(?:^|/)' . preg_quote($cleanExclude, '#') . '(?:/|$)#';
+        }
+
+        return array_filter($files, static function (string $file) use ($excludePatterns) {
+            $realPath = realpath($file) ?: $file;
+
+            // Normalize the file path: convert Windows backslashes '\' to Unix forward slashes '/'
+            $normalizedPath = str_replace('\\', '/', $realPath);
+
+            foreach ($excludePatterns as $pattern) {
+                if (preg_match($pattern, $normalizedPath)) {
+                    return false; // Exclude this file
+                }
+            }
+
+            return true; // Keep this file
+        });
+    }
+
     private function help(): void
     {
         print <<<'EOT'
@@ -168,6 +244,8 @@ Options for analysing files:
 Options for report generation:
 
   --log-pmd <file>  Write log in PMD-CPD XML format to <file>
+  --log-json <file> Write log in custom JSON format to <file>
+  --log-sarif <file> Write log in SARIF 2.1.0 format to <file>
 
 General options:
 

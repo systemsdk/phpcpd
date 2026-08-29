@@ -8,4 +8,4 @@ Schema Location: `https://systemsdk.github.io/phpcpd/report/phpcpd-report-v1_0_0
 
 Current Version: 1.0.0 (since phpcpd 8.2.0)
 
-Last Change: 2025-05-01
+Last Change: 2026-08-28
