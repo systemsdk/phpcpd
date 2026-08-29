@@ -46,73 +46,6 @@ declare(strict_types=1);
  */
 class PhpUnderControl_Example_Math
 {
-    /**
-     * Adds the two given values.
-     *
-     * @param integer $v1 Value one.
-     * @param integer $v2 Value two.
-     *
-     * @return integer.
-     */
-    public function add($v1, $v2)
-    {
-        return ($v1 + $v2);
-    }
-
-    /**
-     * Subtract param two from param one
-     *
-     * @param integer $v1 Value one.
-     * @param integer $v2 Value two.
-     *
-     * @return integer.
-     */
-    public function sub($v1, $v2)
-    {
-        return ($v1 - $v2);
-    }
-
-    /**
-     * Not tested method that should be visible with low coverage.
-     * Note: Added check for skipping php attributes.
-     */
-    #[ORM\Entity]
-    #[ORM\Table(name: 'api_key')]
-    #[Groups([
-        'ApiKey',
-        'ApiKey.id',
-        'LogRequest.apiKey',
-    ])]
-    #[OA\Response(
-        response: 401,
-        description: 'Invalid token (not found or expired)',
-        content: new JsonContent(
-            properties: [
-                new Property(property: 'code', description: 'Error code', type: 'integer'),
-                new Property(property: 'message', description: 'Error description', type: 'string'),
-            ],
-            type: 'object',
-            example: [
-                'code' => 401,
-                'message' => 'JWT Token not found',
-            ],
-        ),
-    )]
-    #[OA\Response(
-        response: 403,
-        description: 'Access denied',
-        content: new JsonContent(
-            properties: [
-                new Property(property: 'code', description: 'Error code', type: 'integer'),
-                new Property(property: 'message', description: 'Error description', type: 'string'),
-            ],
-            type: 'object',
-            example: [
-                'code' => 403,
-                'message' => 'Access denied',
-            ],
-        ),
-    )]
     public function div($v1, $v2)
     {
         $v3 = $v1 / ($v2 + $v1);
@@ -175,46 +108,32 @@ class PhpUnderControl_Example_Math
     }
 
     /**
-     * Simple copy for cpd detection.
+     * Adds the two given values.
+     *
+     * @param integer $v1 Value one.
+     * @param integer $v2 Value two.
+     *
+     * @return integer.
      */
-    #[ORM\Entity]
-    #[ORM\Table(name: 'api_key')]
-    #[Groups([
-        'ApiKey',
-        'ApiKey.id',
-        'LogRequest.apiKey',
-    ])]
-    #[OA\Response(
-        response: 401,
-        description: 'Invalid token (not found or expired)',
-        content: new JsonContent(
-            properties: [
-                new Property(property: 'code', description: 'Error code', type: 'integer'),
-                new Property(property: 'message', description: 'Error description', type: 'string'),
-            ],
-            type: 'object',
-            example: [
-                'code' => 401,
-                'message' => 'JWT Token not found',
-            ],
-        ),
-    )]
-    #[OA\Response(
-        response: 403,
-        description: 'Access denied',
-        content: new JsonContent(
-            properties: [
-                new Property(property: 'code', description: 'Error code', type: 'integer'),
-                new Property(property: 'message', description: 'Error description', type: 'string'),
-            ],
-            type: 'object',
-            example: [
-                'code' => 403,
-                'message' => 'Access denied',
-            ],
-        ),
-    )]
-    public function complex($v1, $v2)
+    public function add($v1, $v2)
+    {
+        return ($v1 + $v2);
+    }
+
+    /**
+     * Subtract param two from param one
+     *
+     * @param integer $v1 Value one.
+     * @param integer $v2 Value two.
+     *
+     * @return integer.
+     */
+    public function sub($v1, $v2)
+    {
+        return ($v1 - $v2);
+    }
+
+    public function div($v1, $v2)
     {
         $v3 = $v1 / ($v2 + $v1);
         if ($v3 > 14)
