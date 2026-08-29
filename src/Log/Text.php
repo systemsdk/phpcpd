@@ -28,15 +28,17 @@ final class Text
 
         foreach ($clones as $clone) {
             $firstOccurrence = true;
+            $isExact = $clone->isExact();
 
             foreach ($clone->files() as $file) {
                 printf(
-                    '  %s%s:%d-%d%s' . PHP_EOL,
+                    '  %s%s:%d-%d%s%s' . PHP_EOL,
                     $firstOccurrence ? '- ' : '  ',
                     $file->name(),
                     $file->startLine(),
                     $file->endLine(),
-                    $firstOccurrence ? ' (' . $clone->numberOfLines() . ' lines)' : ''
+                    $firstOccurrence ? ' (' . $clone->numberOfLines() . ' lines)' : '',
+                    $firstOccurrence && !$isExact ? ' [inconsistent]' : ''
                 );
 
                 $firstOccurrence = false;

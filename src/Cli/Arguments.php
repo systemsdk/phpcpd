@@ -16,6 +16,8 @@ final readonly class Arguments
         private array $suffixes,
         private array $exclude,
         private ?string $pmdCpdXmlLogfile,
+        private ?string $jsonLogfile,
+        private ?string $sarifLogfile,
         private int $linesThreshold,
         private int $tokensThreshold,
         private bool $fuzzy,
@@ -56,6 +58,16 @@ final readonly class Arguments
     public function pmdCpdXmlLogfile(): ?string
     {
         return $this->pmdCpdXmlLogfile;
+    }
+
+    public function jsonLogfile(): ?string
+    {
+        return $this->jsonLogfile;
+    }
+
+    public function sarifLogfile(): ?string
+    {
+        return $this->sarifLogfile;
     }
 
     public function linesThreshold(): int

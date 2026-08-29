@@ -161,9 +161,6 @@ class SuffixTree
         }
     }
 
-    /**
-     * Creates the root node.
-     */
     private function createRootNode(): void
     {
         $this->numNodes = 1;

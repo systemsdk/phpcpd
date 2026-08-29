@@ -1,8 +1,15 @@
 * text=auto
-/.github                export-ignore
+
+### Enforce LF for infrastructure (CRITICAL for Docker on Windows)
+Makefile text eol=lf
+Dockerfile text eol=lf
+docker/** text eol=lf
+*.sh text eol=lf
+
+### Hide generated files in PRs but prevent text auto-merging
 /.phive                 export-ignore
 /build                  export-ignore
-tools/**/composer.lock  binary
-composer.lock           binary
+tools/**/composer.lock linguist-generated=true -merge
+composer.lock linguist-generated=true -merge
 phpab                   binary
 *.php diff=php

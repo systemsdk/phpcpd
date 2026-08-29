@@ -36,6 +36,10 @@ final class CodeCloneMap implements Countable, IteratorAggregate
 
     public function add(CodeClone $clone): void
     {
+        if (count($clone->files()) < 2) {
+            return;
+        }
+
         $id = $clone->id();
 
         if (!isset($this->clonesById[$id])) {

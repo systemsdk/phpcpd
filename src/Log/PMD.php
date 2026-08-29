@@ -36,6 +36,7 @@ final class PMD extends AbstractXmlLogger
     private const string ATTRIBUTE_PATH_NAME = 'path';
     private const string ATTRIBUTE_LINE_NAME = 'line';
     private const string ATTRIBUTE_END_LINE_NAME = 'endline';
+    private const string ATTRIBUTE_EXACT_NAME = 'exact';
 
     /**
      * @throws LoggerException
@@ -67,6 +68,7 @@ final class PMD extends AbstractXmlLogger
 
                 $duplication->setAttribute(self::ATTRIBUTE_LINES_NAME, (string)$clone->numberOfLines());
                 $duplication->setAttribute(self::ATTRIBUTE_TOKENS_NAME, (string)$clone->numberOfTokens());
+                $duplication->setAttribute(self::ATTRIBUTE_EXACT_NAME, $clone->isExact() ? 'true' : 'false');
 
                 foreach ($clone->files() as $codeCloneFile) {
                     /** @var Element $file */

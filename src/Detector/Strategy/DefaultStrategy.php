@@ -56,8 +56,7 @@ final class DefaultStrategy extends AbstractStrategy
         $tokens = token_get_all($buffer);
         $tokenNr = 0;
         $lastTokenLine = 0;
-        $attributeStarted = false;
-        $attributeStartedLine = 0;
+        $attributeDepth = 0;
         $firstHash = '';
         $firstToken = 0;
         $wasSuppressed = false;
@@ -100,7 +99,16 @@ final class DefaultStrategy extends AbstractStrategy
                 // We are in normal code, reset the flag
                 $wasSuppressed = false;
 
-                if ($attributeStarted === false && !isset($this->tokensIgnoreList[$token[0]])) {
+                // 2. Handle PHP 8 Attributes entry
+                if ($token[0] === T_ATTRIBUTE) {
+                    $attributeDepth = 1; // Start depth counting
+                    $lastTokenLine = $tokenLine;
+
+                    continue; // Skip the T_ATTRIBUTE token itself
+                }
+
+                // 3. Record valid tokens (only if we are NOT inside an attribute)
+                if ($attributeDepth === 0 && !isset($this->tokensIgnoreList[$token[0]])) {
                     if ($tokenNr === 0) {
                         $currentTokenPositions[$tokenNr] = $tokenLine - $lastTokenLine;
                     } else {
@@ -117,21 +125,15 @@ final class DefaultStrategy extends AbstractStrategy
                     $currentSignature .= chr($token[0] & 255) . pack('N*', crc32($token[1]));
                 }
 
-                if ($token[0] === T_ATTRIBUTE) {
-                    $attributeStarted = true;
-                    $attributeStartedLine = $tokenLine;
-                }
-
                 $lastTokenLine = $tokenLine;
-            } elseif (
-                $attributeStarted === true && $token === ']'
-                && (
-                    $attributeStartedLine === $lastTokenLine
-                    || (($tokens[$key - 1] ?? null) === ')')
-                )
-            ) {
-                $attributeStarted = false;
-                $attributeStartedLine = 0;
+            } elseif ($attributeDepth > 0) {
+                // 4. Handle single-character string tokens (e.g., '[', ']', ';', '{')
+                // This safely calculates the nesting level of arrays inside attributes
+                if ($token === '[') {
+                    $attributeDepth++;
+                } elseif ($token === ']') {
+                    $attributeDepth--;
+                }
             }
         }
 

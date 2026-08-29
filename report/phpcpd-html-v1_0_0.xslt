@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"  xmlns:cpd="https://systemsdk.github.io/phpcpd/report" exclude-result-prefixes="cpd">
 <xsl:output method="html" doctype-system="about:legacy-compat"/>
+<xsl:variable name="hasExactAttribute" select="count(//cpd:duplication/@exact) &gt; 0" />
 <xsl:template match="/">
 <html>
 <head>
@@ -77,6 +78,9 @@
             <tr>
               <th>lines</th>
               <th>tokens</th>
+              <xsl:if test="$hasExactAttribute">
+                <th>match</th>
+              </xsl:if>
               <th>files</th>
               <th>codefragment</th>
             </tr>
@@ -165,6 +169,18 @@
       <tr>
         <td><xsl:value-of select="@lines"/></td>
         <td><xsl:value-of select="@tokens"/></td>
+        <xsl:if test="$hasExactAttribute">
+          <td>
+            <xsl:choose>
+              <xsl:when test="@exact = 'false'">
+                <span class="badge bg-warning text-dark">inconsistent</span>
+              </xsl:when>
+              <xsl:otherwise>
+                <span class="badge bg-success">exact</span>
+              </xsl:otherwise>
+            </xsl:choose>
+          </td>
+        </xsl:if>
         <td>
           <table class="table table-light table-bordered table-striped table-hover">
             <tr><th>line</th><th>endline</th><th>path</th></tr>

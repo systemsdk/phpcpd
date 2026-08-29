@@ -13,6 +13,8 @@ final class ArgumentsBuilder
     public const string OPTION_SUFFIX_NAME = 'suffix';
     public const string OPTION_EXCLUDE_NAME = 'exclude';
     public const string OPTION_LOG_PMD_NAME = 'log-pmd';
+    public const string OPTION_LOG_JSON_NAME = 'log-json';
+    public const string OPTION_LOG_SARIF_NAME = 'log-sarif';
     public const string OPTION_FUZZY_NAME = 'fuzzy';
     public const string OPTION_MIN_LINES_NAME = 'min-lines';
     public const string OPTION_MIN_TOKENS_NAME = 'min-tokens';
@@ -44,6 +46,8 @@ final class ArgumentsBuilder
                     self::OPTION_SUFFIX_NAME . '=',
                     self::OPTION_EXCLUDE_NAME . '=',
                     self::OPTION_LOG_PMD_NAME . '=',
+                    self::OPTION_LOG_JSON_NAME . '=',
+                    self::OPTION_LOG_SARIF_NAME . '=',
                     self::OPTION_FUZZY_NAME,
                     self::OPTION_MIN_LINES_NAME . '=',
                     self::OPTION_MIN_TOKENS_NAME . '=',
@@ -66,6 +70,8 @@ final class ArgumentsBuilder
         $suffixes = ['.php'];
         $exclude = [];
         $pmdCpdXmlLogfile = null;
+        $jsonLogfile = null;
+        $sarifLogfile = null;
         $fuzzy = false;
         $linesThreshold = 5;
         $tokensThreshold = 70;
@@ -90,6 +96,14 @@ final class ArgumentsBuilder
                     break;
                 case '--' . self::OPTION_LOG_PMD_NAME:
                     $pmdCpdXmlLogfile = (string)$option[1];
+
+                    break;
+                case '--' . self::OPTION_LOG_JSON_NAME:
+                    $jsonLogfile = (string)$option[1];
+
+                    break;
+                case '--' . self::OPTION_LOG_SARIF_NAME:
+                    $sarifLogfile = (string)$option[1];
 
                     break;
                 case '--' . self::OPTION_FUZZY_NAME:
@@ -146,6 +160,8 @@ final class ArgumentsBuilder
             $suffixes,
             $exclude,
             $pmdCpdXmlLogfile,
+            $jsonLogfile,
+            $sarifLogfile,
             $linesThreshold,
             $tokensThreshold,
             $fuzzy,

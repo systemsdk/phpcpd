@@ -11,6 +11,7 @@ use function array_slice;
 use function current;
 use function file;
 use function implode;
+use function is_file;
 use function md5;
 
 final class CodeClone
@@ -102,5 +103,46 @@ final class CodeClone
     public function id(): string
     {
         return $this->id;
+    }
+
+    public function isExact(): bool
+    {
+        // 1. Use the already cached text of the first file (it was loaded when __construct called lines())
+        $baseText = $this->lines();
+
+        $isFirst = true;
+
+        foreach ($this->files as $file) {
+            // Skip the first file to avoid unnecessary I/O requests
+            if ($isFirst) {
+                $isFirst = false;
+
+                continue;
+            }
+
+            $filename = $file->name();
+
+            if (!is_file($filename)) {
+                return false;
+            }
+
+            $fileData = file($filename);
+
+            if ($fileData === false) {
+                return false;
+            }
+
+            $currentText = implode(
+                '',
+                array_slice($fileData, $file->startLine() - 1, $this->numberOfLines)
+            );
+
+            // 2. Early exit: break the loop on the first mismatch
+            if ($currentText !== $baseText) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }
