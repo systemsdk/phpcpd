@@ -57,6 +57,9 @@ final class SuffixTreeStrategy extends AbstractStrategy
 
     public function processFile(string $file, CodeCloneMap $result): void
     {
+        foreach ($this->guard->getSuppressedRanges($file) as $range) {
+            $result->addSuppressed($range['end'] - $range['start'] + 1);
+        }
         $content = (string)file_get_contents($file);
         $tokens = token_get_all($content);
         $attributeDepth = 0;

@@ -47,6 +47,9 @@ final class DefaultStrategy extends AbstractStrategy
      */
     public function processFile(string $file, CodeCloneMap $result): void
     {
+        foreach ($this->guard->getSuppressedRanges($file) as $range) {
+            $result->addSuppressed($range['end'] - $range['start'] + 1);
+        }
         $buffer = (string)file_get_contents($file);
         /** @var array<int, int> $currentTokenPositions */
         $currentTokenPositions = [];

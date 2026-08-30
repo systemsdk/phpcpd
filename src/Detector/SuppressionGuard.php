@@ -36,7 +36,7 @@ final class SuppressionGuard
      *
      * @return array<int, array{start: int, end: int}>
      */
-    private function getSuppressedRanges(string $file): array
+    public function getSuppressedRanges(string $file): array
     {
         if (isset($this->cache[$file])) {
             return $this->cache[$file];

@@ -91,6 +91,8 @@ final class Json
                 'filesWithClones' => $clones->numberOfFilesWithClones(),
                 'averageCloneSize' => $clones->averageSize(),
                 'largestCloneSize' => $clones->largestSize(),
+                'suppressedClones' => $clones->getSuppressedClones(),
+                'suppressedLines' => $clones->getSuppressedLines(),
             ],
         ];
 

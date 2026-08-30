@@ -37,6 +37,8 @@ final class PMD extends AbstractXmlLogger
     private const string ATTRIBUTE_LINE_NAME = 'line';
     private const string ATTRIBUTE_END_LINE_NAME = 'endline';
     private const string ATTRIBUTE_EXACT_NAME = 'exact';
+    private const string ATTRIBUTE_SUPPRESSED_CLONES_NAME = 'suppressedClones';
+    private const string ATTRIBUTE_SUPPRESSED_LINES_NAME = 'suppressedLines';
 
     /**
      * @throws LoggerException
@@ -50,6 +52,14 @@ final class PMD extends AbstractXmlLogger
 
             $cpd->setAttribute(self::ATTRIBUTE_XMLNS_NAME, self::ATTRIBUTE_XMLNS_VALUE);
             $cpd->setAttribute(self::ATTRIBUTE_XMLNS_XSI_NAME, self::ATTRIBUTE_XMLNS_XSI_VALUE);
+            $cpd->setAttribute(
+                self::ATTRIBUTE_SUPPRESSED_CLONES_NAME,
+                (string)$clones->getSuppressedClones()
+            );
+            $cpd->setAttribute(
+                self::ATTRIBUTE_SUPPRESSED_LINES_NAME,
+                (string)$clones->getSuppressedLines()
+            );
             $cpd->setAttribute(self::ATTRIBUTE_PHPCPD_VERSION_NAME, Application::VERSION);
             $cpd->setAttribute(
                 self::ATTRIBUTE_TIMESTAMP_NAME,

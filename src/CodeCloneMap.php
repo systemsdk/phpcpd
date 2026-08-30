@@ -29,6 +29,10 @@ final class CodeCloneMap implements Countable, IteratorAggregate
 
     private int $largestCloneSize = 0;
 
+    private int $suppressedClones = 0;
+
+    private int $suppressedLines = 0;
+
     /**
      * @var array<string, bool>
      */
@@ -126,5 +130,21 @@ final class CodeCloneMap implements Countable, IteratorAggregate
     public function largestSize(): int
     {
         return $this->largestCloneSize;
+    }
+
+    public function addSuppressed(int $lines): void
+    {
+        $this->suppressedClones++;
+        $this->suppressedLines += $lines;
+    }
+
+    public function getSuppressedClones(): int
+    {
+        return $this->suppressedClones;
+    }
+
+    public function getSuppressedLines(): int
+    {
+        return $this->suppressedLines;
     }
 }

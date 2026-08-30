@@ -54,6 +54,14 @@ final class Text
         if ($clones->isEmpty()) {
             print 'No code clones found.' . PHP_EOL . PHP_EOL;
 
+            if ($clones->getSuppressedClones() > 0) {
+                printf(
+                    'ℹ️  Note: %d clones (%d lines) were suppressed by #[SuppressCpd] attributes.' . PHP_EOL . PHP_EOL,
+                    $clones->getSuppressedClones(),
+                    $clones->getSuppressedLines()
+                );
+            }
+
             return;
         }
 
@@ -65,5 +73,13 @@ final class Text
             $clones->averageSize(),
             $clones->largestSize()
         );
+
+        if ($clones->getSuppressedClones() > 0) {
+            printf(
+                'ℹ️  Note: %d clones (%d lines) were suppressed by #[SuppressCpd] attributes.' . PHP_EOL . PHP_EOL,
+                $clones->getSuppressedClones(),
+                $clones->getSuppressedLines()
+            );
+        }
     }
 }
