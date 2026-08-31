@@ -23,7 +23,6 @@ use Systemsdk\PhpCPD\Log\PMD;
 use Systemsdk\PhpCPD\Log\Sarif;
 use Systemsdk\PhpCPD\Log\Text;
 
-use function count;
 use function dirname;
 use function printf;
 
@@ -38,17 +37,19 @@ final class Application
      */
     public function run(array $argv): int
     {
-        $this->printVersion();
-
         try {
             $arguments = new ArgumentsBuilder()->build($argv);
         } catch (Exception $exception) {
+            $this->printVersion();
             print PHP_EOL . $exception->getMessage() . PHP_EOL;
 
             return 1;
         }
 
-        print PHP_EOL;
+        if (!$arguments->isQuiet()) {
+            $this->printVersion();
+            print PHP_EOL;
+        }
 
         if ($arguments->version()) {
             return 0;
@@ -77,7 +78,9 @@ final class Application
         );
 
         if (empty($files)) {
-            print 'No files found to scan' . PHP_EOL;
+            if (!$arguments->isQuiet()) {
+                print 'No files found to scan' . PHP_EOL;
+            }
 
             if ($arguments->ignoreNoFiles()) {
                 return 0;
@@ -102,14 +105,16 @@ final class Application
         $timer->start();
 
         try {
-            $clones = new Detector($strategy, true)->copyPasteDetection($files);
+            $clones = new Detector($strategy, !$arguments->isQuiet())->copyPasteDetection($files);
         } catch (ProcessingResultException $exception) {
             print 'Processing error: ' . $exception->getMessage() . PHP_EOL;
 
             return 1;
         }
 
-        new Text()->printResult($clones, $arguments->verbose());
+        if (!$arguments->isQuiet()) {
+            new Text()->printResult($clones, $arguments->verbose());
+        }
 
         if ($arguments->pmdCpdXmlLogfile()) {
             try {
@@ -141,9 +146,27 @@ final class Application
             }
         }
 
-        print new ResourceUsageFormatter()->resourceUsage($timer->stop()) . PHP_EOL;
+        if (!$arguments->isQuiet()) {
+            print new ResourceUsageFormatter()->resourceUsage($timer->stop()) . PHP_EOL;
+        }
 
-        return count($clones) > 0 ? 1 : 0;
+        if ($arguments->ignoreViolationsOnExit()) {
+            return 0;
+        }
+
+        if ($clones->isEmpty()) {
+            return 0;
+        }
+
+        $percentage = $clones->numberOfLines() > 0
+            ? ($clones->numberOfDuplicatedLines() / $clones->numberOfLines()) * 100
+            : 0.0;
+
+        if ($percentage <= $arguments->maxPercentage()) {
+            return 0;
+        }
+
+        return 1;
     }
 
     private function printVersion(): void
@@ -232,14 +255,17 @@ Options for selecting files:
 
 Options for analysing files:
 
-  --algorithm <name>  Select which algorithm to use ('rabin-karp' (default) or 'suffix-tree')
-  --fuzzy             Fuzz variable names
-  --min-lines <N>     Minimum number of identical lines (default: 5)
-  --min-tokens <N>    Minimum number of identical tokens (default: 70)
-  --edit-distance <N> Distance in number of edits between two clones (only for suffix-tree; default: 0)
-  --head-equality <N> Minimum equality at start of clone (only for suffix-tree; default 10)
-  --verbose           Print results details
-  --ignore-no-files   To return a success exit code if no files were found
+  --algorithm <name>          Select which algorithm to use ('rabin-karp' (default) or 'suffix-tree')
+  --fuzzy                     Fuzz variable names
+  --min-lines <N>             Minimum number of identical lines (default: 5)
+  --min-tokens <N>            Minimum number of identical tokens (default: 70)
+  --edit-distance <N>         Distance in number of edits between two clones (only for suffix-tree; default: 0)
+  --head-equality <N>         Minimum equality at start of clone (only for suffix-tree; default 10)
+  --verbose                   Print results details
+  --quiet                     Disable all output except file logs and error messages
+  --ignore-no-files           To return a success exit code if no files were found
+  --max-percentage <N>        Fail only if the percentage of duplicated lines exceeds <N> (default: 0.0)
+  --ignore-violations-on-exit Always exit with 0, regardless of violations found
 
 Options for report generation:
 

@@ -150,25 +150,9 @@ final class SuffixTreeTest extends TestCase
 
         // let's check first clone
         $firstClone = $clones[0];
-        self::assertEquals(10, $firstClone->numberOfLines());
-        self::assertEquals(43, $firstClone->numberOfTokens());
+        self::assertEquals(13, $firstClone->numberOfLines());
+        self::assertEquals(32, $firstClone->numberOfTokens());
         $files = $firstClone->files();
-        self::assertCount(2, $files);
-        self::assertArrayHasKey(__DIR__ . '/../Fixture/editdistance1.php:16', $files);
-        self::assertArrayHasKey(__DIR__ . '/../Fixture/editdistance2.php:14', $files);
-        $file1 = $files[__DIR__ . '/../Fixture/editdistance1.php:16'];
-        self::assertEquals(__DIR__ . '/../Fixture/editdistance1.php', $file1->name());
-        self::assertEquals(16, $file1->startLine());
-        $file2 = $files[__DIR__ . '/../Fixture/editdistance2.php:14'];
-        self::assertEquals(__DIR__ . '/../Fixture/editdistance2.php', $file2->name());
-        self::assertEquals(14, $file2->startLine());
-        self::assertEquals(24, $file2->endLine());
-
-        // let's check second clone
-        $secondClone = $clones[1];
-        self::assertEquals(13, $secondClone->numberOfLines());
-        self::assertEquals(32, $secondClone->numberOfTokens());
-        $files = $secondClone->files();
         self::assertCount(2, $files);
         self::assertArrayHasKey(__DIR__ . '/../Fixture/editdistance1.php:3', $files);
         self::assertArrayHasKey(__DIR__ . '/../Fixture/editdistance2.php:3', $files);
@@ -179,6 +163,22 @@ final class SuffixTreeTest extends TestCase
         self::assertEquals(__DIR__ . '/../Fixture/editdistance2.php', $file2->name());
         self::assertEquals(3, $file2->startLine());
         self::assertEquals(14, $file2->endLine());
+
+        // let's check second clone
+        $secondClone = $clones[1];
+        self::assertEquals(10, $secondClone->numberOfLines());
+        self::assertEquals(43, $secondClone->numberOfTokens());
+        $files = $secondClone->files();
+        self::assertCount(2, $files);
+        self::assertArrayHasKey(__DIR__ . '/../Fixture/editdistance1.php:16', $files);
+        self::assertArrayHasKey(__DIR__ . '/../Fixture/editdistance2.php:14', $files);
+        $file1 = $files[__DIR__ . '/../Fixture/editdistance1.php:16'];
+        self::assertEquals(__DIR__ . '/../Fixture/editdistance1.php', $file1->name());
+        self::assertEquals(16, $file1->startLine());
+        $file2 = $files[__DIR__ . '/../Fixture/editdistance2.php:14'];
+        self::assertEquals(__DIR__ . '/../Fixture/editdistance2.php', $file2->name());
+        self::assertEquals(14, $file2->startLine());
+        self::assertEquals(24, $file2->endLine());
     }
 
     public function testPhp84HooksIsOk(): void
@@ -272,11 +272,11 @@ final class SuffixTreeTest extends TestCase
             4 => '--min-tokens',
             5 => '10',
         ];
-        $arguments = (new ArgumentsBuilder())->build($argv);
+        $arguments = new ArgumentsBuilder()->build($argv);
         $config = new StrategyConfiguration($arguments);
         $strategy = new SuffixTreeStrategy($config, new SuppressionGuard());
         $path = __DIR__ . '/../Fixture/SuppressCase2/';
-        $clones = (new Detector($strategy))->copyPasteDetection([
+        $clones = new Detector($strategy)->copyPasteDetection([
             $path . 'Test1_A.php',
             $path . 'Test1_B.php',
             $path . 'Test1_C.php',
@@ -293,10 +293,10 @@ final class SuffixTreeTest extends TestCase
 
         // Check all 4 clones
         $expectedResults = [
-            [2, $path . 'Test1_B.php', $path . 'Test1_C.php', 9, 24, 9, 24],
-            [2, $path . 'Test2_A.php', $path . 'Test2_C.php', 12, 24, 23, 35],
-            [2, $path . 'Test3_C.php', $path . 'Test3_C.php', 11, 24, 24, 37],
             [2, $path . 'Test4_A.php', $path . 'Test4_B.php', 17, 33, 14, 30],
+            [2, $path . 'Test1_B.php', $path . 'Test1_C.php', 9, 24, 9, 24],
+            [2, $path . 'Test3_C.php', $path . 'Test3_C.php', 11, 24, 24, 37],
+            [2, $path . 'Test2_A.php', $path . 'Test2_C.php', 12, 24, 23, 35],
         ];
         $i = 0;
         foreach ($clones->clones() as $clone) {

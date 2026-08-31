@@ -59,6 +59,9 @@ final class Detector
         }
         $this->strategy->postProcess($this->useProgressBar);
 
+        // Filter out intersecting clones before returning the final report
+        $result->removeOverlaps();
+
         return $result;
     }
 }

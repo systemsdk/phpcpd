@@ -145,6 +145,9 @@ else
 	@make exec-bash cmd="make phpcpd-html-report"
 endif
 
+phpcpd-sarif-report: ## Generate an SARIF report for PHP Copy/Paste Detector
+	@make exec-bash cmd="php phpcpd --log-sarif=reports/phpcpd/phpcpd-report.sarif src"
+
 report-code-coverage: ## Update code coverage report on Coveralls.io (requires COVERALLS_REPO_TOKEN, should be set on CI side)
 	@make exec-bash cmd="export COVERALLS_REPO_TOKEN=${COVERALLS_REPO_TOKEN} && php ./vendor/bin/php-coveralls -v --coverage_clover reports/clover.xml --json_path reports/coverals.json"
 

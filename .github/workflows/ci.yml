@@ -15,6 +15,10 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+      actions: read
+      contents: read
     steps:
       - uses: actions/checkout@v4
       - name: Build the docker image
@@ -39,15 +43,21 @@ jobs:
         run: make phpcs
       - name: Run PHPStan
         run: make phpstan
+      - name: Test SARIF report generation
+        run: make phpcpd-sarif-report
+      - name: Fix report file permissions
+        run: sudo chown -R $USER:$USER reports/phpcpd
+      - name: Upload SARIF report to GitHub
+        uses: github/codeql-action/upload-sarif@v4
+        if: always()
+        with:
+          sarif_file: reports/phpcpd/phpcpd-report.sarif
+          category: phpcpd-latest
       - name: Stop and remove environment container, network
         run: make down
 
   tests:
     runs-on: ${{ matrix.operating-system }}
-    permissions:
-      security-events: write
-      actions: read
-      contents: read
     strategy:
       matrix:
         operating-system: [ 'ubuntu-latest' ]
@@ -62,10 +72,4 @@ jobs:
       - name: Check php version
         run: php -v
       - name: Test latest PHPCPD release
-        run: php ./releases/phpcpd-9.1.0.phar --log-sarif=reports/phpcpd/phpcpd-report.sarif src
-      - name: Upload SARIF report to GitHub
-        uses: github/codeql-action/upload-sarif@v4
-        if: always()
-        with:
-          sarif_file: reports/phpcpd/phpcpd-report.sarif
-          category: phpcpd-${{ matrix.php-versions }}
+        run: php ./releases/phpcpd-latest.phar src

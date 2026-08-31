@@ -27,7 +27,10 @@ final readonly class Arguments
         private string $algorithm,
         private int $editDistance,
         private int $headEquality,
-        private bool $ignoreNoFiles
+        private bool $ignoreNoFiles,
+        private bool $quiet,
+        private float $maxPercentage,
+        private bool $ignoreViolationsOnExit
     ) {
     }
 
@@ -118,5 +121,20 @@ final readonly class Arguments
     public function ignoreNoFiles(): bool
     {
         return $this->ignoreNoFiles;
+    }
+
+    public function isQuiet(): bool
+    {
+        return $this->quiet;
+    }
+
+    public function maxPercentage(): float
+    {
+        return $this->maxPercentage;
+    }
+
+    public function ignoreViolationsOnExit(): bool
+    {
+        return $this->ignoreViolationsOnExit;
     }
 }

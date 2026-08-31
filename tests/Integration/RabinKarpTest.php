@@ -405,11 +405,11 @@ final class RabinKarpTest extends TestCase
             4 => '--min-tokens',
             5 => '10',
         ];
-        $arguments = (new ArgumentsBuilder())->build($argv);
+        $arguments = new ArgumentsBuilder()->build($argv);
         $config = new StrategyConfiguration($arguments);
         $strategy->setConfig($config);
         $path = __DIR__ . '/../Fixture/SuppressCase2/';
-        $clones = (new Detector($strategy))->copyPasteDetection([
+        $clones = new Detector($strategy)->copyPasteDetection([
             $path . 'Test1_A.php',
             $path . 'Test1_B.php',
             $path . 'Test1_C.php',
@@ -422,15 +422,14 @@ final class RabinKarpTest extends TestCase
             $path . 'Test4_A.php',
             $path . 'Test4_B.php',
         ]);
-        self::assertCount(5, $clones->clones(), 'Failed asserting clones count');
+        self::assertCount(4, $clones->clones(), 'Failed asserting clones count');
 
-        // Check all 5 clones
+        // Check all 4 clones
         $expectedResults = [
+            [2, $path . 'Test4_A.php', $path . 'Test4_B.php', 17, 33, 14, 30],
             [2, $path . 'Test1_B.php', $path . 'Test1_C.php', 9, 24, 9, 24],
             [2, $path . 'Test2_A.php', $path . 'Test2_C.php', 9, 22, 9, 22],
-            [2, $path . 'Test2_A.php', $path . 'Test2_C.php', 12, 24, 23, 35],
             [2, $path . 'Test3_C.php', $path . 'Test3_C.php', 11, 24, 24, 37],
-            [2, $path . 'Test4_A.php', $path . 'Test4_B.php', 17, 33, 14, 30],
         ];
         $i = 0;
         foreach ($clones->clones() as $clone) {

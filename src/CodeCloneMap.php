@@ -147,4 +147,68 @@ final class CodeCloneMap implements Countable, IteratorAggregate
     {
         return $this->suppressedLines;
     }
+
+    public function removeOverlaps(): void
+    {
+        // 1. Sort clones by size descending (largest clones first)
+        usort(
+            $this->clones,
+            static function (CodeClone $a, CodeClone $b): int {
+                return $b->numberOfLines() <=> $a->numberOfLines();
+            }
+        );
+
+        $coveredRanges = [];
+        $validClones = [];
+        $validClonesById = [];
+        $newNumberOfDuplicatedLines = 0;
+        $newFilesWithClones = [];
+        $newLargestCloneSize = 0;
+
+        foreach ($this->clones as $clone) {
+            $overlap = false;
+
+            // 2. Fast check if any file in this clone overlaps with already processed (larger) clones
+            foreach ($clone->files() as $file) {
+                $name = $file->name();
+
+                if (isset($coveredRanges[$name])) {
+                    $start = $file->startLine();
+                    $end = $file->endLine();
+
+                    foreach ($coveredRanges[$name] as $range) {
+                        if ($start < $range['end'] && $end > $range['start']) {
+                            $overlap = true;
+                            break 2;
+                        }
+                    }
+                }
+            }
+
+            // 3. If no overlap, keep the clone and mark its ranges as covered
+            if (!$overlap) {
+                $validClones[] = $clone;
+                $validClonesById[$clone->id()] = $clone;
+
+                $newNumberOfDuplicatedLines += $clone->numberOfLines() * (count($clone->files()) - 1);
+                $newLargestCloneSize = max($newLargestCloneSize, $clone->numberOfLines());
+
+                foreach ($clone->files() as $file) {
+                    $name = $file->name();
+                    $newFilesWithClones[$name] = true;
+                    $coveredRanges[$name][] = [
+                        'start' => $file->startLine(),
+                        'end' => $file->endLine(),
+                    ];
+                }
+            }
+        }
+
+        // 4. Overwrite current state with the filtered data
+        $this->clones = $validClones;
+        $this->clonesById = $validClonesById;
+        $this->numberOfDuplicatedLines = $newNumberOfDuplicatedLines;
+        $this->filesWithClones = $newFilesWithClones;
+        $this->largestCloneSize = $newLargestCloneSize;
+    }
 }

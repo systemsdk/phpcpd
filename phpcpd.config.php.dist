@@ -1,0 +1,72 @@
+<?php
+
+declare(strict_types=1);
+
+use Systemsdk\PhpCPD\Config\Config;
+
+return Config::make()
+    /*
+     * -------------------------------------------------------------------------
+     * REQUIRED SETTINGS
+     * -------------------------------------------------------------------------
+     */
+
+    // Directories to scan (Required unless provided via CLI arguments)
+    ->withDirectories(['src', 'tests'])
+
+    /*
+     * -------------------------------------------------------------------------
+     * DEFAULT SETTINGS (Can be safely removed if you are fine with the defaults)
+     * -------------------------------------------------------------------------
+     */
+
+    // Suffixes of files to parse (Default: ['.php'])
+    ->withSuffixes(['.php'])
+
+    // Paths or path segments to exclude from analysis (Default: [])
+    ->exclude([])
+
+    // Minimum number of identical lines to be considered a clone (Default: 5)
+    ->withMinLines(5)
+
+    // Minimum number of identical tokens to be considered a clone (Default: 70)
+    ->withMinTokens(70)
+
+    // Select which algorithm to use: useRabinKarpAlgorithm() or useSuffixTreeAlgorithm() (Default: Rabin-Karp)
+    ->useRabinKarpAlgorithm()
+
+    // Distance in number of edits between two clones (Only for suffix-tree; Default: 0)
+    ->withEditDistance(0)
+
+    // Minimum equality at start of clone (Only for suffix-tree; Default: 10)
+    ->withHeadEquality(10)
+
+    // Fuzz variable names (Default: false)
+    ->withFuzzy(false)
+
+    // Return a success exit code (0) even if no files were found (Default: false)
+    ->withIgnoreNoFiles(false)
+
+    // Print detailed results to the CLI (Default: false)
+    ->withVerbose(false)
+
+    // Disable all output except file logs and error messages (Default: false)
+    ->withQuiet(false)
+
+    // Fail only if the percentage of duplicated lines exceeds this threshold (Default: 0.0)
+    ->withMaxPercentage(0.0)
+
+    // Always exit with 0, regardless of violations found (Default: false)
+    ->withIgnoreViolationsOnExit(false)
+
+    /*
+     * -------------------------------------------------------------------------
+     * REPORT GENERATION (Optional)
+     * Uncomment the following lines to generate reports in various formats
+     * -------------------------------------------------------------------------
+     */
+
+    // ->withPmdCpdXmlLogfile('reports/phpcpd/phpcpd-report-v1.xml')
+    // ->withJsonLogfile('reports/phpcpd/phpcpd-report.json')
+    // ->withSarifLogfile('reports/phpcpd/phpcpd-report.sarif')
+;
