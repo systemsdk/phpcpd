@@ -12,15 +12,15 @@
     "license": "BSD-3-Clause",
     "authors": [
         {
-            "name": "Sebastian Bergmann",
-            "email": "sebastian@phpunit.de",
-            "role": "lead"
-        },
-        {
             "name": "Dmitry Kravtsov",
             "email": "dmitry.kravtsov@systemsdk.com",
             "homepage": "https://github.com/systemsdk",
-            "role": "Developer"
+            "role": "Project Lead"
+        },
+        {
+            "name": "Sebastian Bergmann",
+            "email": "sebastian@phpunit.de",
+            "role": "Original Author"
         }
     ],
     "funding": [

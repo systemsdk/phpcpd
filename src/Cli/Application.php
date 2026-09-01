@@ -260,17 +260,17 @@ Options for analysing files:
   --min-lines <N>             Minimum number of identical lines (default: 5)
   --min-tokens <N>            Minimum number of identical tokens (default: 70)
   --edit-distance <N>         Distance in number of edits between two clones (only for suffix-tree; default: 0)
-  --head-equality <N>         Minimum equality at start of clone (only for suffix-tree; default 10)
+  --head-equality <N>         Minimum equality at start of clone (only for suffix-tree; default: 10)
   --verbose                   Print results details
   --quiet                     Disable all output except file logs and error messages
-  --ignore-no-files           To return a success exit code if no files were found
-  --max-percentage <N>        Fail only if the percentage of duplicated lines exceeds <N> (default: 0.0)
+  --ignore-no-files           Return a success exit code if no files were found
+  --max-percentage <N>        Fail only if the percentage of duplicated lines exceeds this threshold (default: 0.0)
   --ignore-violations-on-exit Always exit with 0, regardless of violations found
 
 Options for report generation:
 
-  --log-pmd <file>  Write log in PMD-CPD XML format to <file>
-  --log-json <file> Write log in custom JSON format to <file>
+  --log-pmd <file>   Write log in PMD-CPD XML format to <file>
+  --log-json <file>  Write log in custom JSON format to <file>
   --log-sarif <file> Write log in SARIF 2.1.0 format to <file>
 
 General options:
