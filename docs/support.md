@@ -111,6 +111,7 @@ make phpstan
 
 make phpcpd-run
 make phpcpd-html-report
+make phpcpd-sarif-report
 
 make logs
 ```

@@ -1,46 +1,48 @@
-# PHP Copy/Paste Detector report
-This document describing how you can generate report.
+# HTML Report Generation
+This document describes how to generate visual, interactive HTML reports from `phpcpd`'s XML output. These reports make it significantly easier to navigate, analyze, and share code duplication metrics with your team.
 
-## Requirements for html report generation
-* [Xalan](https://xalan.apache.org) tool
-* created folder (f.e. `reports/phpcpd`) with write access where you want to save your report
+## Requirements
+To generate HTML reports, ensure you have the following:
+* The [Xalan](https://xalan.apache.org) XSLT processor installed locally or within your Docker container.
+* A dedicated output directory (e.g., `reports/phpcpd/`) with write permissions.
 
-Note: You can find some already-made examples inside our solutions on our [GitHub page](https://github.com/systemsdk) 
+Note: You can find fully configured examples within the open-source projects hosted on our [GitHub page](https://github.com/systemsdk).
 
-## Steps for html report generation
-You need to run the next commands for html report generation:
+## Generation Steps
+Follow these steps to analyze your code and compile the HTML report:
 
-1. Run PHP Copy/Paste Detector
+1. Run PHPCPD to generate an XML report
 ```bash
 php ./vendor/bin/phpcpd --fuzzy --verbose --log-pmd=reports/phpcpd/phpcpd-report-v1.xml src
 ```
 
-Note: `src` is a folder where your php source code for analyzing
+Note: In this example, `src` represents the directory containing the PHP source code you wish to analyze.
 
-2. Run xalan tool for report generation
+2. Run Xalan to convert the XML into HTML
 ```bash
 xalan -in reports/phpcpd/phpcpd-report-v1.xml -xsl https://systemsdk.github.io/phpcpd/report/phpcpd-html-v1_0_0.xslt -out reports/phpcpd/phpcpd-report-v1.html
 ```
 
-3. Now you can open the report using your web-browser
+3. View the Report
+Open the newly generated `reports/phpcpd/phpcpd-report-v1.html` file in any modern web browser.
+
+You can view a live [Example Report here](https://systemsdk.github.io/phpcpd/report/report-example.html).
 
 ![Path mappings](images/report_example_01.png)
 
-[Example](https://systemsdk.github.io/phpcpd/report/report-example.html)
+Tip: Use the `Enable datatable` and `Disable datatable` menu items at the top of the HTML report to toggle the interactive [DataTables](https://datatables.net/) grid for advanced sorting and searching.
 
-Note: Please use menu items `Enable datatable`, `Disable datatabl` for enable/disable [DataTables](https://datatables.net/).
+## XML Report Format
+Under the hood, `phpcpd` outputs the duplications in a structured `XML` format. This structured data can then be processed further using XSLT transformations.
 
-## Xml report format
-This format uses `xml` to output the duplications in a more structured format. The `xml` format can then further be processed using `xslt` transformations. See section xslt below for examples.
-
-Report file example:
-```
+Here is an example of the generated XML output:
+```xml
 <?xml version="1.0" encoding="UTF-8"?>
-<pmd-cpd xmlns="https://systemsdk.github.io/phpcpd/report" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" phpcpdVersion="8.2.4" timestamp="2025-11-07T21:42:17+00:00" version="1.0.0" xsi:schemaLocation="https://systemsdk.github.io/phpcpd/report https://systemsdk.github.io/phpcpd/report/phpcpd-report-v1_0_0.xsd">
-  <duplication lines="59" tokens="136">
-    <file line="116" endline="175" path="/var/www/html/tests/Fixture/Math.php"/>
-    <file line="217" endline="276" path="/var/www/html/tests/Fixture/Math.php"/>
-    <codefragment><![CDATA[    public function div($v1, $v2)
+<pmd-cpd xmlns="https://systemsdk.github.io/phpcpd/report" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" suppressedClones="11" suppressedLines="140" phpcpdVersion="9.1.0" timestamp="2026-09-02T13:11:49+00:00" version="1.0.0" xsi:schemaLocation="https://systemsdk.github.io/phpcpd/report https://systemsdk.github.io/phpcpd/report/phpcpd-report-v1_0_0.xsd">
+    <duplication lines="59" tokens="136" exact="false">
+        <file line="116" endline="175" path="/var/www/html/tests/Fixture/Math.php"/>
+        <file line="217" endline="276" path="/var/www/html/tests/Fixture/Math.php"/>
+        <codefragment><![CDATA[    public function div($v1, $v2)
     {
         $v3 = $v1 / ($v2 + $v1);
         if ($v3 > 14)
@@ -100,20 +102,20 @@ Report file example:
 
         return $v8;
 ]]></codefragment>
-  </duplication>
+    </duplication>
 </pmd-cpd>
 ```
 
-## Xslt
-This is not a direct report format. But you can use one of the following `xslt` stylesheets to convert the report into `html`. Or you can write your own stylesheet.
+## XSLT Stylesheets
+While XML is the direct report format, you can use XSLT stylesheets to convert the report into HTML.
 
-`https://systemsdk.github.io/phpcpd/report/phpcpd-html-v1_0_0.xslt`
+We provide an official, ready-to-use XSLT stylesheet: `https://systemsdk.github.io/phpcpd/report/phpcpd-html-v1_0_0.xslt`.
 
-This stylesheet is available and using for html report generation mentioned above.
+This stylesheet is utilized in the generation example above. It requires JavaScript to be enabled and uses [Bootstrap](https://getbootstrap.com/), [jQuery](https://jquery.com/), and [DataTables](https://datatables.net/) to provide a responsive user interface.
 
-It requires javascript enabled and uses [Bootstrap](https://getbootstrap.com/), [jQuery](https://jquery.com/), and [DataTables](https://datatables.net/).
+Tip: Alternatively, you are free to write and apply your own custom XSLT stylesheet to match your internal corporate branding.
 
-## Schema versions
-PHP Copy/Paste detector tool is building xml report that has schema `https://systemsdk.github.io/phpcpd/report/phpcpd-report-v1_0_0.xsd`.
+## Schema Versions
+The PHP Copy/Paste Detector generates XML reports that strictly adhere to the following schema: `https://systemsdk.github.io/phpcpd/report/phpcpd-report-v1_0_0.xsd`.
 
-You can find xsd versions history [here](schema.md).
+For details regarding schema version history and specifications, please refer to the [Schema Documentation](schema.md).

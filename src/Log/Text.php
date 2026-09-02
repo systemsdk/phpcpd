@@ -53,30 +53,20 @@ final class Text
 
         if ($clones->isEmpty()) {
             print 'No code clones found.' . PHP_EOL . PHP_EOL;
-
-            if ($clones->getSuppressedClones() > 0) {
-                printf(
-                    'ℹ️  Note: %d clones (%d lines) were suppressed by #[SuppressCpd] attributes.' . PHP_EOL . PHP_EOL,
-                    $clones->getSuppressedClones(),
-                    $clones->getSuppressedLines()
-                );
-            }
-
-            return;
+        } else {
+            printf(
+                '%s duplicated lines out of %d total lines of code.' . PHP_EOL .
+                'Average code clone size is %d lines, the largest code clone has %d lines' . PHP_EOL . PHP_EOL,
+                $clones->percentage(),
+                $clones->numberOfLines(),
+                $clones->averageSize(),
+                $clones->largestSize()
+            );
         }
-
-        printf(
-            '%s duplicated lines out of %d total lines of code.' . PHP_EOL .
-            'Average code clone size is %d lines, the largest code clone has %d lines' . PHP_EOL . PHP_EOL,
-            $clones->percentage(),
-            $clones->numberOfLines(),
-            $clones->averageSize(),
-            $clones->largestSize()
-        );
 
         if ($clones->getSuppressedClones() > 0) {
             printf(
-                'ℹ️  Note: %d clones (%d lines) were suppressed by #[SuppressCpd] attributes.' . PHP_EOL . PHP_EOL,
+                'ℹ️  Note: %d clone(s) (%d lines) were suppressed by #[SuppressCpd] attribute(s).' . PHP_EOL . PHP_EOL,
                 $clones->getSuppressedClones(),
                 $clones->getSuppressedLines()
             );

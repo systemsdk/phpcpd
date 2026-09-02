@@ -1,12 +1,11 @@
 # PHP Copy/Paste Detector (PHPCPD)
-
-> **An enterprise-grade static analysis tool for detecting code duplication in modern PHP applications.**
+An enterprise-grade static analysis tool for detecting code duplication in modern PHP applications.
 
 `phpcpd` analyzes your PHP source code to find structurally identical clones, helping your team reduce technical debt, enforce DRY (Don't Repeat Yourself) principles, and maintain high architectural standards.
 
 Optimized for modern workflows, this tool provides seamless integration with CI/CD pipelines, GitHub Code Scanning (SARIF), and enterprise reporting systems.
 
-**Note:** This repository is an actively maintained, heavily upgraded continuation of the abandoned [sebastianbergmann/phpcpd](https://github.com/sebastianbergmann/phpcpd). It has been re-architected to meet the strict demands of enterprise environments and modern PHP 8.4+ standards.
+Note: This repository is an actively maintained, heavily upgraded continuation of the abandoned [sebastianbergmann/phpcpd](https://github.com/sebastianbergmann/phpcpd). It has been re-architected to meet the strict demands of enterprise environments and modern PHP 8.4+ standards.
 
 [![PHP Copy/Paste Detector](https://github.com/systemsdk/phpcpd/actions/workflows/ci.yml/badge.svg)](https://github.com/systemsdk/phpcpd/actions/workflows/ci.yml)
 [![Coverage Status](https://coveralls.io/repos/github/systemsdk/phpcpd/badge.svg)](https://coveralls.io/github/systemsdk/phpcpd)
@@ -66,7 +65,7 @@ Found 1 code clones with 17 duplicated lines in 1 files:
 0.05% duplicated lines out of 32210 total lines of code.
 Average code clone size is 17 lines, the largest code clone has 17 lines
 
-ℹ️  Note: 1 clones (38 lines) were suppressed by #[SuppressCpd] attributes.
+ℹ️  Note: 1 clone(s) (38 lines) were suppressed by #[SuppressCpd] attribute(s).
 
 Time: 00:00.373, Memory: 10.00 MB
 ```

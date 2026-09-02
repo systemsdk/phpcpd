@@ -67,7 +67,7 @@
             </tr>
           </table>
             <xsl:if test="cpd:pmd-cpd/attribute::suppressedClones &gt; 0">
-              <p>ℹ️ Note: <font color="#0000FF"><xsl:value-of select="cpd:pmd-cpd/attribute::suppressedClones"/></font> clones (<font color="#0000FF"><xsl:value-of select="cpd:pmd-cpd/attribute::suppressedLines"/></font> lines) were suppressed by #[SuppressCpd] attributes.</p>
+              <p>ℹ️ Note: <font color="#0000FF"><xsl:value-of select="cpd:pmd-cpd/attribute::suppressedClones"/></font> clone(s) (<font color="#0000FF"><xsl:value-of select="cpd:pmd-cpd/attribute::suppressedLines"/></font> lines) were suppressed by #[SuppressCpd] attribute(s).</p>
             </xsl:if>
         </div>
       </div>
