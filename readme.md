@@ -180,7 +180,7 @@ jobs:
 ## Excluding Files and Directories (Exact Segment Matching)
 The `--exclude` logic has been completely overhauled to fix long-standing upstream issues (such as [Issue #202](https://github.com/sebastianbergmann/phpcpd/issues/202)).
 
-It now uses **exact path segment matching**. This means excluding a directory named `Vendor` will safely ignore the `Vendor/` folder, but will **not** accidentally exclude a folder named `Vendor2/`. You can reliably ignore specific directories, nested paths, or individual files.
+It now uses **exact path segment matching**. This means excluding a directory named `vendor` will safely ignore the `vendor/` folder, but will **not** accidentally exclude a folder named `vendor2/`. You can reliably ignore specific directories, nested paths, or individual files.
 
 ### Using the CLI
 Pass the `--exclude` flag for each specific path segment you want to ignore:

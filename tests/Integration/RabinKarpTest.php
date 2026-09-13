@@ -458,7 +458,7 @@ final class RabinKarpTest extends TestCase
         $argv = [
             1 => '.',
         ];
-        $arguments = (new ArgumentsBuilder())->build($argv);
+        $arguments = new ArgumentsBuilder()->build($argv);
         $config = new StrategyConfiguration($arguments);
 
         return [

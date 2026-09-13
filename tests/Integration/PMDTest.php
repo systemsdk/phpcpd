@@ -41,7 +41,7 @@ final class PMDTest extends TestCase
         $expectedPmdLogFile = tempnam(sys_get_temp_dir(), 'pmd');
         self::assertIsString($expectedPmdLogFile, 'Can not create expected pmd log file');
         $this->expectedPmdLogFile = $expectedPmdLogFile;
-        $expectedPmdLogTemplate = file_get_contents(__DIR__ . '/../Fixture/pmd_expected.xml');
+        $expectedPmdLogTemplate = file_get_contents(__DIR__ . '/../Fixture/Log/pmd_expected.xml');
         self::assertIsString($expectedPmdLogTemplate, 'Can not get expected pmd log template');
         $expectedPmdLogContents = strtr(
             $expectedPmdLogTemplate,
