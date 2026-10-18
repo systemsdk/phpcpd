@@ -38,7 +38,7 @@ Under the hood, `phpcpd` outputs the duplications in a structured `XML` format. 
 Here is an example of the generated XML output:
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
-<pmd-cpd xmlns="https://systemsdk.github.io/phpcpd/report" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" suppressedClones="11" suppressedLines="140" phpcpdVersion="9.1.0" timestamp="2026-09-02T13:11:49+00:00" version="1.0.0" xsi:schemaLocation="https://systemsdk.github.io/phpcpd/report https://systemsdk.github.io/phpcpd/report/phpcpd-report-v1_0_0.xsd">
+<pmd-cpd xmlns="https://systemsdk.github.io/phpcpd/report" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" suppressedClones="11" suppressedLines="140" phpcpdVersion="9.2.0" timestamp="2026-10-11T13:11:49+00:00" version="1.0.0" xsi:schemaLocation="https://systemsdk.github.io/phpcpd/report https://systemsdk.github.io/phpcpd/report/phpcpd-report-v1_0_0.xsd">
     <duplication lines="59" tokens="136" exact="false">
         <file line="116" endline="175" path="/var/www/html/tests/Fixture/Math.php"/>
         <file line="217" endline="276" path="/var/www/html/tests/Fixture/Math.php"/>

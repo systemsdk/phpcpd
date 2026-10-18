@@ -6,8 +6,6 @@ namespace Systemsdk\PhpCPD\Detector\Strategy\SuffixTree;
 
 use Systemsdk\PhpCPD\Exceptions\OutOfBoundsException;
 
-use function array_slice;
-
 /**
  * A list for storing pairs in a specific order.
  *
@@ -26,24 +24,17 @@ class PairList
      *
      * @var array<int, mixed>
      */
-    private array $firstElements;
+    private array $firstElements = [];
 
     /**
      * The array used for storing the T.
      *
      * @var array<int, mixed>
      */
-    private array $secondElements;
+    private array $secondElements = [];
 
-    public function __construct(int $initialCapacity) // , $firstType, $secondType
+    public function __construct()
     {
-        if ($initialCapacity < 1) {
-            $initialCapacity = 1;
-        }
-
-        $data = array_fill(0, $initialCapacity, null);
-        $this->firstElements = $data;
-        $this->secondElements = $data;
     }
 
     /**
@@ -98,7 +89,7 @@ class PairList
      */
     public function extractFirstList(): array
     {
-        return array_slice($this->firstElements, 0, $this->size);
+        return $this->firstElements;
     }
 
     /**

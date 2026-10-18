@@ -19,6 +19,7 @@ class Sentinel extends AbstractToken
         $this->file = '<no file>';
         $this->tokenName = '<no token name>';
         $this->content = '<no token content>';
+        $this->hash = -1;
     }
 
     public function __toString(): string
@@ -28,7 +29,6 @@ class Sentinel extends AbstractToken
 
     public function equals(AbstractToken $other): bool
     {
-        // Original code uses physical object equality, not present in PHP.
-        return $other instanceof self;
+        return $this->hash === $other->hash;
     }
 }

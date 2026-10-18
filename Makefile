@@ -155,7 +155,7 @@ phpcs: ## Run PHP CodeSniffer checks
 	@make exec-bash cmd="./vendor/bin/phpcs --version && ./vendor/bin/phpcs --standard=PSR12 --colors -p src tests/Integration"
 
 ecs: ## Run Easy Coding Standard (ECS) checks
-	@make exec-bash cmd="./vendor/bin/ecs --version && ./vendor/bin/ecs --clear-cache check src tests/Integration"
+	@make exec-bash cmd="./vendor/bin/ecs --version && ./vendor/bin/ecs --clear-cache src tests/Integration"
 
 ecs-fix: ## Run Easy Coding Standard to automatically fix issues
 	@make exec-bash cmd="./vendor/bin/ecs --version && ./vendor/bin/ecs --clear-cache --fix check src tests/Integration"

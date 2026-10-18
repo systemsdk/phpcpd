@@ -23,7 +23,7 @@ final class RabinKarpTest extends TestCase
     #[DataProvider('strategyProvider')]
     public function testDetectingSimpleClonesWorks(AbstractStrategy $strategy): void
     {
-        $clones = (new Detector($strategy))->copyPasteDetection([__DIR__ . '/../Fixture/Math.php']);
+        $clones = new Detector($strategy)->copyPasteDetection([__DIR__ . '/../Fixture/Math.php']);
 
         $clones = $clones->clones();
         $files = $clones[0]->files();
@@ -39,7 +39,7 @@ final class RabinKarpTest extends TestCase
         self::assertSame(__DIR__ . '/../Fixture/Math.php', $file->name());
         self::assertSame(217, $file->startLine());
         self::assertSame(59, $clones[0]->numberOfLines());
-        self::assertSame(136, $clones[0]->numberOfTokens());
+        self::assertSame(304, $clones[0]->numberOfTokens());
 
         self::assertSame(
             '    public function div($v1, $v2)
@@ -116,11 +116,11 @@ final class RabinKarpTest extends TestCase
             4 => '--min-tokens',
             5 => '50',
         ];
-        $arguments = (new ArgumentsBuilder())->build($argv);
+        $arguments = new ArgumentsBuilder()->build($argv);
         $config = new StrategyConfiguration($arguments);
         $strategy->setConfig($config);
 
-        $clones = (new Detector($strategy))->copyPasteDetection(
+        $clones = new Detector($strategy)->copyPasteDetection(
             [
                 __DIR__ . '/../Fixture/a.php',
                 __DIR__ . '/../Fixture/b.php',
@@ -142,7 +142,7 @@ final class RabinKarpTest extends TestCase
         self::assertSame(__DIR__ . '/../Fixture/b.php', $file->name());
         self::assertSame(7, $file->startLine());
         self::assertSame(20, $clones[0]->numberOfLines());
-        self::assertSame(60, $clones[0]->numberOfTokens());
+        self::assertSame(120, $clones[0]->numberOfTokens());
     }
 
     #[DataProvider('strategyProvider')]
@@ -155,11 +155,11 @@ final class RabinKarpTest extends TestCase
             4 => '--min-tokens',
             5 => '60',
         ];
-        $arguments = (new ArgumentsBuilder())->build($argv);
+        $arguments = new ArgumentsBuilder()->build($argv);
         $config = new StrategyConfiguration($arguments);
         $strategy->setConfig($config);
 
-        $clones = (new Detector($strategy))->copyPasteDetection(
+        $clones = new Detector($strategy)->copyPasteDetection(
             [
                 __DIR__ . '/../Fixture/a.php',
                 __DIR__ . '/../Fixture/b.php',
@@ -201,10 +201,10 @@ final class RabinKarpTest extends TestCase
             4 => '--min-tokens',
             5 => '63',
         ];
-        $arguments = (new ArgumentsBuilder())->build($argv);
+        $arguments = new ArgumentsBuilder()->build($argv);
         $config = new StrategyConfiguration($arguments);
         $strategy->setConfig($config);
-        $clones = (new Detector($strategy))->copyPasteDetection(
+        $clones = new Detector($strategy)->copyPasteDetection(
             [
                 __DIR__ . '/../Fixture/a.php',
                 __DIR__ . '/../Fixture/b.php',
@@ -224,10 +224,10 @@ final class RabinKarpTest extends TestCase
             4 => '--min-tokens',
             5 => '63',
         ];
-        $arguments = (new ArgumentsBuilder())->build($argv);
+        $arguments = new ArgumentsBuilder()->build($argv);
         $config = new StrategyConfiguration($arguments);
         $strategy->setConfig($config);
-        $clones = (new Detector($strategy))->copyPasteDetection(
+        $clones = new Detector($strategy)->copyPasteDetection(
             [
                 __DIR__ . '/../Fixture/a.php',
                 __DIR__ . '/../Fixture/b.php',
@@ -249,10 +249,10 @@ final class RabinKarpTest extends TestCase
             6 => '--fuzzy',
             7 => 'true',
         ];
-        $arguments = (new ArgumentsBuilder())->build($argv);
+        $arguments = new ArgumentsBuilder()->build($argv);
         $config = new StrategyConfiguration($arguments);
         $strategy->setConfig($config);
-        $clones = (new Detector($strategy))->copyPasteDetection(
+        $clones = new Detector($strategy)->copyPasteDetection(
             [
                 __DIR__ . '/../Fixture/a.php',
                 __DIR__ . '/../Fixture/d.php',
@@ -274,7 +274,7 @@ final class RabinKarpTest extends TestCase
             6 => '--fuzzy',
             7 => 'true',
         ];
-        $arguments = (new ArgumentsBuilder())->build($argv);
+        $arguments = new ArgumentsBuilder()->build($argv);
         $config = new StrategyConfiguration($arguments);
         $strategy->setConfig($config);
 
@@ -298,7 +298,7 @@ final class RabinKarpTest extends TestCase
             6 => '--fuzzy',
             7 => 'true',
         ];
-        $arguments = (new ArgumentsBuilder())->build($argv);
+        $arguments = new ArgumentsBuilder()->build($argv);
         $config = new StrategyConfiguration($arguments);
         $strategy->setConfig($config);
 
@@ -322,11 +322,11 @@ final class RabinKarpTest extends TestCase
             4 => '--min-tokens',
             5 => '30',
         ];
-        $arguments = (new ArgumentsBuilder())->build($argv);
+        $arguments = new ArgumentsBuilder()->build($argv);
         $config = new StrategyConfiguration($arguments);
         $strategy->setConfig($config);
 
-        $clones = (new Detector($strategy))->copyPasteDetection(
+        $clones = new Detector($strategy)->copyPasteDetection(
             [
                 __DIR__ . '/../Fixture/php84_hooks.php',
             ]
@@ -342,12 +342,12 @@ final class RabinKarpTest extends TestCase
         self::assertCount(1, $clones);
 
         self::assertSame(__DIR__ . '/../Fixture/php84_hooks.php', $file1->name());
-        self::assertSame(7, $file1->startLine());
-        self::assertSame(19, $file1->endLine());
+        self::assertSame(5, $file1->startLine());
+        self::assertSame(21, $file1->endLine());
 
         self::assertSame(__DIR__ . '/../Fixture/php84_hooks.php', $file2->name());
-        self::assertSame(25, $file2->startLine());
-        self::assertSame(37, $file2->endLine());
+        self::assertSame(23, $file2->startLine());
+        self::assertSame(39, $file2->endLine());
     }
 
     #[DataProvider('suppressionFixturesProvider')]
@@ -366,10 +366,10 @@ final class RabinKarpTest extends TestCase
             4 => '--min-tokens',
             5 => '10',
         ];
-        $arguments = (new ArgumentsBuilder())->build($argv);
+        $arguments = new ArgumentsBuilder()->build($argv);
         $config = new StrategyConfiguration($arguments);
         $strategy = new DefaultStrategy($config, new SuppressionGuard());
-        $clones = (new Detector($strategy))->copyPasteDetection([$file]);
+        $clones = new Detector($strategy)->copyPasteDetection([$file]);
 
         self::assertCount(
             $expectedClones,
@@ -426,9 +426,9 @@ final class RabinKarpTest extends TestCase
 
         // Check all 4 clones
         $expectedResults = [
-            [2, $path . 'Test4_A.php', $path . 'Test4_B.php', 17, 33, 14, 30],
-            [2, $path . 'Test1_B.php', $path . 'Test1_C.php', 9, 24, 9, 24],
-            [2, $path . 'Test2_A.php', $path . 'Test2_C.php', 9, 22, 9, 22],
+            [2, $path . 'Test1_B.php', $path . 'Test1_C.php', 7, 25, 7, 25],
+            [2, $path . 'Test4_A.php', $path . 'Test4_B.php', 17, 34, 14, 31],
+            [2, $path . 'Test2_A.php', $path . 'Test2_C.php', 7, 22, 7, 22],
             [2, $path . 'Test3_C.php', $path . 'Test3_C.php', 11, 24, 24, 37],
         ];
         $i = 0;
@@ -447,6 +447,28 @@ final class RabinKarpTest extends TestCase
             self::assertSame($expectedResults[$i][6], $file2->endLine());
             $i++;
         }
+    }
+
+    #[DataProvider('strategyProvider')]
+    public function testMethodsWithDifferentOperatorsAreNotClones(AbstractStrategy $strategy): void
+    {
+        $argv = [
+            1 => '.',
+            2 => '--min-lines',
+            3 => '10',
+            4 => '--min-tokens',
+            5 => '20',
+        ];
+        $arguments = new ArgumentsBuilder()->build($argv);
+        $config = new StrategyConfiguration($arguments);
+        $strategy->setConfig($config);
+        $clones = new Detector($strategy)->copyPasteDetection(
+            [
+                __DIR__ . '/../Fixture/SingleCharacterToken.php',
+            ]
+        );
+
+        self::assertCount(0, $clones->clones());
     }
 
     /**
@@ -477,7 +499,7 @@ final class RabinKarpTest extends TestCase
             'Method Scope' => [$path . 'Test1_method.php', 0, 0, 0, 0, 0],
             'Class Scope' => [$path . 'Test2_class.php', 1, 33, 40, 42, 49],
             'Complex Syntax' => [$path . 'Test3_complex.php', 0, 0, 0, 0, 0],
-            'Mixed Content' => [$path . 'Test4_mixed.php', 1, 21, 28, 42, 49],
+            'Mixed Content' => [$path . 'Test4_mixed.php', 1, 21, 29, 42, 50],
             'PHP 8.4 Hooks' => [$path . 'Test5_php84.php', 0, 0, 0, 0, 0],
         ];
     }

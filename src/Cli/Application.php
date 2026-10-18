@@ -30,7 +30,7 @@ use const PHP_EOL;
 
 final class Application
 {
-    public const string VERSION = '9.1.0';
+    public const string VERSION = '9.2.0';
 
     /**
      * @param array<int, string> $argv
@@ -258,9 +258,9 @@ Options for analysing files:
   --algorithm <name>          Select which algorithm to use ('rabin-karp' (default) or 'suffix-tree')
   --fuzzy                     Fuzz variable names
   --min-lines <N>             Minimum number of identical lines (default: 5)
-  --min-tokens <N>            Minimum number of identical tokens (default: 70)
+  --min-tokens <N>            Minimum number of identical tokens (default: 100)
   --edit-distance <N>         Distance in number of edits between two clones (only for suffix-tree; default: 0)
-  --head-equality <N>         Minimum equality at start of clone (only for suffix-tree; default: 10)
+  --head-equality <N>         Minimum equality at start of clone (only for suffix-tree; default: 30)
   --verbose                   Print results details
   --quiet                     Disable all output except file logs and error messages
   --ignore-no-files           Return a success exit code if no files were found

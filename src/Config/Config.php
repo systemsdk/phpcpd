@@ -28,10 +28,10 @@ final class Config
     private ?string $sarifLogfile = null;
     private bool $fuzzy = false;
     private int $minLines = 5;
-    private int $minTokens = 70;
+    private int $minTokens = 100;
     private string $algorithm = ArgumentsBuilder::ALGORITHM_RABIN_KARP_NAME;
     private int $editDistance = 0;
-    private int $headEquality = 10;
+    private int $headEquality = 30;
     private bool $verbose = false;
     private bool $quiet = false;
     private bool $ignoreNoFiles = false;

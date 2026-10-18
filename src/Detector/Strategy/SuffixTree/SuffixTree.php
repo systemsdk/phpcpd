@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Systemsdk\PhpCPD\Detector\Strategy\SuffixTree;
 
+use function array_fill;
 use function count;
 
 /**
@@ -38,6 +39,12 @@ class SuffixTree
      * @var AbstractToken[]
      */
     protected array $word;
+
+    /**
+     * Cached size of the $word array.
+     * Prevents repeated count() function calls in hot-path loops, significantly improving performance.
+     */
+    protected int $wordCount;
 
     /**
      * The number of nodes created so far.
@@ -130,6 +137,7 @@ class SuffixTree
     {
         $this->word = $word;
         $size = count($word);
+        $this->wordCount = $size;
         $this->infty = $size;
 
         $expectedNodes = 2 * $size;
@@ -223,7 +231,9 @@ class SuffixTree
 
         $next = $this->nextNode->get($this->currentNode, $this->word[$this->refWordBegin]);
 
-        if ($nextCharacter->equals($this->word[$this->nodeWordBegin[$next] + $refWordEnd - $this->refWordBegin])) {
+        if (
+            $nextCharacter->hash === $this->word[$this->nodeWordBegin[$next] + $refWordEnd - $this->refWordBegin]->hash
+        ) {
             return true;
         }
 

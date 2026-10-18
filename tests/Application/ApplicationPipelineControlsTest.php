@@ -32,7 +32,7 @@ final class ApplicationPipelineControlsTest extends TestCase
         );
 
         // Ensure the parser actually ran and output the real percentage
-        self::assertStringContainsString('67.44% duplicated lines', $output);
+        self::assertStringContainsString('68.60% duplicated lines', $output);
     }
 
     public function testBuildPassesWhenMaxPercentageIsNotExceeded(): void

@@ -11,6 +11,7 @@ abstract class AbstractToken
     public protected(set) string $file;
     public protected(set) string $tokenName;
     public protected(set) string $content;
+    public protected(set) int $hash;
 
     abstract public function __toString(): string;
 

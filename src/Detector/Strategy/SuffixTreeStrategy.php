@@ -19,6 +19,7 @@ use function array_keys;
 use function count;
 use function file_get_contents;
 use function is_array;
+use function ord;
 use function token_get_all;
 use function uniqid;
 
@@ -57,13 +58,17 @@ final class SuffixTreeStrategy extends AbstractStrategy
 
     public function processFile(string $file, CodeCloneMap $result): void
     {
-        foreach ($this->guard->getSuppressedRanges($file) as $range) {
+        $suppressedRanges = $this->guard->getSuppressedRanges($file);
+        $hasSuppressed = $suppressedRanges !== [];
+
+        foreach ($suppressedRanges as $range) {
             $result->addSuppressed($range['end'] - $range['start'] + 1);
         }
         $content = (string)file_get_contents($file);
         $tokens = token_get_all($content);
         $attributeDepth = 0;
         $wasSuppressed = false;
+        $lastTokenLine = 0; // FIX: Track line number for single-character tokens
 
         $result->addToNumberOfLines(substr_count($content, "\n"));
 
@@ -75,9 +80,10 @@ final class SuffixTreeStrategy extends AbstractStrategy
 
             if (is_array($token)) {
                 $tokenLine = (int)$token[2];
+                $lastTokenLine = $tokenLine; // FIX: Save the last known line number
 
                 // 1. Check for #[SuppressCpd] and insert a barrier wall
-                if ($this->guard->isLineSuppressed($file, $tokenLine)) {
+                if ($hasSuppressed && $this->guard->isLineSuppressed($file, $tokenLine)) {
                     if (!$wasSuppressed) {
                         // Insert a unique fake barrier token.
                         // It has ID -1 and an absolutely unique value, so the Suffix Tree
@@ -121,13 +127,30 @@ final class SuffixTreeStrategy extends AbstractStrategy
                         $tokenValue
                     );
                 }
-            } elseif ($attributeDepth > 0) {
-                // 4. Handle single-character string tokens (e.g., '[', ']', ';', '{')
-                // This safely calculates the nesting level of arrays inside attributes
-                if ($token === '[') {
-                    $attributeDepth++;
-                } elseif ($token === ']') {
-                    $attributeDepth--;
+            } else {
+                // 4. Handle single-character string tokens (e.g., '+', '*', '{', '[')
+                $tokenLine = $lastTokenLine > 0 ? $lastTokenLine : 1;
+
+                if ($hasSuppressed && $this->guard->isLineSuppressed($file, $tokenLine)) {
+                    continue;
+                }
+
+                if ($attributeDepth > 0) {
+                    // This safely calculates the nesting level of arrays inside attributes
+                    if ($token === '[') {
+                        $attributeDepth++;
+                    } elseif ($token === ']') {
+                        $attributeDepth--;
+                    }
+                } else {
+                    // FIX: Process single-character operators to distinguish math/logic differences
+                    $this->word[] = new Token(
+                        ord($token),
+                        $token,
+                        $tokenLine,
+                        $file,
+                        $token
+                    );
                 }
             }
         }

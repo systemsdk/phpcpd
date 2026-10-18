@@ -33,7 +33,7 @@ class FileA
             $v8 *= $x;
         }
 
-        // Повторяем логику еще раз для 100% гарантии нужного количества токенов
+        // Repeat the logic once more to 100% guarantee the required token count.
         $v3 = $v1 / ($v2 + $v1);
 
         if ($v3 > 14) {

@@ -10,14 +10,12 @@ use Systemsdk\PhpCPD\CodeCloneMap;
 use Systemsdk\PhpCPD\Exceptions\ProcessingResultException;
 
 use function array_keys;
-use function chr;
 use function count;
 use function crc32;
 use function file_get_contents;
 use function is_array;
-use function md5;
+use function ord;
 use function pack;
-use function substr;
 use function substr_count;
 use function token_get_all;
 use function uniqid;
@@ -47,7 +45,10 @@ final class DefaultStrategy extends AbstractStrategy
      */
     public function processFile(string $file, CodeCloneMap $result): void
     {
-        foreach ($this->guard->getSuppressedRanges($file) as $range) {
+        $suppressedRanges = $this->guard->getSuppressedRanges($file);
+        $hasSuppressed = $suppressedRanges !== [];
+
+        foreach ($suppressedRanges as $range) {
             $result->addSuppressed($range['end'] - $range['start'] + 1);
         }
         $buffer = (string)file_get_contents($file);
@@ -55,7 +56,10 @@ final class DefaultStrategy extends AbstractStrategy
         $currentTokenPositions = [];
         /** @var array<int, int> $currentTokenRealPositions */
         $currentTokenRealPositions = [];
-        $currentSignature = '';
+
+        /** @var array<int, int> $tokenHashes */
+        $tokenHashes = [];
+
         $tokens = token_get_all($buffer);
         $tokenNr = 0;
         $lastTokenLine = 0;
@@ -76,7 +80,7 @@ final class DefaultStrategy extends AbstractStrategy
                 $tokenLine = (int)$token[2];
 
                 // If the current line is protected by #[SuppressCpd]
-                if ($this->guard->isLineSuppressed($file, $tokenLine)) {
+                if ($hasSuppressed && $this->guard->isLineSuppressed($file, $tokenLine)) {
                     // If we JUST entered the suppressed zone, place a Barrier Wall
                     if (!$wasSuppressed) {
                         if ($tokenNr === 0) {
@@ -89,7 +93,7 @@ final class DefaultStrategy extends AbstractStrategy
 
                         // Create a globally unique token (Barrier) to poison any sliding window
                         // that tries to cross this area. This prevents wormhole bugs.
-                        $currentSignature .= chr(255) . pack('N*', crc32(uniqid('barrier', true)));
+                        $tokenHashes[] = (crc32(uniqid('barrier', true)) ^ 255) & 0x7FFFFFFF;
                         $tokenNr++;
                         $wasSuppressed = true;
                     }
@@ -125,32 +129,82 @@ final class DefaultStrategy extends AbstractStrategy
                         $token[1] = 'variable';
                     }
 
-                    $currentSignature .= chr($token[0] & 255) . pack('N*', crc32($token[1]));
+                    $tokenHashes[] = (crc32($token[1]) ^ ($token[0] & 255)) & 0x7FFFFFFF;
                 }
 
                 $lastTokenLine = $tokenLine;
-            } elseif ($attributeDepth > 0) {
-                // 4. Handle single-character string tokens (e.g., '[', ']', ';', '{')
-                // This safely calculates the nesting level of arrays inside attributes
-                if ($token === '[') {
-                    $attributeDepth++;
-                } elseif ($token === ']') {
-                    $attributeDepth--;
+            } else {
+                // 4. Handle single-character string tokens (e.g., '+', '*', '{', '[')
+                $tokenLine = $lastTokenLine > 0 ? $lastTokenLine : 1;
+
+                if ($hasSuppressed && $this->guard->isLineSuppressed($file, $tokenLine)) {
+                    continue;
+                }
+
+                if ($attributeDepth > 0) {
+                    // This safely calculates the nesting level of arrays inside attributes
+                    if ($token === '[') {
+                        $attributeDepth++;
+                    } elseif ($token === ']') {
+                        $attributeDepth--;
+                    }
+                } else {
+                    // FIX: Add single-character operators to the token stream for Rabin-Karp hashing
+                    if ($tokenNr === 0) {
+                        $currentTokenPositions[$tokenNr] = 0;
+                    } else {
+                        $currentTokenPositions[$tokenNr] = $currentTokenPositions[$tokenNr - 1];
+                    }
+
+                    $currentTokenRealPositions[$tokenNr++] = $tokenLine;
+
+                    // Use the ASCII value of the character as its token type
+                    $tokenHashes[] = (crc32($token) ^ (ord($token) & 255)) & 0x7FFFFFFF;
                 }
             }
         }
 
         $count = count($currentTokenPositions);
+        $minTokens = $this->config->minTokens();
+
+        if ($count < $minTokens) {
+            return;
+        }
+
+        // ---------------------------------------------------------
+        // DOUBLE POLYNOMIAL ROLLING HASH SETUP (O(1) sliding window)
+        // ---------------------------------------------------------
+        $base1 = 31;
+        $mod1 = 2147483647; // 2^31 - 1
+        $base2 = 37;
+        $mod2 = 2147483629; // 2^31 - 19
+
+        $power1 = 1;
+        $power2 = 1;
+        for ($i = 0; $i < $minTokens - 1; $i++) {
+            $power1 = ($power1 * $base1) % $mod1;
+            $power2 = ($power2 * $base2) % $mod2;
+        }
+
+        $hash1 = 0;
+        $hash2 = 0;
+
+        // Initial window hash computation
+        for ($i = 0; $i < $minTokens; $i++) {
+            $hash1 = (($hash1 * $base1) % $mod1 + ($tokenHashes[$i] % $mod1)) % $mod1;
+            $hash2 = (($hash2 * $base2) % $mod2 + ($tokenHashes[$i] % $mod2)) % $mod2;
+        }
+
         $firstLine = 0;
         $firstRealLine = 0;
         $found = false;
         $tokenNr = 0;
 
-        while ($tokenNr <= $count - $this->config->minTokens()) {
+        while ($tokenNr <= $count - $minTokens) {
             $line = $currentTokenPositions[$tokenNr];
             $realLine = $currentTokenRealPositions[$tokenNr];
 
-            $hash = substr(md5(substr($currentSignature, $tokenNr * 5, $this->config->minTokens() * 5), true), 0, 8);
+            $hash = pack('NN', $hash1, $hash2);
 
             if (isset($this->hashes[$hash])) {
                 $found = true;
@@ -179,6 +233,30 @@ final class DefaultStrategy extends AbstractStrategy
                 }
 
                 $this->hashes[$hash] = [$file, $realLine];
+            }
+
+            // ROLLING THE HASH: O(1) update for the next iteration
+            if ($tokenNr < $count - $minTokens) {
+                $outToken = $tokenHashes[$tokenNr];
+                $inToken = $tokenHashes[$tokenNr + $minTokens];
+
+                // Roll Hash 1: Subtract old token, shift left, add new token
+                $sub1 = ($outToken % $mod1 * $power1) % $mod1;
+                $hash1 = ($hash1 - $sub1) % $mod1;
+                if ($hash1 < 0) {
+                    $hash1 += $mod1;
+                }
+                $hash1 = ($hash1 * $base1) % $mod1;
+                $hash1 = ($hash1 + ($inToken % $mod1)) % $mod1;
+
+                // Roll Hash 2: Subtract old token, shift left, add new token
+                $sub2 = ($outToken % $mod2 * $power2) % $mod2;
+                $hash2 = ($hash2 - $sub2) % $mod2;
+                if ($hash2 < 0) {
+                    $hash2 += $mod2;
+                }
+                $hash2 = ($hash2 * $base2) % $mod2;
+                $hash2 = ($hash2 + ($inToken % $mod2)) % $mod2;
             }
 
             $tokenNr++;

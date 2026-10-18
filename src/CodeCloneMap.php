@@ -158,6 +158,7 @@ final class CodeCloneMap implements Countable, IteratorAggregate
             }
         );
 
+        /** @var array<string, array<int, array{start: int, end: int}>> $coveredRanges */
         $coveredRanges = [];
         $validClones = [];
         $validClonesById = [];
@@ -166,11 +167,12 @@ final class CodeCloneMap implements Countable, IteratorAggregate
         $newLargestCloneSize = 0;
 
         foreach ($this->clones as $clone) {
-            $overlap = false;
+            $validFilesInClone = [];
 
-            // 2. Fast check if any file in this clone overlaps with already processed (larger) clones
+            // 2. Check each file individually for overlaps
             foreach ($clone->files() as $file) {
                 $name = $file->name();
+                $overlap = false;
 
                 if (isset($coveredRanges[$name])) {
                     $start = $file->startLine();
@@ -179,21 +181,40 @@ final class CodeCloneMap implements Countable, IteratorAggregate
                     foreach ($coveredRanges[$name] as $range) {
                         if ($start < $range['end'] && $end > $range['start']) {
                             $overlap = true;
-                            break 2;
+                            break;
                         }
                     }
                 }
+
+                // 3. Keep the file only if its lines are not already covered by a larger clone
+                if (!$overlap) {
+                    $validFilesInClone[] = $file;
+                }
             }
 
-            // 3. If no overlap, keep the clone and mark its ranges as covered
-            if (!$overlap) {
-                $validClones[] = $clone;
-                $validClonesById[$clone->id()] = $clone;
+            // 4. If at least 2 files survive the overlap check, we can form a valid clone
+            if (count($validFilesInClone) >= 2) {
+                $firstFile = array_shift($validFilesInClone);
+                $secondFile = array_shift($validFilesInClone);
 
-                $newNumberOfDuplicatedLines += $clone->numberOfLines() * (count($clone->files()) - 1);
-                $newLargestCloneSize = max($newLargestCloneSize, $clone->numberOfLines());
+                $newClone = new CodeClone(
+                    $firstFile,
+                    $secondFile,
+                    $clone->numberOfLines(),
+                    $clone->numberOfTokens()
+                );
 
-                foreach ($clone->files() as $file) {
+                foreach ($validFilesInClone as $remainingFile) {
+                    $newClone->add($remainingFile);
+                }
+
+                $validClones[] = $newClone;
+                $validClonesById[$newClone->id()] = $newClone;
+
+                $newNumberOfDuplicatedLines += $newClone->numberOfLines() * (count($newClone->files()) - 1);
+                $newLargestCloneSize = max($newLargestCloneSize, $newClone->numberOfLines());
+
+                foreach ($newClone->files() as $file) {
                     $name = $file->name();
                     $newFilesWithClones[$name] = true;
                     $coveredRanges[$name][] = [
@@ -204,7 +225,7 @@ final class CodeCloneMap implements Countable, IteratorAggregate
             }
         }
 
-        // 4. Overwrite current state with the filtered data
+        // 5. Overwrite current state with the filtered data
         $this->clones = $validClones;
         $this->clonesById = $validClonesById;
         $this->numberOfDuplicatedLines = $newNumberOfDuplicatedLines;

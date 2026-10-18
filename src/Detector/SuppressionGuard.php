@@ -7,6 +7,7 @@ namespace Systemsdk\PhpCPD\Detector;
 use function count;
 use function file_get_contents;
 use function is_array;
+use function str_contains;
 use function token_get_all;
 
 use const T_ATTRIBUTE;
@@ -25,10 +26,15 @@ final class SuppressionGuard
 
     public function isLineSuppressed(string $file, int $line): bool
     {
-        return array_any(
-            $this->getSuppressedRanges($file),
-            static fn (array $range): bool => $line >= $range['start'] && $line <= $range['end']
-        );
+        $ranges = $this->cache[$file] ?? $this->getSuppressedRanges($file);
+
+        foreach ($ranges as $range) {
+            if ($line >= $range['start'] && $line <= $range['end']) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -45,7 +51,8 @@ final class SuppressionGuard
         $this->cache[$file] = [];
         $content = @file_get_contents($file);
 
-        if ($content === false) {
+        // Fast-path: skip expensive token_get_all() if the file does not mention SuppressCpd at all
+        if ($content === false || !str_contains($content, 'SuppressCpd')) {
             return [];
         }
 

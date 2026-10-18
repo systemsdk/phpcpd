@@ -19,11 +19,13 @@ use PhpCsFixer\Fixer\Phpdoc\NoSuperfluousPhpdocTagsFixer;
 use PhpCsFixer\Fixer\Phpdoc\PhpdocNoPackageFixer;
 use PhpCsFixer\Fixer\PhpTag\BlankLineAfterOpeningTagFixer;
 use PhpCsFixer\Fixer\Whitespace\BlankLineBeforeStatementFixer;
+use PhpCsFixer\Fixer\Whitespace\BlankLineBetweenImportGroupsFixer;
 use PhpCsFixer\Fixer\Whitespace\MethodChainingIndentationFixer;
 use PhpCsFixer\Fixer\Whitespace\NoExtraBlankLinesFixer;
 use PhpCsFixer\Fixer\Whitespace\TypesSpacesFixer;
 use Symplify\CodingStandard\Fixer\Annotation\RemovePropertyVariableNameDescriptionFixer;
 use Symplify\CodingStandard\Fixer\Spacing\MethodChainingNewlineFixer;
+use Symplify\CodingStandard\Fixer\Spacing\NoBlankLineBetweenImportsFixer;
 use Symplify\EasyCodingStandard\Config\ECSConfig;
 
 return ECSConfig::configure()
@@ -107,7 +109,7 @@ return ECSConfig::configure()
                     'square_brace_block',
                     'switch',
                     'throw',
-                    //'use',
+                    'use',
                     'use_trait',
                 ],
         ],
@@ -122,6 +124,9 @@ return ECSConfig::configure()
         'space' => 'none',
         'space_multiple_catch' => 'single',
     ])
+    ->withRules([
+        BlankLineBetweenImportGroupsFixer::class,
+    ])
     ->withSkip([
         BlankLineAfterOpeningTagFixer::class => null,
         ClassAttributesSeparationFixer::class => null,
@@ -133,4 +138,5 @@ return ECSConfig::configure()
         PhpdocNoPackageFixer::class => null,
         RemovePropertyVariableNameDescriptionFixer::class => null,
         SingleLineThrowFixer::class => null,
+        NoBlankLineBetweenImportsFixer::class => null,
     ]);

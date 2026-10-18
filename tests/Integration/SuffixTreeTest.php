@@ -25,11 +25,11 @@ final class SuffixTreeTest extends TestCase
             4 => '--min-tokens',
             5 => '60',
         ];
-        $arguments = (new ArgumentsBuilder())->build($argv);
+        $arguments = new ArgumentsBuilder()->build($argv);
         $config = new StrategyConfiguration($arguments);
         $strategy = new SuffixTreeStrategy($config, new SuppressionGuard());
 
-        $clones = (new Detector($strategy))->copyPasteDetection(
+        $clones = new Detector($strategy)->copyPasteDetection(
             [
                 __DIR__ . '/../Fixture/editdistance1.php',
                 __DIR__ . '/../Fixture/editdistance2.php',
@@ -39,7 +39,7 @@ final class SuffixTreeTest extends TestCase
         $clones = $clones->clones();
         self::assertCount(1, $clones);
         self::assertEquals(27, $clones[0]->numberOfLines());
-        self::assertEquals(77, $clones[0]->numberOfTokens());
+        self::assertEquals(177, $clones[0]->numberOfTokens());
 
         // let's check files
         $files = $clones[0]->files();
@@ -51,13 +51,13 @@ final class SuffixTreeTest extends TestCase
         $argv = [
             1 => '.',
             2 => '--min-tokens',
-            3 => '60',
+            3 => '110',
         ];
-        $arguments = (new ArgumentsBuilder())->build($argv);
+        $arguments = new ArgumentsBuilder()->build($argv);
         $config = new StrategyConfiguration($arguments);
         $strategy = new DefaultStrategy($config, new SuppressionGuard());
 
-        $clones = (new Detector($strategy))->copyPasteDetection(
+        $clones = new Detector($strategy)->copyPasteDetection(
             [
                 __DIR__ . '/../Fixture/editdistance1.php',
                 __DIR__ . '/../Fixture/editdistance2.php',
@@ -73,13 +73,13 @@ final class SuffixTreeTest extends TestCase
         $argv = [
             1 => '.',
             2 => '--min-tokens',
-            3 => '60',
+            3 => '110',
         ];
-        $arguments = (new ArgumentsBuilder())->build($argv);
+        $arguments = new ArgumentsBuilder()->build($argv);
         $config = new StrategyConfiguration($arguments);
         $strategy = new SuffixTreeStrategy($config, new SuppressionGuard());
 
-        $clones = (new Detector($strategy))->copyPasteDetection(
+        $clones = new Detector($strategy)->copyPasteDetection(
             [
                 __DIR__ . '/../Fixture/editdistance1.php',
                 __DIR__ . '/../Fixture/editdistance2.php',
@@ -97,11 +97,11 @@ final class SuffixTreeTest extends TestCase
             2 => '--min-tokens',
             3 => '30',
         ];
-        $arguments = (new ArgumentsBuilder())->build($argv);
+        $arguments = new ArgumentsBuilder()->build($argv);
         $config = new StrategyConfiguration($arguments);
         $strategy = new SuffixTreeStrategy($config, new SuppressionGuard());
 
-        $clones = (new Detector($strategy))->copyPasteDetection(
+        $clones = new Detector($strategy)->copyPasteDetection(
             [
                 __DIR__ . '/../Fixture/Math.php',
             ],
@@ -113,7 +113,7 @@ final class SuffixTreeTest extends TestCase
         // let's check clone
         $clone = $clones[0];
         self::assertEquals(59, $clone->numberOfLines());
-        self::assertEquals(136, $clone->numberOfTokens());
+        self::assertEquals(304, $clone->numberOfTokens());
         $files = $clone->files();
         self::assertCount(2, $files);
         self::assertArrayHasKey(__DIR__ . '/../Fixture/Math.php:116', $files);
@@ -134,11 +134,11 @@ final class SuffixTreeTest extends TestCase
             2 => '--min-tokens',
             3 => '30',
         ];
-        $arguments = (new ArgumentsBuilder())->build($argv);
+        $arguments = new ArgumentsBuilder()->build($argv);
         $config = new StrategyConfiguration($arguments);
         $strategy = new SuffixTreeStrategy($config, new SuppressionGuard());
 
-        $clones = (new Detector($strategy))->copyPasteDetection(
+        $clones = new Detector($strategy)->copyPasteDetection(
             [
                 __DIR__ . '/../Fixture/editdistance1.php',
                 __DIR__ . '/../Fixture/editdistance2.php',
@@ -150,8 +150,8 @@ final class SuffixTreeTest extends TestCase
 
         // let's check first clone
         $firstClone = $clones[0];
-        self::assertEquals(13, $firstClone->numberOfLines());
-        self::assertEquals(32, $firstClone->numberOfTokens());
+        self::assertEquals(12, $firstClone->numberOfLines());
+        self::assertEquals(61, $firstClone->numberOfTokens());
         $files = $firstClone->files();
         self::assertCount(2, $files);
         self::assertArrayHasKey(__DIR__ . '/../Fixture/editdistance1.php:3', $files);
@@ -162,22 +162,22 @@ final class SuffixTreeTest extends TestCase
         $file2 = $files[__DIR__ . '/../Fixture/editdistance2.php:3'];
         self::assertEquals(__DIR__ . '/../Fixture/editdistance2.php', $file2->name());
         self::assertEquals(3, $file2->startLine());
-        self::assertEquals(14, $file2->endLine());
+        self::assertEquals(13, $file2->endLine());
 
         // let's check second clone
         $secondClone = $clones[1];
-        self::assertEquals(10, $secondClone->numberOfLines());
-        self::assertEquals(43, $secondClone->numberOfTokens());
+        self::assertEquals(11, $secondClone->numberOfLines());
+        self::assertEquals(100, $secondClone->numberOfTokens());
         $files = $secondClone->files();
         self::assertCount(2, $files);
-        self::assertArrayHasKey(__DIR__ . '/../Fixture/editdistance1.php:16', $files);
-        self::assertArrayHasKey(__DIR__ . '/../Fixture/editdistance2.php:14', $files);
-        $file1 = $files[__DIR__ . '/../Fixture/editdistance1.php:16'];
+        self::assertArrayHasKey(__DIR__ . '/../Fixture/editdistance1.php:15', $files);
+        self::assertArrayHasKey(__DIR__ . '/../Fixture/editdistance2.php:13', $files);
+        $file1 = $files[__DIR__ . '/../Fixture/editdistance1.php:15'];
         self::assertEquals(__DIR__ . '/../Fixture/editdistance1.php', $file1->name());
-        self::assertEquals(16, $file1->startLine());
-        $file2 = $files[__DIR__ . '/../Fixture/editdistance2.php:14'];
+        self::assertEquals(15, $file1->startLine());
+        $file2 = $files[__DIR__ . '/../Fixture/editdistance2.php:13'];
         self::assertEquals(__DIR__ . '/../Fixture/editdistance2.php', $file2->name());
-        self::assertEquals(14, $file2->startLine());
+        self::assertEquals(13, $file2->startLine());
         self::assertEquals(24, $file2->endLine());
     }
 
@@ -190,11 +190,11 @@ final class SuffixTreeTest extends TestCase
             4 => '--min-tokens',
             5 => '30',
         ];
-        $arguments = (new ArgumentsBuilder())->build($argv);
+        $arguments = new ArgumentsBuilder()->build($argv);
         $config = new StrategyConfiguration($arguments);
         $strategy = new SuffixTreeStrategy($config, new SuppressionGuard());
 
-        $clones = (new Detector($strategy))->copyPasteDetection(
+        $clones = new Detector($strategy)->copyPasteDetection(
             [
                 __DIR__ . '/../Fixture/php84_hooks.php',
             ]
@@ -210,12 +210,12 @@ final class SuffixTreeTest extends TestCase
         self::assertCount(1, $clones);
 
         self::assertSame(__DIR__ . '/../Fixture/php84_hooks.php', $file1->name());
-        self::assertSame(7, $file1->startLine());
-        self::assertSame(19, $file1->endLine());
+        self::assertSame(5, $file1->startLine());
+        self::assertSame(21, $file1->endLine());
 
         self::assertSame(__DIR__ . '/../Fixture/php84_hooks.php', $file2->name());
-        self::assertSame(25, $file2->startLine());
-        self::assertSame(37, $file2->endLine());
+        self::assertSame(23, $file2->startLine());
+        self::assertSame(39, $file2->endLine());
     }
 
     #[DataProvider('suppressionFixturesProvider')]
@@ -234,10 +234,10 @@ final class SuffixTreeTest extends TestCase
             4 => '--min-tokens',
             5 => '10',
         ];
-        $arguments = (new ArgumentsBuilder())->build($argv);
+        $arguments = new ArgumentsBuilder()->build($argv);
         $config = new StrategyConfiguration($arguments);
         $strategy = new SuffixTreeStrategy($config, new SuppressionGuard());
-        $clones = (new Detector($strategy))->copyPasteDetection([$file]);
+        $clones = new Detector($strategy)->copyPasteDetection([$file]);
 
         self::assertCount(
             $expectedClones,
@@ -268,9 +268,9 @@ final class SuffixTreeTest extends TestCase
         $argv = [
             1 => '.',
             2 => '--min-lines',
-            3 => '7',
+            3 => '13',
             4 => '--min-tokens',
-            5 => '10',
+            5 => '15',
         ];
         $arguments = new ArgumentsBuilder()->build($argv);
         $config = new StrategyConfiguration($arguments);
@@ -293,10 +293,10 @@ final class SuffixTreeTest extends TestCase
 
         // Check all 4 clones
         $expectedResults = [
-            [2, $path . 'Test4_A.php', $path . 'Test4_B.php', 17, 33, 14, 30],
-            [2, $path . 'Test1_B.php', $path . 'Test1_C.php', 9, 24, 9, 24],
+            [2, $path . 'Test1_B.php', $path . 'Test1_C.php', 7, 25, 7, 25],
+            [2, $path . 'Test4_A.php', $path . 'Test4_B.php', 17, 34, 14, 31],
+            [2, $path . 'Test2_A.php', $path . 'Test2_C.php', 7, 22, 7, 22],
             [2, $path . 'Test3_C.php', $path . 'Test3_C.php', 11, 24, 24, 37],
-            [2, $path . 'Test2_A.php', $path . 'Test2_C.php', 12, 24, 23, 35],
         ];
         $i = 0;
         foreach ($clones->clones() as $clone) {
@@ -316,6 +316,29 @@ final class SuffixTreeTest extends TestCase
         }
     }
 
+    public function testMethodsWithDifferentOperatorsAreNotClones(): void
+    {
+        $argv = [
+            1 => '.',
+            2 => '--min-lines',
+            3 => '10',
+            4 => '--min-tokens',
+            5 => '20',
+        ];
+        $arguments = new ArgumentsBuilder()->build($argv);
+        $config = new StrategyConfiguration($arguments);
+        $strategy = new SuffixTreeStrategy($config, new SuppressionGuard());
+
+        $clones = new Detector($strategy)->copyPasteDetection(
+            [
+                __DIR__ . '/../Fixture/SingleCharacterToken.php',
+            ],
+        );
+
+        $clones = $clones->clones();
+        self::assertCount(0, $clones);
+    }
+
     /**
      * @return array<string, array<int, int|string>>
      */
@@ -327,7 +350,7 @@ final class SuffixTreeTest extends TestCase
             'Method Scope' => [$path . 'Test1_method.php', 0, 0, 0, 0, 0],
             'Class Scope' => [$path . 'Test2_class.php', 1, 33, 40, 42, 49],
             'Complex Syntax' => [$path . 'Test3_complex.php', 0, 0, 0, 0, 0],
-            'Mixed Content' => [$path . 'Test4_mixed.php', 1, 21, 28, 42, 49],
+            'Mixed Content' => [$path . 'Test4_mixed.php', 1, 21, 29, 42, 50],
             'PHP 8.4 Hooks' => [$path . 'Test5_php84.php', 0, 0, 0, 0, 0],
         ];
     }

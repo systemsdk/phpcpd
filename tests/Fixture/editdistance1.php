@@ -10,8 +10,8 @@ $insertdata['parent_qid'] = $aQIDReplacements[(int) $insertdata['parent_qid']];
 if (!isset($insertdata['help'])) {
     $insertdata['help'] = '';
 }
-if (!isset($xml->question_l10ns->rows->row)) {
-    // Edit difference here.
+// Edit difference here.
+if (!isset($xml2->question_l10ns->rows->row)) {
     if ($bTranslateLinksFields) {
         $insertdata['question'] = translateLinks('survey', $iOldSID, $iNewSID, $insertdata['question']);
         $insertdata['help'] = translateLinks('survey', $iOldSID, $iNewSID, $insertdata['help']);
